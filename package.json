@@ -1,0 +1,24 @@
+{
+  "name": "rumate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonevigasio/rumate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/simonevigasio/rumate/issues"
+  },
+  "homepage": "https://github.com/simonevigasio/rumate#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "joi": "^17.13.0",
+    "nodemon": "^3.1.0"
+  }
+}
