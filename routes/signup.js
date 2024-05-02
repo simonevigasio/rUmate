@@ -1,6 +1,7 @@
 const auth = require("../middleware/auth");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
+const path = require("path");
 const { User, validate } = require("../models/user");
 const mongoose = require("mongoose");
 const express = require('express');
@@ -26,7 +27,7 @@ router.post("/", async (req, res) => {
         await user.save();
 
         const token = user.generateAuthToken();
-        res.header("X-Register-Token", token).send(_.pick(user, ["_id", "username"]));
+        res.header("X-Auth-Token", token).send(_.pick(user, ["_id", "username"]));
     });
 });
 

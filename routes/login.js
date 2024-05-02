@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const Joi = require("joi");
-const { User } = require("../models/user");
+const { User, validate } = require("../models/user");
 const mongoose = require("mongoose");
 const express = require('express');
 const router = express.Router();
@@ -17,17 +17,8 @@ router.post("/", async (req, res) => {
         if (!result) return res.status(400).send("Invalid username or password");
 
         const token = user.generateAuthToken();
-        res.send(token);
+        res.send({ "token": token });
     });
 });
-
-function validate(req) {
-    const schema = Joi.object({
-        username: Joi.string().min(3).max(50).required(),
-        password: Joi.string().min(5).max(30).required()
-    });
-
-    return schema.validate(req);
-}
 
 module.exports = router;
