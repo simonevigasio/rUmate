@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <head>
-
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="#">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com">
+    <title>Home</title>
 </head>
 <body>
-    <div class="topnav">
-        <a href="users">Registrati</a>
-        <a href="#chat">Chat</a>
-        <a href="#account">Account</a>
-    </div>
-    <div>
-        <h1>Home</h1>
-    </div>
-    <script src="script.js"></script> 
-</body>
-</html>
+<form action="signup" method="post" name="signupform" id="signupform">
+    <span>Registrati</span>
+    <span id="signupUser"></span>
+    <input name="username" id="signupUsername"/>
+    <input name="password" id="signupPassword"/>
+    <button type="button" onclick="signup();">signup</button>
+</form>
+
+<form action="login" method="post" name="loginform" id="loginform">
+    <span>Loggati</span>
+    <span id="loginUser"></span>
+    <input name="username" id="loginUsername"/>
+    <input name="password" id="loginPassword"/>
+    <button type="button" onclick="login();">login</button>
+</form>
+
+<button type="button" onclick="logout();">logout</button>
+
+<div>
+    <h1>Lista Annunci</h1>
