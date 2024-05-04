@@ -27,3 +27,18 @@
 
 <div>
     <h1>Lista Annunci</h1>
+
+<form action="publishAd" method="post" name="publishAdform" id="publishAdform">
+    <span>Pubblica annuncio</span>
+    <span id="pubishAd"></span>
+
+    <input name="owner" id="publishAdOwner"/>
+    <input name="prize" id="publishAdPrize"/>
+    <input name="room" id="publishAdRoom"/>
+    <input name="flat_sex" id="publishAdFlat_sex"/>
+    <input name="residence_zone" id="publishAdResidence_zone"/>
+    <input name="expiry_date" id="publishAdExpiry_date"/>
+    <input name="roommate" id="publishAdRoommate"/>
+
+    <button type="button" onclick="publishAd();">publishAd</button>
+</form>

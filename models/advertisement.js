@@ -29,6 +29,13 @@ const Zone = Object.freeze({
 }); 
 
 const advertisementSchema = new mongoose.Schema({
+    owner: {
+        required: true,
+        minlength: 3,
+        maxlength: 50,
+        unique: true,
+        type: String
+    },
     prize: {
         required: true,
         min: [0, 'Price can not be negative'],
@@ -69,6 +76,7 @@ const Advertisement = mongoose.model('Advertisement', advertisementSchema);
 
 function validateAdvertisement(advertisement) {
     const schema = Joi.object({
+        owner: Joi.string().min(3).max(50).required(),
         prize: Joi.string().min(0).required(),
         room: Joi.number().min(1).max(3).required(),
         flat_sex: Joi.number().min(0).max(2).required(),
