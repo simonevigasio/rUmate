@@ -1,5 +1,7 @@
+const moment = require('moment');
 const mongoose = require('mongoose');
-const Joi = require("joi");
+const Joi = require("joi")
+            .extend(require('@joi/date'));
 
 const Sex_type = Object.freeze({ 
     Male: 0, 
@@ -61,8 +63,8 @@ const advertisementSchema = new mongoose.Schema({
     },
     expiry_date: {
         required: true,
-        min: Date.now(),
-        //max: Date.now() + 6 month,
+        min: moment().format("YYYY MM DD"),
+        max: moment().add(6, "M").format("YYYY MM DD"),
         type: Date
     },
     roommate: {
@@ -75,13 +77,17 @@ const advertisementSchema = new mongoose.Schema({
 const Advertisement = mongoose.model('Advertisement', advertisementSchema);
 
 function validateAdvertisement(advertisement) {
+
+    const now = moment().format("YYYY MM DD");
+    const limit = moment().add(6, "M").format("YYYY MM DD");
+
     const schema = Joi.object({
         owner: Joi.string().min(3).max(50).required(),
         prize: Joi.string().min(0).required(),
         room: Joi.number().min(1).max(3).required(),
         flat_sex: Joi.number().min(0).max(2).required(),
         residence_zone: Joi.number().min(0).max(11).required(),
-        expiry_date: Joi.date().min(Date.now).required(),
+        expiry_date: Joi.date().min(now).max(limit).format("YYYY MM DD"),
         roommate: Joi.number().min(0).required() 
     });
 

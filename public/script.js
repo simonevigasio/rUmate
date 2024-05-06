@@ -33,7 +33,7 @@ async function signup() {
     }
 }
 
-/* function used to login into the app using a specific account */
+/* function used to login into the app using a specific username */
 async function login() {
 
     /* get the username and password from the form */
@@ -65,6 +65,32 @@ async function login() {
     }
 }
 
+async function publishAd() {
+    advertaisment_config = {
+        owner: localStorage.getItem("username"),
+        prize: document.getElementById("publishAdPrize").value,
+        room: document.getElementById("publishAdRoom").value,
+        flat_sex: document.getElementById("publishAdFlat_sex").value,
+        residence_zone: document.getElementById("publishAdResidence_zone").value,
+        expiry_date: moment(document.getElementById("publishAdExpiry_date").value).format("YYYY MM DD"),
+        roommate: document.getElementById("publishAdRoommate").value
+    };
+
+    try {
+        resp = await fetch("../publishAd", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+            body: JSON.stringify(advertaisment_config),
+        })
+        json = await resp.json();
+        console.log(json);
+    }   
+    catch (ex) {
+        console.error(ex);
+    }
+}
+
 function logout() {
     console.log("logout");
+    localStorage.clear();
 }

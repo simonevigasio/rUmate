@@ -1,9 +1,11 @@
+const _ = require("lodash");
+const auth = require("../middleware/auth");
 const { Advertisement, validate } = require("../models/advertisement");
 const mongoose = require("mongoose");
 const express = require('express');
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -12,6 +14,8 @@ router.post("/", async (req, res) => {
 
     advertisement = new Advertisement(_.pick(req.body, ["owner", "prize", "room", "flat_sex", "residence_zone", "expiry_date", "roommate"]));
     await advertisement.save();
+
+    return res.send(advertisement);
 });
 
 module.exports = router;
