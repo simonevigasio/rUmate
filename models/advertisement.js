@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const Joi = require("joi")
             .extend(require('@joi/date'));
 
+/* 
+    bug to fix: into advertisementSchema and validateAdvertisement max and min date are set in two different moments
+*/
+
 const Sex_type = Object.freeze({ 
     Male: 0, 
     Female: 1,
@@ -77,7 +81,6 @@ const advertisementSchema = new mongoose.Schema({
 const Advertisement = mongoose.model('Advertisement', advertisementSchema);
 
 function validateAdvertisement(advertisement) {
-
     const now = moment().format("YYYY MM DD");
     const limit = moment().add(6, "M").format("YYYY MM DD");
 

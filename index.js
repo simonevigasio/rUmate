@@ -5,7 +5,7 @@ const path = require('path');
 const express = require('express');
 const login = require("./routes/login");
 const signup = require("./routes/signup");
-const publishAd = require("./routes/publish_advertisement");
+const publishAd = require("./routes/advertisements");
 const home = require("./routes/home");
 const mongoose = require('mongoose');
 

@@ -1,3 +1,27 @@
+async function visualizeAdv() {
+    try {
+        const ul = document.getElementById('ads');
+        resp = await fetch("../publishAd", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+        json = await resp.json();
+        json.map(function(adv) {
+            let li = document.createElement('li');
+            let span = document.createElement('span');
+            let a = document.createElement('a');
+            a.href = `http://localhost:${3000}/publishAd/${adv._id}`;
+            a.textContent = "vedi annuncio";
+            span.appendChild(a);
+            li.appendChild(span);
+            ul.appendChild(li);
+        });
+    }
+    catch (ex) {
+        console.error(ex);
+    }
+}
+
 /* function used to create an account */
 async function signup() {
 
@@ -94,3 +118,5 @@ function logout() {
     console.log("logout");
     localStorage.clear();
 }
+
+visualizeAdv();
