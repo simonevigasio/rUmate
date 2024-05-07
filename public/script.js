@@ -11,7 +11,7 @@ async function visualizeAdv() {
             let span = document.createElement('span');
             let a = document.createElement('a');
             a.href = `http://localhost:${3000}/publishAd/${adv._id}`;
-            a.textContent = "vedi annuncio";
+            a.textContent = adv.title;
             span.appendChild(a);
             li.appendChild(span);
             ul.appendChild(li);
@@ -92,6 +92,8 @@ async function login() {
 async function publishAd() {
     advertaisment_config = {
         owner: localStorage.getItem("username"),
+        title: document.getElementById("publishAdTitle").value,
+        description: document.getElementById("publishAdDescription").value,
         prize: document.getElementById("publishAdPrize").value,
         room: document.getElementById("publishAdRoom").value,
         flat_sex: document.getElementById("publishAdFlat_sex").value,

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
     const ads = await Advertisement.find({});
-    res.send(ads);
+    return res.send(ads);
 });
 
 router.get("/:id", async (req, res) => {
@@ -23,7 +23,7 @@ router.post("/", auth, async (req, res) => {
     let ad = await Advertisement.findOne({owner: req.body.owner});
     if (ad) return res.status(400).send("User already has an advertisement");
 
-    advertisement = new Advertisement(_.pick(req.body, ["owner", "prize", "room", "flat_sex", "residence_zone", "expiry_date", "roommate"]));
+    advertisement = new Advertisement(_.pick(req.body, ["owner", "title", "description", "prize", "room", "flat_sex", "residence_zone", "expiry_date", "roommate"]));
     await advertisement.save();
 
     return res.send(advertisement);

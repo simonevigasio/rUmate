@@ -49,16 +49,111 @@
     <span id="pubishAd"></span>
 
     <!-- <input name="owner" id="publishAdOwner"/> -->
+    <span>title</span>
+    <input name="prize" id="publishAdTitle"/>
+    <br>
+    <span>description</span>
+    <textarea name="prize" id="publishAdDescription" rows="10" cols="50">
+        Insert advertisement description...
+    </textarea>
+    <br>
     <span>prezzo</span>
     <input name="prize" id="publishAdPrize"/>
-    <span>tipo stanza</span>
-    <input name="room" id="publishAdRoom"/>
-    <span>sesso</span>
-    <input name="flat_sex" id="publishAdFlat_sex"/>
-    <span>residenza</span>
-    <input name="residence_zone" id="publishAdResidence_zone"/>
+
+    <fieldset>
+        <legend>Scegli il tipo di stanza:</legend>
+      
+        <label>
+            <input type="radio" id="publishAdRoom" name="room" value="Single" />
+            Single
+        </label><br />
+      
+        <label>
+            <input type="radio" id="publishAdRoom" name="room" value="Double" />
+            Double
+        </label><br />
+      
+        <label>
+            <input type="radio" id="publishAdRoom" name="room" value="Triple" />
+            Triple
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Scegli la tipologia di componenti dell'appartamento:</legend>
+      
+        <label>
+            <input type="radio" id="publishAdFlat_sex" name="flat_sex" value="Male" />
+            Male
+        </label><br />
+      
+        <label>
+            <input type="radio" id="publishAdFlat_sex" name="flat_sex" value="Female" />
+            Female
+        </label><br />
+      
+        <label>
+            <input type="radio" id="publishAdFlat_sex" name="flat_sex" value="Mixed" />
+            Mixed
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Scegli la residenza dell'appartamento:</legend>
+      
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Povo" />
+            Povo
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Bondone" />
+            Bondone
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Sardagna" />
+            Sardagna
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Centro_storico_Piedicastello" />
+            Centro_storico_Piedicastello
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Meano" />
+            Meano
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Argentario" />
+            Argentario
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="San_Giuseppe_Santa_Chiara" />
+            San_Giuseppe_Santa_Chiara
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Oltrefersina" />
+            Oltrefersina
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Villazzano" />
+            Villazzano
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Mattarello" />
+            Mattarello
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Ravina_romagnano" />
+            Ravina_romagnano
+        </label><br />
+        <label>
+            <input type="radio" id="publishAdResidence_zone" name="residence_zone" value="Oltrecastello" />
+            Oltrecastello
+        </label><br />
+    </fieldset>
+
     <span>scadenza</span>
     <input type="date" name="expiry_date" id="publishAdExpiry_date"/>
+
     <span>numero coinquilini</span>
     <input name="roommate" id="publishAdRoommate"/>
 
