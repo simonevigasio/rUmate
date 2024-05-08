@@ -25,6 +25,8 @@ database.once('connected', () => {
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+const cors = require("cors")
+app.use(cors());
 app.use("/", home);
 app.use("/signup", signup);
 app.use("/login", login);
