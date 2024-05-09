@@ -1,13 +1,11 @@
 const _ = require("lodash");
-const auth = require("../middleware/auth");
+const auth = require("../middleware/authorize");
 const { Advertisement, validate } = require("../models/advertisement");
 const mongoose = require("mongoose");
 const express = require('express');
 const router = express.Router();
 
-
 //aggiungi usually checked in html
-
 router.post("/", async (req, res) => {
     query = new mongoose.Query();
 
@@ -39,7 +37,7 @@ router.get("/:id", async (req, res) => {
     return res.send(ad);
 });
 
-router.post("/publishAd", auth, async (req, res) => {
+router.post("/publish", auth, async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 

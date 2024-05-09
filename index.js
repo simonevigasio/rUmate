@@ -1,12 +1,11 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const debug = require("debug")("app:setting");
+const cors = require("cors");
 const path = require('path');
 const express = require('express');
-const login = require("./routes/login");
-const signup = require("./routes/signup");
+const auth = require("./routes/authenticate");
 const advertisement = require("./routes/advertisements");
-const home = require("./routes/home");
+const {google} = require('googleapis');
 const mongoose = require('mongoose');
 
 const mongoString = process.env.DATABASE_URL;
@@ -25,12 +24,14 @@ database.once('connected', () => {
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-const cors = require("cors")
 app.use(cors());
-app.use("/", home);
-app.use("/signup", signup);
-app.use("/login", login);
-app.use("/advertisement", advertisement);
+
+app.use("/auth", auth);
+app.use("/advertisements", advertisement);
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public", "home.html"));
+});
 
 app.listen(3000, () => {
     console.log(`Server listening on port ${3000}...`);
