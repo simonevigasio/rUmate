@@ -4,10 +4,6 @@ const mongoose = require('mongoose');
 const Joi = require("joi")
             .extend(require('@joi/date'));
 
-/* 
-    bug to fix: into advertisementSchema and validateAdvertisement max and min date are set in two different moments
-*/
-
 const advertisementSchema = new mongoose.Schema({
     owner: {
         required: true,

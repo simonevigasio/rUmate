@@ -51,7 +51,7 @@ async function visualizeAdv() {
             let li = document.createElement('li');
             let span = document.createElement('span');
             let a = document.createElement('a');
-            a.href = `http://localhost:3000/advertisement/${adv._id}`;
+            a.href = `http://localhost:3000/advertisements/${adv._id}`;
             a.textContent = adv.title;
             span.appendChild(a);
             li.appendChild(span);
@@ -166,9 +166,23 @@ async function publishAd() {
     }
 }
 
-function logout() {
-    console.log("logout");
+async function logout() {
     localStorage.clear();
+    try {
+        const resp = await fetch("../auth/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+        })
+        const json = await resp.json();
+        console.log(json);
+    }
+    catch (ex) {
+        console.error(ex);
+    }
+}
+
+async function signWithGoogle() {
+    window.location = "/auth/google";
 }
 
 visualizeAdv();
