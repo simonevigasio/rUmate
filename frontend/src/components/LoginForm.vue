@@ -2,12 +2,10 @@
     import { ref, computed, onMounted } from 'vue'
 
     const message = ref('Insert your credentials to log in')
-    const username = ref(localStorage.getItem('username') || '')
-    const password = ref(localStorage.getItem('password') || '')
-    const hasUsernameError = ref(false)
-    const hasPasswordError = ref(false)
-    const warningUsername = ref('')
-    const warningPassword = ref('')
+    const username = ref('')
+    const password = ref('')
+    const hasError = ref(false)
+    const warning = ref('')
     const show = ref(false)
     const passwordType = computed(() => show.value ? 'text' : 'password');
 
@@ -17,40 +15,48 @@
         return !username.value || !password.value
     })
 
-    function tryLogIn(){
-        warningUsername.value = ''
-        warningPassword.value = ''
+    async function login() {
+        warning.value = ''
 
-        if(username.value.length < 8 || username.value.length > 25) {
-            warningUsername.value = 'No account with such username exists'
-            hasUsernameError.value = true
-        }else{
-            hasUsernameError.value = false
+        const user = {
+            username: username.value,
+            password: password.value,
         }
+        try {
+            const resp = await fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user),
+            });
+            
+            const json = await resp.json();
 
-        if(!/[!@#$%^&*(),.?]/.test(password.value)) {
-            warningPassword.value = 'Incorrect password'
-            hasPasswordError.value = true
-        }else{
-            hasPasswordError.value = false
+            localStorage.setItem("token", json.token);
+            localStorage.setItem("username", user.username);
+
+            message.value = "You successfully logged in!"
+            triggerForm();
+        } 
+        catch (ex) {
+            console.error(ex);
+                warning.value = 'Invalid username or password'
+                hasError.value = true;
         }
-
-        if(hasUsernameError.value || hasPasswordError.value) {
-            return
-        }
-
-        message.value = "You successfully logged in!"
-        loggedIn.value = true
     }
 
     function showPassword(){
         show.value = !show.value
     }
 
-    onMounted(() => {
-        localStorage.setItem('username', username.value)
-        localStorage.setItem('password', password.value)
-    })
+    function triggerForm(){
+        if(loggedIn.value == true){
+            username.value = ''
+            password.value = ''
+            hasError.value = false
+            warning.value = ''
+        }
+        loggedIn.value = !loggedIn.value
+    }
 </script>
 
 <template>
@@ -62,18 +68,21 @@
                 <div class="input">
                     <label class="tag" for="username">Username:</label>
                     <input id="username" v-model="username" placeholder="Insert username here">
-                    <p class="warning">{{ warningUsername }}</p>
                 </div>
                 <div class="input">
                     <label class="tag" for="password">Password:</label>
                     <input id="password" :type="passwordType" v-model="password" placeholder="Insert password here">
-                    <p class="warning">{{ warningPassword }}</p>
+                    <p class="warning">{{ warning }}</p>
                 </div>
             </div>
 
             <input type="checkbox" id="checkbox" v-model="show" @input="showPassword"><label class="checkboxText" for="checkbox">Make password visible</label>
 
-            <h2><button class="logInButton" @click="tryLogIn" :disabled="isButtonDisabled">Log In</button></h2>
+            <h2><button class="logInButton" @click="login" :disabled="isButtonDisabled">Log In</button></h2>
+        </template>
+
+        <template v-else>
+            <h2><button class="logOutButton" @click="triggerForm">Log out</button></h2>
         </template>
     </div>
 </template>
@@ -107,8 +116,10 @@
         padding: 10px;
         border: 1px solid #ccc;
         outline: none;
+        margin-bottom: 15px;
     }
-    .logInButton {
+    .logInButton,
+    .logOutButton {
         font-size: 1.2rem;
         padding: 10px 20px;
         width: auto;

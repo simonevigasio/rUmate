@@ -1,5 +1,4 @@
 <script>
-//ROOT COMPONENT; here we import the children components
 import Presentation from './components/Presentation.vue'
 import RegistrationForm from './components/RegistrationForm.vue'
 import LoginForm from './components/LoginForm.vue'
@@ -24,7 +23,7 @@ export default{
   </header>
 
   <main class="form">
-    <RegistrationForm/>
+    <VisualizationAd/>
   </main>
 </template>
 
