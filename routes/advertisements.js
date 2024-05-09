@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
     });
     query.and([queryRoom.getFilter(),querySex.getFilter(),queryResidence.getFilter()]);
 
-    if(req.body.sort == 'Prize'){   query.sort({ prize: 'asc'});    }
+    if(req.body.sort == 'Price'){   query.sort({ price: 'asc'});    }
     if(req.body.sort == 'Expiry_date'){ query.sort({ expiry_date: 'asc'});  }
 
     const ads = await Advertisement.find(query);
