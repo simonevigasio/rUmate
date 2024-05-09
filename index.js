@@ -5,7 +5,7 @@ const path = require('path');
 const express = require('express');
 const login = require("./routes/login");
 const signup = require("./routes/signup");
-const publishAd = require("./routes/advertisements");
+const advertisement = require("./routes/advertisements");
 const home = require("./routes/home");
 const mongoose = require('mongoose');
 
@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use("/", home);
 app.use("/signup", signup);
 app.use("/login", login);
-app.use("/publishAd", publishAd);
+app.use("/advertisement", advertisement);
 
 app.listen(3000, () => {
     console.log(`Server listening on port ${3000}...`);

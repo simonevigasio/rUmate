@@ -1,22 +1,72 @@
+function getValue(elementId){
+    if(document.getElementById(elementId).checked){
+        return document.getElementById(elementId).value;
+    }
+    return "None";
+}
+
 async function visualizeAdv() {
+    const parameter = {
+        sort : document.getElementById("sortAd").value,
+        roomFilter:{
+            Single  : getValue('filterRoomSingle'),
+            Double  : getValue('filterRoomDouble'),
+            Triple  : getValue('filterRoomTriple')
+        },
+        sexFilter:{
+            Male  : getValue('filterSexMale'),
+            Female  : getValue('filterSexFemale'),
+            Mixed  : getValue('filterSexMixed')
+        },
+        residenceFilter:{
+            Povo  : getValue('filterResidencePovo'),
+            Bondone  : getValue('filterResidenceBondone'),
+            Sardagna : getValue('filterResidenceSardagna'),
+            Centro_storico_Piedicastello : getValue('filterResidenceCentro_storico_Piedicastello'),
+            Meano  : getValue('filterResidenceMeano'),
+            Argentario  : getValue('filterResidenceArgentario'),
+            San_Giuseppe_Santa_Chiara : getValue('filterResidenceSan_Giuseppe_Santa_Chiara'),
+            Oltrefersina  : getValue('filterResidenceOltrefersina'),
+            Villazzano : getValue('filterResidenceVillazzano'),
+            Mattarello  : getValue('filterResidenceMattarello'),
+            Ravina_romagnano  : getValue('filterResidenceRavina_romagnano'),
+            Oltrecastello  : getValue('filterResidenceOltrecastello')
+        }
+    };
+
     try {
         const ul = document.getElementById('ads');
-        resp = await fetch("../publishAd", {
-            method: "GET",
+        resp = await fetch("http://localhost:3000/advertisement", {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(parameter),
         });
+
+        while (ul.firstChild) {
+            ul.removeChild(ul.lastChild);
+        }
+
         json = await resp.json();
         json.map(function(adv) {
             let li = document.createElement('li');
             let span = document.createElement('span');
             let a = document.createElement('a');
-            a.href = `http://localhost:${3000}/publishAd/${adv._id}`;
+            a.href = `http://localhost:${3000}/advertisement/${adv._id}`;
             a.textContent = adv.title;
             span.appendChild(a);
             li.appendChild(span);
             ul.appendChild(li);
         });
     }
+    catch (ex) {
+        console.error(ex);
+    }
+}
+
+async function sort_and_filter() {
+    try {
+        visualizeAdv()
+    }   
     catch (ex) {
         console.error(ex);
     }
@@ -90,7 +140,7 @@ async function login() {
 }
 
 async function publishAd() {
-    advertaisment_config = {
+    advertisement_config = {
         owner: localStorage.getItem("username"),
         title: document.getElementById("publishAdTitle").value,
         description: document.getElementById("publishAdDescription").value,
@@ -103,10 +153,10 @@ async function publishAd() {
     };
 
     try {
-        resp = await fetch("../publishAd", {
+        resp = await fetch("http://localhost:3000/advertisement/publishAd", {
             method: "POST",
             headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
-            body: JSON.stringify(advertaisment_config),
+            body: JSON.stringify(advertisement_config),
         })
         json = await resp.json();
         console.log(json);
