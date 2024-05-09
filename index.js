@@ -1,12 +1,13 @@
-require('dotenv').config();
+require("dotenv").config();
+require("./config/passport-setup");
 
-const debug = require("debug")("app:setting");
+const cors = require("cors");
 const path = require('path');
 const express = require('express');
-const login = require("./routes/login");
-const signup = require("./routes/signup");
-const advertisement = require("./routes/advertisements");
-const home = require("./routes/home");
+const auth = require("./routes/authenticate");
+const advertisements = require("./routes/advertisements");
+const passport = require("passport");
+const cookieSession = require('cookie-session')
 const mongoose = require('mongoose');
 
 const mongoString = process.env.DATABASE_URL;
@@ -23,14 +24,25 @@ database.once('connected', () => {
 });
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-const cors = require("cors")
 app.use(cors());
-app.use("/", home);
-app.use("/signup", signup);
-app.use("/login", login);
-app.use("/advertisement", advertisement);
+
+app.use(cookieSession({
+    name: "session",
+    keys: [process.env.COOKIE_SESSION_KEY],
+    maxAge: 5 * 60 * 60 * 1000
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/auth", auth);
+app.use("/advertisements", advertisements);
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public", "home.html"));
+});
 
 app.listen(3000, () => {
     console.log(`Server listening on port ${3000}...`);

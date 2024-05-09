@@ -11,10 +11,12 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     password: {
-        required: true,
         minlength: 5,
         maxlength: 255,
         type: String
+    },
+    googleId: {
+        type: String,
     }
 });
 
@@ -23,16 +25,27 @@ userSchema.methods.generateAuthToken = function() {
     return token;
 }
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 function validateUser(user) {
     const schema = Joi.object({
         username: Joi.string().min(3).max(50).required(),
-        password: Joi.string().min(5).max(30).required()
+        password: Joi.string().min(5).max(30).required(),
     });
 
     return schema.validate(user);
 }
 
+function validateGoogleUser(user) {
+    const schema = Joi.object({
+        username: Joi.string().min(3).max(50).required(),
+        googleId: Joi.string().required(),
+    });
+
+    return schema.validate(user);
+}
+
+const validate = { local: validateUser, google: validateGoogleUser };
+
 exports.User = User
-exports.validate = validateUser
+exports.validate = validate

@@ -36,7 +36,7 @@ async function visualizeAdv() {
 
     try {
         const ul = document.getElementById('ads');
-        resp = await fetch("http://localhost:3000/advertisement", {
+        resp = await fetch("../advertisements", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(parameter),
@@ -51,7 +51,7 @@ async function visualizeAdv() {
             let li = document.createElement('li');
             let span = document.createElement('span');
             let a = document.createElement('a');
-            a.href = `http://localhost:${3000}/advertisement/${adv._id}`;
+            a.href = `http://localhost:3000/advertisements/${adv._id}`;
             a.textContent = adv.title;
             span.appendChild(a);
             li.appendChild(span);
@@ -84,7 +84,7 @@ async function signup() {
     try {
 
         /* POST request to backend asking to create a new account with username and password */
-        resp = await fetch("../signup", {
+        resp = await fetch("../auth/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
@@ -119,7 +119,7 @@ async function login() {
     try {
 
         /* POST request to backend asking to login with a specific account matching username */
-        resp = await fetch("../login", {
+        resp = await fetch("../auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
@@ -153,7 +153,7 @@ async function publishAd() {
     };
 
     try {
-        resp = await fetch("http://localhost:3000/advertisement/publishAd", {
+        resp = await fetch("../advertisements/publish", {
             method: "POST",
             headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
             body: JSON.stringify(advertisement_config),
@@ -166,9 +166,23 @@ async function publishAd() {
     }
 }
 
-function logout() {
-    console.log("logout");
+async function logout() {
     localStorage.clear();
+    try {
+        const resp = await fetch("../auth/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+        })
+        const json = await resp.json();
+        console.log(json);
+    }
+    catch (ex) {
+        console.error(ex);
+    }
+}
+
+async function signWithGoogle() {
+    window.location = "/auth/google";
 }
 
 visualizeAdv();
