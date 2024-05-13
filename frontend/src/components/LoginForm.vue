@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed, onMounted } from 'vue'
+    import { ref, computed } from 'vue'
 
     const message = ref('Insert your credentials to log in')
     const username = ref('')
@@ -23,7 +23,7 @@
             password: password.value,
         }
         try {
-            const resp = await fetch("http://localhost:3000/login", {
+            const resp = await fetch("http://localhost:3000/users", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(user),
@@ -44,6 +44,23 @@
         }
     }
 
+    async function logout() {
+        localStorage.clear();
+        try {
+            const resp = await fetch("http://localhost:3000/users/logout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json"},
+            })
+            const json = await resp.json();
+            console.log(json);
+
+            triggerForm();
+        }
+        catch (ex) {
+            console.error(ex);
+        }
+    }
+
     function showPassword(){
         show.value = !show.value
     }
@@ -60,44 +77,68 @@
 </script>
 
 <template>
-    <div class="LoginForm">
-        <h2><span class="green" v-html="message"></span></h2>
+     <h2><span class="green" v-html="message"></span></h2>
 
+    <form class="LoginForm">
         <template v-if="!loggedIn">
             <div class="inputGroup">
                 <div class="input">
                     <label class="tag" for="username">Username:</label>
-                    <input id="username" v-model="username" placeholder="Insert username here">
+                    <input id="username" v-model="username" placeholder="Inserisci username qui">
                 </div>
                 <div class="input">
                     <label class="tag" for="password">Password:</label>
-                    <input id="password" :type="passwordType" v-model="password" placeholder="Insert password here">
+                    <input id="password" :type="passwordType" v-model="password" placeholder="Inserisci password qui">
                     <p class="warning">{{ warning }}</p>
                 </div>
             </div>
 
-            <input type="checkbox" id="checkbox" v-model="show" @input="showPassword"><label class="checkboxText" for="checkbox">Make password visible</label>
+            <input type="checkbox" id="checkbox" v-model="show" @input="showPassword"><label class="checkboxText" for="checkbox">Mostra password</label>
 
-            <h2><button class="logInButton" @click="login" :disabled="isButtonDisabled">Log In</button></h2>
+            <h2><button class="logInButton" type="button" @click="login" :disabled="isButtonDisabled">Log In</button></h2>
         </template>
 
         <template v-else>
-            <h2><button class="logOutButton" @click="triggerForm">Log out</button></h2>
+            <h2><button class="logOutButton" type="button" @click="logout">Log out</button></h2>
         </template>
-    </div>
+    </form>
 </template>
 
 <style scoped>
-    .LoginForm h2 {
+    h2 {
         font-weight: 500;
         font-size: 2.0rem;
-        position: relative;
-        top: 10px;
-        margin-bottom: 30px;
-        margin-left: -40px;
+        padding: 10px;
+        margin-bottom: 10px;
     }
-    .LoginForm p {
-        margin-bottom: 15px;
+    .LoginForm {
+        border-radius: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        outline: none;
+        width: auto;
+        margin-top: 15px;
+    }
+    .logInButton,
+    .logOutButton {
+        font-weight: 500;
+        font-size: 1.2rem;
+        padding: 10px;
+        outline: none;
+        width: 100px;
+        border-radius: 20px;
+        border: none;
+        background-color: hsla(160, 100%, 37%, 1);
+        color: white;
+        cursor: pointer;
+    }
+    .logInButton:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    .inputGroup {
+        text-align: center;
+        margin-top: 15px;
     }
     .LoginForm .tag{
         font-weight: 500;
@@ -118,31 +159,10 @@
         outline: none;
         margin-bottom: 15px;
     }
-    .logInButton,
-    .logOutButton {
-        font-size: 1.2rem;
-        padding: 10px 20px;
-        width: auto;
-        border-radius: 20px;
-        border: none;
-        background-color: hsla(160, 100%, 37%, 1);
-        color: white;
-        cursor: pointer;
-    }
-    .logInButton:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
     .warning {
         color: red;
         font-size: 0.8rem;
         margin-top: 5px;
-    }
-
-    @media (max-width: 1023px) {
-        .LoginForm h2{
-            text-align: center;
-            margin: 0 auto 2rem;
-        } 
+        margin-bottom: 15px;
     }
 </style>
