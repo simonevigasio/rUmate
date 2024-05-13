@@ -6,6 +6,7 @@ const path = require('path');
 const express = require('express');
 const auth = require("./routes/authenticate");
 const advertisements = require("./routes/advertisements");
+const users = require("./routes/users");
 const passport = require("passport");
 const cookieSession = require('cookie-session')
 const mongoose = require('mongoose');
@@ -37,7 +38,8 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/auth", auth);
+app.use("/authenticate", auth);
+app.use("/users", users);
 app.use("/advertisements", advertisements);
 
 app.get("/", (req, res) => {
