@@ -84,7 +84,7 @@ async function signup() {
     try {
 
         /* POST request to backend asking to create a new account with username and password */
-        resp = await fetch("../auth/signup", {
+        resp = await fetch("../authenticate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
@@ -119,7 +119,7 @@ async function login() {
     try {
 
         /* POST request to backend asking to login with a specific account matching username */
-        resp = await fetch("../auth/login", {
+        resp = await fetch("../users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
@@ -169,7 +169,7 @@ async function publishAd() {
 async function logout() {
     localStorage.clear();
     try {
-        const resp = await fetch("../auth/logout", {
+        const resp = await fetch("../users/logout", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
         })
@@ -182,6 +182,7 @@ async function logout() {
 }
 
 async function signWithGoogle() {
+    logout();
     window.location = "/auth/google";
 }
 
