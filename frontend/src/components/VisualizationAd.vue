@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const selectedSortOption = ref('Price');
+const selectedSortOption = ref('');
 
 const sortOptions = ref([
     { text: 'Prezzo', value: 'Price' },
@@ -153,7 +153,7 @@ onMounted(() =>{
     <fieldset>
         <span> Scegli ordinamento:</span>
         <select class="sortAd" v-model="selectedSortOption">
-            <option disabled value="">--Seleziona ordinamento--</option>
+            <option disabled value="--Seleziona ordinamento--">--Seleziona ordinamento--</option>
             <option v-for="option in sortOptions" :value="option.value">
               {{ option.text }}
             </option>

@@ -1,12 +1,35 @@
 <script setup>
 
-import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-const activeNavItem = ref('home');
+const route = useRoute();
 
-const setActiveNavItem = (item) => {
-  activeNavItem.value = item;
-};
+function isRouteActive(path){
+  return route.path === path;
+}
+
+function alreadyLogged(){
+  return localStorage.getItem("username") !== null
+}
+
+async function logout() {
+  localStorage.clear();
+  try {
+    const resp = await fetch("http://localhost:3000/users/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json"},
+    })
+    const json = await resp.json();
+    console.log(json);
+
+    setTimeout(() => {
+      router.push('/');
+    }, 1000);
+  }
+  catch (ex) {
+    console.error(ex);
+  }
+}
 
 </script>
 
@@ -18,11 +41,16 @@ const setActiveNavItem = (item) => {
   </div>
 
   <div class="topnav">
-    <a :class="{ active: activeNavItem === 'home' }" href="/" @click="setActiveNavItem('home')">home</a>
-    <a :class="{ active: activeNavItem === 'login' }" href="/login" @click="setActiveNavItem('login')">Log in</a>
-    <a :class="{ active: activeNavItem === 'signin' }" href="/signin" @click="setActiveNavItem('signin')">Sign in</a>
-    <a :class="{ active: activeNavItem === 'chat' }" href="/#chat" @click="setActiveNavItem('chat')">Chat</a>
-    <a :class="{ active: activeNavItem === 'publishAd' }" href="/publishAd" @click="setActiveNavItem('publishAd')">Il mio annuncio</a>
+    <router-link to="/" :class="{ active: isRouteActive('/') }">home</router-link>
+    <template v-if="!alreadyLogged()">
+      <router-link to="/login" :class="{ active: isRouteActive('/login') }">Log in</router-link>
+      <router-link to="/signin" :class="{ active: isRouteActive('/signin') }">Sign in</router-link>
+    </template>
+    <template v-else>
+      <router-link to="/#chat" :class="{ active: isRouteActive('/#chat') }">Chat</router-link>
+      <router-link to="/publishAd" :class="{ active: isRouteActive('/publishAd') }">Il mio annuncio</router-link>
+      <router-link to="/" @click="logout">Log out</router-link>
+    </template>
   </div>
 </template>
 

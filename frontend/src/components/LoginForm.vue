@@ -1,7 +1,8 @@
 <script setup>
     import { ref, computed } from 'vue'
+    import { useRouter } from 'vue-router';
 
-    const message = ref('Insert your credentials to log in')
+    const message = ref('Inserisci le credenziali per accedere')
     const username = ref('')
     const password = ref('')
     const hasError = ref(false)
@@ -11,12 +12,15 @@
 
     const loggedIn = ref(false)
 
+    const router = useRouter();
+
     const isButtonDisabled = computed(() => {
         return !username.value || !password.value
     })
 
     async function login() {
         warning.value = ''
+        hasError.value = false
 
         const user = {
             username: username.value,
@@ -34,30 +38,16 @@
             localStorage.setItem("token", json.token);
             localStorage.setItem("username", user.username);
 
-            message.value = "You successfully logged in!"
+            message.value = "Accesso effettuato correttamente!"
             triggerForm();
+            setTimeout(() => {
+                router.push('/');
+            }, 1000);
         } 
         catch (ex) {
             console.error(ex);
-                warning.value = 'Invalid username or password'
-                hasError.value = true;
-        }
-    }
-
-    async function logout() {
-        localStorage.clear();
-        try {
-            const resp = await fetch("http://localhost:3000/users/logout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json"},
-            })
-            const json = await resp.json();
-            console.log(json);
-
-            triggerForm();
-        }
-        catch (ex) {
-            console.error(ex);
+            warning.value = 'Username o password non validi'
+            hasError.value = true;
         }
     }
 
@@ -66,12 +56,6 @@
     }
 
     function triggerForm(){
-        if(loggedIn.value == true){
-            username.value = ''
-            password.value = ''
-            hasError.value = false
-            warning.value = ''
-        }
         loggedIn.value = !loggedIn.value
     }
 </script>
@@ -97,9 +81,8 @@
 
             <h2><button class="logInButton" type="button" @click="login" :disabled="isButtonDisabled">Log In</button></h2>
         </template>
-
         <template v-else>
-            <h2><button class="logOutButton" type="button" @click="logout">Log out</button></h2>
+            <label class="tag">Caricando la home...</label>
         </template>
     </form>
 </template>
@@ -111,7 +94,7 @@
         padding: 10px;
         margin-bottom: 10px;
     }
-    .LoginForm {
+    .LoginForm{
         border-radius: 20px;
         padding: 10px;
         border: 1px solid #ccc;
@@ -119,8 +102,7 @@
         width: auto;
         margin-top: 15px;
     }
-    .logInButton,
-    .logOutButton {
+    .logInButton{
         font-weight: 500;
         font-size: 1.2rem;
         padding: 10px;

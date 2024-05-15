@@ -10,11 +10,11 @@ router.post("/", async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     let user = await User.findOne({username: req.body.username});
-    if (user) return res.status(400).send("User already registered");
+    if (user) return res.status(400).send({message: "User already registered"});
 
     user = new User(_.pick(req.body, ["username", "password"]));
     bcrypt.hash(user.password, 10, async function(err, hash) {
-        if (err) return res.status(400).send("Invalid password");
+        if (err) return res.status(400).send({message: "Invalid password"});
         
         user.password = hash;
         await user.save();

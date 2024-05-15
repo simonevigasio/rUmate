@@ -61,7 +61,7 @@ router.post("/publish", auth, async (req, res) => {
     if (ad) return res.status(400).send("User already has an advertisement");
 
     // load the advertisement in the Database
-    advertisement = new Advertisement(_.pick(req.body, ["owner", "title", "description", "prize", "room", "flat_sex", "residence_zone", "expiry_date", "roommate"]));
+    advertisement = new Advertisement(_.pick(req.body, ["owner", "title", "description", "price", "room", "flat_sex", "residence_zone", "expiry_date", "roommate"]));
     await advertisement.save();
 
     return res.send(advertisement);
