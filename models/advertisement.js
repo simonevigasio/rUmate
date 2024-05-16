@@ -67,7 +67,7 @@ function validateAdvertisement(advertisement) {
     const schema = Joi.object({
         owner: Joi.string().min(3).max(50).required(),
         title: Joi.string().min(5).max(100).required(),
-        description: Joi.string().max(500).required(),
+        description: Joi.string().max(500),
         prize: Joi.string().min(0).required(),
         room: Joi.string().valid('Single', 'Double', 'Triple').required(),
         flat_sex: Joi.string().valid('Male', 'Female', 'Mixed').required(),
