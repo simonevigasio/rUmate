@@ -1,9 +1,16 @@
+/*  
+    tools imported for the declaration of the advertisement schema
+    moment -> used to create Date object (YYYY MM DD)
+    mongoose -> connection with MongoDB 
+    Joi -> data validator for the schema
+*/
 const { times } = require('lodash');
 const moment = require('moment');
 const mongoose = require('mongoose');
 const Joi = require("joi")
             .extend(require('@joi/date'));
 
+// Declaration of the schema and all its fields
 const advertisementSchema = new mongoose.Schema({
     owner: {
         required: true,
@@ -23,7 +30,7 @@ const advertisementSchema = new mongoose.Schema({
         maxlength: 500,
         type: String
     },
-    prize: {
+    price: {
         required: true,
         min: [0, 'Price can not be negative'],
         type: Number
@@ -58,8 +65,10 @@ const advertisementSchema = new mongoose.Schema({
     }
 });
 
+// The model is saved on mongoose and could now be used in the code
 const Advertisement = mongoose.model('Advertisement', advertisementSchema);
 
+// Validation function for an advertisement object, before inserting it in the Database
 function validateAdvertisement(advertisement) {
     const now = moment().format("YYYY MM DD");
     const limit = moment().add(6, "M").format("YYYY MM DD");
@@ -67,7 +76,7 @@ function validateAdvertisement(advertisement) {
     const schema = Joi.object({
         owner: Joi.string().min(3).max(50).required(),
         title: Joi.string().min(5).max(100).required(),
-        description: Joi.string().max(500),
+        description: Joi.string().max(500).required(),
         prize: Joi.string().min(0).required(),
         room: Joi.string().valid('Single', 'Double', 'Triple').required(),
         flat_sex: Joi.string().valid('Male', 'Female', 'Mixed').required(),
@@ -81,5 +90,6 @@ function validateAdvertisement(advertisement) {
     return schema.validate(advertisement);
 }
 
+// Exporting the model Advertisement and the function validateAdvertisement to allow modules which include this module to use them
 exports.Advertisement = Advertisement
 exports.validate = validateAdvertisement

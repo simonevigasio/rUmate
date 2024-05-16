@@ -1,3 +1,4 @@
+// Function used by visualizeAdv to get a filter value if it is checked by the user
 function getValue(elementId){
     if(document.getElementById(elementId).checked){
         return document.getElementById(elementId).value;
@@ -5,6 +6,10 @@ function getValue(elementId){
     return "None";
 }
 
+/*
+    Function that visualize the advertisement stored in the Database
+    The visualization can be sorted and filtered by the user, changing the value of parameter
+*/
 async function visualizeAdv() {
     const parameter = {
         sort : document.getElementById("sortAd").value,
@@ -35,6 +40,7 @@ async function visualizeAdv() {
     };
 
     try {
+        // POST request to get the advertisement from the Database
         const ul = document.getElementById('ads');
         resp = await fetch("../advertisements", {
             method: "POST",
@@ -42,10 +48,12 @@ async function visualizeAdv() {
             body: JSON.stringify(parameter),
         });
 
+        // remove the advertisement which are now displayed
         while (ul.firstChild) {
             ul.removeChild(ul.lastChild);
         }
 
+        // visualize the new advertisement on the front-end
         json = await resp.json();
         json.map(function(adv) {
             let li = document.createElement('li');
@@ -59,10 +67,14 @@ async function visualizeAdv() {
         });
     }
     catch (ex) {
+        //  in case of exception from the backend request, log the error
         console.error(ex);
     }
 }
-
+/*
+    This function fire when the user want to sort and/or filter the advertisement
+    In other words, the user want to visualize again because the parameter of visualization are changed
+*/
 async function sort_and_filter() {
     try {
         visualizeAdv()
@@ -138,8 +150,12 @@ async function login() {
         console.error(ex);
     }
 }
-
+/*
+    This function create a new advertisement and try to store it in the Database
+*/
 async function publishAd() {
+
+    // create a new advertisement, reading the input send by the user in the front-end
     advertisement_config = {
         owner: localStorage.getItem("username"),
         title: document.getElementById("publishAdTitle").value,
@@ -153,6 +169,7 @@ async function publishAd() {
     };
 
     try {
+        // POST request to upload the advertisement on the Database
         resp = await fetch("../advertisements/publish", {
             method: "POST",
             headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
@@ -162,6 +179,7 @@ async function publishAd() {
         console.log(json);
     }   
     catch (ex) {
+        // in case of exception from the backend request, log the error 
         console.error(ex);
     }
 }
