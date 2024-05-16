@@ -4,7 +4,6 @@
     mongoose -> connection with MongoDB 
     Joi -> data validator for the schema
 */
-const { times } = require('lodash');
 const moment = require('moment');
 const mongoose = require('mongoose');
 const Joi = require("joi")

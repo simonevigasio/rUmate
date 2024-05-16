@@ -204,23 +204,23 @@ function signWithGoogle() {
     window.location = "/authenticate/google";
 }
 
-function generateRandomHexString(length) {
-    const values = new Uint8Array(length / 2);
-    window.crypto.getRandomValues(values);
-    return Array.from(values, (byte) => ('0' + byte.toString(16)).slice(-2)).join('');
-}
+// function generateRandomHexString(length) {
+//     const values = new Uint8Array(length / 2);
+//     window.crypto.getRandomValues(values);
+//     return Array.from(values, (byte) => ('0' + byte.toString(16)).slice(-2)).join('');
+// }
 
-async function signWithGoogle2() {
-    // the client id from GCP
-    const client_id = "1003571230667-cevckcppil6551ho4lanli4rb8ra0v2q.apps.googleusercontent.com"
+// async function signWithGoogle2() {
+//     // the client id from GCP
+//     const client_id = "1003571230667-cevckcppil6551ho4lanli4rb8ra0v2q.apps.googleusercontent.com"
 
-    // create a CSRF token and store it locally
-    const state = generateRandomHexString(16);
-    localStorage.setItem("latestCSRFToken", state);
+//     // create a CSRF token and store it locally
+//     const state = generateRandomHexString(16);
+//     localStorage.setItem("latestCSRFToken", state);
         
-    // redirect the user to Google
-    const link = `https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/cloud-platform&response_type=code&access_type=offline&state=${state}&redirect_uri=${window.location.origin}/authenticate/google/callback&client_id=${client_id}`;
-    window.location.assign(link);
-}
+//     // redirect the user to Google
+//     const link = `https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/cloud-platform&response_type=code&access_type=offline&state=${state}&redirect_uri=${window.location.origin}/authenticate/google/callback&client_id=${client_id}`;
+//     window.location.assign(link);
+// }
 
 visualizeAdv();

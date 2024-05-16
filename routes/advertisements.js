@@ -6,7 +6,7 @@
     express -> is a framework for Node.js
     router -> import the RESTful requests 
 
-    */
+*/
 const _ = require("lodash");
 const auth = require("../middleware/authorize");
 const { Advertisement, validate } = require("../models/advertisement");
