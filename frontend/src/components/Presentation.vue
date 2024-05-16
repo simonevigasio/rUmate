@@ -35,7 +35,7 @@ async function logout() {
 
 <template>
   <div class="logo">
-    <img alt="rUmate logo" class="image" src="/home/stecmp/rUmate/rumate/frontend/src/assets/rumate_logo_small.png" width="250" height="250" />
+    <img alt="rUmate logo" class="image" src="../assets/rumate_logo_small.png" width="250" height="250" />
     <h1 class="title">rUmate</h1>
     <h3 class="subtitle">Perchè il prossimo coinquilino sei tu!</h3>
   </div>

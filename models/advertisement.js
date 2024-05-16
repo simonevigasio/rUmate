@@ -76,7 +76,7 @@ function validateAdvertisement(advertisement) {
         owner: Joi.string().min(3).max(50).required(),
         title: Joi.string().min(5).max(100).required(),
         description: Joi.string().max(500).required(),
-        prize: Joi.string().min(0).required(),
+        price: Joi.string().min(0).required(),
         room: Joi.string().valid('Single', 'Double', 'Triple').required(),
         flat_sex: Joi.string().valid('Male', 'Female', 'Mixed').required(),
         residence_zone: Joi.string().valid('Povo','Bondone','Sardagna','Centro_storico_Piedicastello',

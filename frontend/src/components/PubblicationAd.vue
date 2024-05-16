@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router';
 
 const publishAdTitle = ref('')
 const publishAdDescription = ref('')
@@ -9,6 +10,8 @@ const publishAdSex = ref('')
 const publishAdZone = ref('')
 const publishAdExpiry_date = ref('')
 const publishAdRoommate = ref('')
+
+const router = useRouter();
 
 const roomOptions = ref([
     { text: 'Singola', value: 'Single' },
@@ -65,6 +68,10 @@ async function publishAds() {
         })
         const json = await resp.json();
         console.log(json);
+
+        setTimeout(() => {
+            router.push('/');
+        }, 1000);
     }   
     catch (ex) {
         console.error(ex);
