@@ -199,11 +199,6 @@ async function logout() {
     }
 }
 
-function signWithGoogle() {
-    console.log("authenticate with google");
-    window.location = "/authenticate/google";
-}
-
 // function generateRandomHexString(length) {
 //     const values = new Uint8Array(length / 2);
 //     window.crypto.getRandomValues(values);

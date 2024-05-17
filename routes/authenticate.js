@@ -40,15 +40,4 @@ router.post("/", async (req, res) => {
     });
 });
 
-// GET request to authenticate with google 
-router.get("/google", passport.authenticate("google", {
-    scope: ["profile", "email"]
-}));
-
-// GET request to the callback of the google authenitcation
-router.get("/google/callback", passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-    // if all went good with google authentication goes to home route
-    return res.redirect("/");
-});
-
 module.exports = router;

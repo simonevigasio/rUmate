@@ -43,7 +43,6 @@ router.post("/", async (req, res) => {
 
 // POST request used to logout
 router.post("/logout", (req, res) => {
-    req.logout();
     res.redirect('/');
 });
 
