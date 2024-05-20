@@ -1,5 +1,5 @@
 /*  
-    tools imported for the declaration of the advertisement schema
+    tools imported for the declaration of the user schema
     jwt -> json web token lib
     mongoose -> connection with MongoDB 
     Joi -> data validator for the schema

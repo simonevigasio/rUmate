@@ -6,6 +6,7 @@ const express = require('express');
 const auth = require("./routes/authenticate");
 const advertisements = require("./routes/advertisements");
 const users = require("./routes/users");
+const chats = require("./routes/chats");
 const mongoose = require('mongoose');
 
 const mongoString = process.env.DATABASE_URL;
@@ -30,6 +31,7 @@ app.use(cors());
 app.use("/authenticate", auth);
 app.use("/users", users);
 app.use("/advertisements", advertisements);
+app.use("/chats", chats);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "./public", "home.html"));
