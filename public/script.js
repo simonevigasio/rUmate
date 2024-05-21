@@ -218,4 +218,59 @@ async function logout() {
 //     window.location.assign(link);
 // }
 
+async function visualizeChat() {
+    const users = {
+        sender: localStorage.getItem("username"),
+        receiver: document.getElementById("receiverVc").value,
+    };
+
+    try {
+        const ul = document.getElementById('chat');
+        const queryString = new URLSearchParams(users).toString();
+        const resp = await fetch(`../chats/messages?${queryString}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        while (ul.firstChild) {
+            ul.removeChild(ul.lastChild);
+        }
+
+        const json = await resp.json();
+        json.forEach(chat => {
+            let li = document.createElement('li');
+            li.textContent = chat.content;
+            ul.appendChild(li);
+        });
+    } catch (ex) {
+        console.error(ex);
+    }
+}
+
+
+async function publishMessage() {
+    // create a new message, reading the input send by the user in the front-end
+    const message_config = {
+        senderId: localStorage.getItem("username"),
+        receiverId: document.getElementById("receiverAm").value,
+        content: document.getElementById("msgContent").value,
+        timestamp: new Date().toISOString()
+    };
+
+    try {
+        // POST request to upload the message on the Database
+        resp = await fetch("../chats/addMessage", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+            body: JSON.stringify(message_config),
+        })
+        json = await resp.json();
+        console.log(json);
+    }   
+    catch (ex) {
+        // in case of exception from the backend request, log the error 
+        console.error(ex);
+    }
+}
+
 visualizeAdv();

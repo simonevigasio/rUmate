@@ -18,7 +18,7 @@ const messageSchema = new mongoose.Schema({
     },
     content: {
         required: true,
-        minlength: 5,
+        minlength: 1,
         maxlength: 255,
         type: String
     },
@@ -35,7 +35,7 @@ function validateMessage(message) {
     const schema = Joi.object({
         senderId: Joi.required(),
         receiverId: Joi.required(),
-        content: Joi.string().min(5).max(255).required(),
+        content: Joi.string().min(1).max(255).required(),
         timestamp: Joi.date()
     });
 
@@ -44,4 +44,4 @@ function validateMessage(message) {
 
 // export the Message object and the evaluation method
 exports.Message = Message
-exports.validateMsg = validateMessage
+exports.validateMessage = validateMessage

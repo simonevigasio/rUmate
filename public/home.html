@@ -42,6 +42,39 @@
 <button type="button" onclick="logout();">logout</button>
 
 <br>
+<br>
+
+<form action="messages" method="get" name="viewChatForn" id="messages">
+    <span>destinatario</span>
+    <input name="receiver" id="receiverVc"/>
+    <br>
+
+    <button type="button" onclick="visualizeChat();">visualizza Chat</button>
+</form>
+
+<h1>Chat</h1>
+<ul id="chat"></ul>
+
+<form action="addMessage" method="post" name="addMessageForm" id="addMessage">
+    <span>Aggiungi messaggio</span>
+    <br>
+
+    <span>destinatario</span>
+    <input name="receiver" id="receiverAm"/>
+    <br>
+
+    <span>contenuto</span>
+    <br>
+    <textarea name="content" id="msgContent" placeholder="Insert message content..."> 
+        Insert message content...
+    </textarea>
+    <br>
+
+    <button type="button" onclick="publishMessage();">Aggiungi messaggio</button>
+</form>
+
+<h1>Lista Annunci</h1>
+<ul id="ads"></ul>
 
 <form action="sort_and_filter" method="get" name="sort_and_filterform" id="sort_and_filterform">
     <fieldset>

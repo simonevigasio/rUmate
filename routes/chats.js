@@ -1,69 +1,63 @@
 const _ = require("lodash");
 const auth = require("../middleware/authorize");
-const { chat, validateChat } = require("../models/chat");
-const { User, validate } = require("../models/user");
-const { Message, validateMsg } = require("../models/message")
-const mongoose = require("mongoose");
+const { Chat } = require("../models/chat");
+const { User } = require("../models/user");
+const { Message, validateMessage } = require("../models/message");
 const express = require('express');
 const router = express.Router();
 
-//GET MESSAGES -> se no crea la chat e la mostra vuota
-
-// GET request to find a specific chat knowing its IDs
-router.get("/:idChat", async (req, res) => {
-    const chat = await Chat.findOne({senderId: req.body.senderId, receiverId: req.body.receiverId});
-    if (!chat) return res.status(404).send("Chat not found");
-    return res.send(chat);
-});
-
-// POST request to create a new chat in the database
-router.post("/addChat", auth, async (req, res) => {
-    // validate if the chat is correct, using the validate function
-    const { error } = validateChat(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    // check if the sender and the receiver associated with the chat both exist
-    let sender = await User.findOne({username: req.body.senderId})
+// GET request to get all messages exchanged with a specified user; if chat doesn't exist, create it and show it empty
+router.get("/messages", async (req, res) => {
+    const sender = await User.findOne({ username: req.query.sender });
     if (!sender) return res.status(400).send("This sender does not exist");
 
-    let receiver = await User.findOne({username: req.body.receiverId})
+    const receiver = await User.findOne({ username: req.query.receiver });
     if (!receiver) return res.status(400).send("This receiver does not exist");
 
-    // check if another chat with the same IDs already exist in the Database
-    let chat = await Chat.findOne({senderId: req.body.senderId, receiverId: req.body.receiverId});
-    if (chat) return res.status(400).send("This chat has already been created");
+    if (sender.username === receiver.username) return res.status(400).send("The sender and the receiver can't be the same users");
 
-    // load the chat in the Database
-    chat = new Chat(_.pick(req.body, ["senderId", "receiverId", "messageList"]));
-    await chat.save();
+    let chat = await Chat.findOne({
+        $or: [
+            { senderId: req.query.sender, receiverId: req.query.receiver },
+            { senderId: req.query.receiver, receiverId: req.query.sender }
+        ]
+    });
 
-    return res.send(chat);
+    if (!chat) {
+        chat = new Chat({ senderId: req.query.sender, receiverId: req.query.receiver, messageList: [] });
+        await chat.save();
+    }
+
+    return res.send(chat.messageList);
 });
 
-// POST request to add a message to a chat in the database
+// POST request to add a message to a chat in the database; if chat doesn't exist, create it
 router.post("/addMessage", auth, async (req, res) => {
-    // validate if the message is correct, using the validate function
-    const { error } = validateMsg(req.body);
+    const { error } = validateMessage(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    // check if the sender and the receiver associated with the chat both exist
-    let sender = await User.findOne({username: req.body.senderId})
+    const sender = await User.findOne({ username: req.body.senderId });
     if (!sender) return res.status(400).send("This sender does not exist");
 
-    let receiver = await User.findOne({username: req.body.receiverId})
+    const receiver = await User.findOne({ username: req.body.receiverId });
     if (!receiver) return res.status(400).send("This receiver does not exist");
 
-    // check if the chat corresponding to the two users already exists, otherwise create it
-    let chat = await Chat.findOne({senderId: req.body.senderId, receiverId: req.body.receiverId});
-    if (!chat) chat = new Chat(_.pick(req.body, ["senderId", "receiverId", "messageList"]));
+    if (sender.username === receiver.username) return res.status(400).send("The sender and the receiver can't be the same users");
 
-    // create the message object
-    const message = _.pick(req.body, ["senderId", "receiverId", "content", "timestamp"]);
+    let chat = await Chat.findOne({
+        $or: [
+            { senderId: req.body.senderId, receiverId: req.body.receiverId },
+            { senderId: req.body.receiverId, receiverId: req.body.senderId }
+        ]
+    });
 
-    // Add the message to the messageList of the chat
+    if (!chat) {
+        chat = new Chat({ senderId: req.body.senderId, receiverId: req.body.receiverId, messageList: [] });
+        await chat.save();
+    }
+
+    const message = new Message(_.pick(req.body, ["senderId", "receiverId", "content", "timestamp"]));
     chat.messageList.push(message);
-
-    // Save the updated chat document
     await chat.save();
 
     return res.send(chat);
