@@ -9,7 +9,6 @@
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { User, validate } = require("../models/user");
-const passport = require("passport");
 const express = require('express');
 const router = express.Router();
 
