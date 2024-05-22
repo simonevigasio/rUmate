@@ -225,6 +225,7 @@ async function visualizeChat() {
     };
 
     try {
+        // GET request to visualize the chat corresponding to the two users given in the front-end
         const ul = document.getElementById('chat');
         const queryString = new URLSearchParams(users).toString();
         const resp = await fetch(`../chats/messages?${queryString}`, {
@@ -243,13 +244,43 @@ async function visualizeChat() {
             ul.appendChild(li);
         });
     } catch (ex) {
+        // in case of exception from the backend request, log the error 
         console.error(ex);
     }
 }
 
+async function showChats() {
+    const user = localStorage.getItem("username");
+
+    try {
+        // GET request to visualize all chats corresponding to the user given in the front-end
+        const ul = document.getElementById('chatsList');
+        const queryString = new URLSearchParams(user).toString();
+        const resp = await fetch(`../chats/UserChats?${queryString}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        while (ul.firstChild) {
+            ul.removeChild(ul.lastChild);
+        }
+
+        const json = await resp.json();
+        json.forEach(chat => {
+            let li = document.createElement('li');
+            if(chat.receiverId == user){
+                li.textContent = chat.senderId;
+            }else li.textContent = chat.receiverId;
+            ul.appendChild(li);
+        });
+    } catch (ex) {
+        // in case of exception from the backend request, log the error 
+        console.error(ex);
+    }
+}
 
 async function publishMessage() {
-    // create a new message, reading the input send by the user in the front-end
+    // create a new message, reading the input given by the user in the front-end
     const message_config = {
         senderId: localStorage.getItem("username"),
         receiverId: document.getElementById("receiverAm").value,
