@@ -41,7 +41,7 @@ async function logout() {
   </div>
 
   <div class="topnav">
-    <router-link to="/" :class="{ active: isRouteActive('/') }">home</router-link>
+    <router-link to="/" :class="{ active: isRouteActive('/') }">Home</router-link>
     <template v-if="!alreadyLogged()">
       <router-link to="/login" :class="{ active: isRouteActive('/login') }">Log in</router-link>
       <router-link to="/signin" :class="{ active: isRouteActive('/signin') }">Sign in</router-link>
