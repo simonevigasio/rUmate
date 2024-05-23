@@ -52,7 +52,7 @@
 
     }
     function backToHome(){
-        location.href = `http://localhost:${5173}`;                                      // 5173 da guardare
+        router.push('/');
     }
 
 </script>

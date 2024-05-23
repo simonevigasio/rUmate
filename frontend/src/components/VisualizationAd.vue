@@ -79,7 +79,7 @@
               const node_owner = document.createTextNode("Proprietario: "+adv.owner);
               const node_residence = document.createTextNode("Residenza: "+adv.residence_zone);
 
-              a_title.href = `http://localhost:${5173}/advertisement`;                                      // 5173 da guardare
+              a_title.href = location.href+ `advertisement`;
               a_title.appendChild(node_title);
               a_title.onclick = function() { localStorage.setItem("adv", adv._id); };
 
