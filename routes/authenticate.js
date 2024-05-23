@@ -15,7 +15,7 @@ const router = express.Router();
 // POST request used to register into rUmate
 router.post("/", async (req, res) => {
     // check if the body of the request has all requered information
-    const { error } = validate.local(req.body);
+    const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     // check if the user is already registered

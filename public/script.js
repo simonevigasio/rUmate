@@ -157,7 +157,6 @@ async function publishAd() {
 
     // create a new advertisement, reading the input send by the user in the front-end
     advertisement_config = {
-        owner: localStorage.getItem("username"),
         title: document.getElementById("publishAdTitle").value,
         description: document.getElementById("publishAdDescription").value,
         prize: document.getElementById("publishAdPrize").value,

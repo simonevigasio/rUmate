@@ -8,15 +8,13 @@ const moment = require('moment');
 const mongoose = require('mongoose');
 const Joi = require("joi")
             .extend(require('@joi/date'));
+Joi.objectId = require('joi-objectid')(Joi)
 
 // Declaration of the schema and all its fields
 const advertisementSchema = new mongoose.Schema({
-    owner: {
-        required: true,
-        minlength: 3,
-        maxlength: 50,
-        unique: true,
-        type: String
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
     title: {
         required: true,
@@ -47,9 +45,7 @@ const advertisementSchema = new mongoose.Schema({
     residence_zone: {
         required: true,
         type: String,
-        enum: ['Povo','Bondone','Sardagna','Centro_storico_Piedicastello',
-        'Meano','Argentario','San_Giuseppe_Santa_Chiara','Oltrefersina',
-        'Villazzano','Mattarello','Ravina_romagnano','Oltrecastello']
+        enum: ['Povo','Bondone','Sardagna','Centro_storico_Piedicastello','Meano','Argentario','San_Giuseppe_Santa_Chiara','Oltrefersina','Villazzano','Mattarello','Ravina_romagnano','Oltrecastello']
     },
     expiry_date: {
         required: true,
@@ -73,15 +69,13 @@ function validateAdvertisement(advertisement) {
     const limit = moment().add(6, "M").format("YYYY MM DD");
 
     const schema = Joi.object({
-        owner: Joi.string().min(3).max(50).required(),
+        user_id: Joi.objectId().required(),
         title: Joi.string().min(5).max(100).required(),
         description: Joi.string().max(500).required(),
         price: Joi.string().min(0).required(),
         room: Joi.string().valid('Single', 'Double', 'Triple').required(),
         flat_sex: Joi.string().valid('Male', 'Female', 'Mixed').required(),
-        residence_zone: Joi.string().valid('Povo','Bondone','Sardagna','Centro_storico_Piedicastello',
-        'Meano','Argentario','San_Giuseppe_Santa_Chiara','Oltrefersina',
-        'Villazzano','Mattarello','Ravina_romagnano','Oltrecastello').required(),
+        residence_zone: Joi.string().valid('Povo','Bondone','Sardagna','Centro_storico_Piedicastello','Meano','Argentario','San_Giuseppe_Santa_Chiara','Oltrefersina','Villazzano','Mattarello','Ravina_romagnano','Oltrecastello').required(),
         expiry_date: Joi.date().min(now).max(limit).format("YYYY MM DD"),
         roommate: Joi.number().min(0).required() 
     });

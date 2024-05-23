@@ -10,7 +10,7 @@
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { User, validate } = require("../models/user");
-const auth = require("../middleware/authorize");
+const auth = require("../middleware/auth");
 const express = require('express');
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.get("/me", auth, async (req, res) => {
 // POST request used for login users
 router.post("/", async (req, res) => {
     // check is the body of the request has all required information
-    const { error } = validate.local(req.body);
+    const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     // check is the user is logged in

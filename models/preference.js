@@ -7,11 +7,9 @@ const preferenceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Advertisement"
     },
-    interested_user: {
-        required: true,
-        minlength: 3,
-        maxlength: 50,
-        type: String
+    interested_user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
 });
 
@@ -20,7 +18,7 @@ const Preference = mongoose.model("Preference", preferenceSchema);
 function validatePreference(preference) {
     const schema = Joi.object({
         advertisement_id: Joi.objectId().required(),
-        interested_user: Joi.string().required()
+        interested_user_id: Joi.objectId().required()
     });
 
     return schema.validate(preference);

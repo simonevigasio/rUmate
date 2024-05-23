@@ -8,7 +8,7 @@
 
 */
 const _ = require("lodash");
-const auth = require("../middleware/authorize");
+const auth = require("../middleware/auth");
 const { Advertisement, validate } = require("../models/advertisement");
 const mongoose = require("mongoose");
 const express = require('express');
@@ -53,18 +53,19 @@ router.get("/:id", async (req, res) => {
 // POST request to add an advertisement in the database
 router.post("/publish", auth, async (req, res) => {
     // validate if the advertisement is correct, using the validate function
+    req.body.user_id = req.user._id;
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     // check if exist another advertisement in the Database with the same owner
-    let ad = await Advertisement.findOne({owner: req.body.owner});
+    let ad = await Advertisement.findOne({owner: req.user._id});
     if (ad) return res.status(400).send("User already has an advertisement");
 
     // load the advertisement in the Database
-    advertisement = new Advertisement(_.pick(req.body, ["owner", "title", "description", "price", "room", "flat_sex", "residence_zone", "expiry_date", "roommate"]));
-    await advertisement.save();
+    ad = new Advertisement(req.body);
+    await ad.save();
 
-    return res.send(advertisement);
+    return res.send(ad);
 });
 
 // Export the router requests
