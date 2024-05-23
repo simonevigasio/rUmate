@@ -1,148 +1,161 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+  import { ref, onMounted } from 'vue'
 
-const selectedSortOption = ref('');
+  const selectedSortOption = ref('');
 
-const sortOptions = ref([
-    { text: 'Prezzo', value: 'Price' },
-    { text: 'Data di scadenza', value: 'Expiry_date' }
-]);
+  const sortOptions = ref([
+      { text: 'Prezzo', value: 'Price' },
+      { text: 'Data di scadenza', value: 'Expiry_date' }
+  ]);
 
-const filterRoomSingle = ref({ checked: false, value: 'Single' });
-const filterRoomDouble = ref({ checked: false, value: 'Double' });
-const filterRoomTriple = ref({ checked: false, value: 'Triple' });
-const filterSexMale = ref({ checked: false, value: 'Male' });
-const filterSexFemale = ref({ checked: false, value: 'Female' });
-const filterSexMixed = ref({ checked: false, value: 'Mixed' });
-const filterResidencePovo = ref({ checked: false, value: 'Povo' });
-const filterResidenceBondone = ref({ checked: false, value: 'Bondone' });
-const filterResidenceSardagna = ref({ checked: false, value: 'Sardagna' });
-const filterResidenceCentro_storico_Piedicastello = ref({ checked: false, value: 'Centro_storico_Piedicastello' });
-const filterResidenceMeano = ref({ checked: false, value: 'Meano' });
-const filterResidenceArgentario = ref({ checked: false, value: 'Argentario' });
-const filterResidenceSan_Giuseppe_Santa_Chiara = ref({ checked: false, value: 'San_Giuseppe_Santa_Chiara' });
-const filterResidenceOltrefersina = ref({ checked: false, value: 'Oltrefersina' });
-const filterResidenceVillazzano = ref({ checked: false, value: 'Villazzano' });
-const filterResidenceMattarello = ref({ checked: false, value: 'Mattarello' });
-const filterResidenceRavina_romagnano = ref({ checked: false, value: 'Ravina_romagnano' });
-const filterResidenceOltrecastello = ref({ checked: false, value: 'Oltrecastello' });
+  const filterRoomSingle = ref({ checked: false, value: 'Single' });
+  const filterRoomDouble = ref({ checked: false, value: 'Double' });
+  const filterRoomTriple = ref({ checked: false, value: 'Triple' });
+  const filterSexMale = ref({ checked: false, value: 'Male' });
+  const filterSexFemale = ref({ checked: false, value: 'Female' });
+  const filterSexMixed = ref({ checked: false, value: 'Mixed' });
+  const filterResidencePovo = ref({ checked: false, value: 'Povo' });
+  const filterResidenceBondone = ref({ checked: false, value: 'Bondone' });
+  const filterResidenceSardagna = ref({ checked: false, value: 'Sardagna' });
+  const filterResidenceCentro_storico_Piedicastello = ref({ checked: false, value: 'Centro_storico_Piedicastello' });
+  const filterResidenceMeano = ref({ checked: false, value: 'Meano' });
+  const filterResidenceArgentario = ref({ checked: false, value: 'Argentario' });
+  const filterResidenceSan_Giuseppe_Santa_Chiara = ref({ checked: false, value: 'San_Giuseppe_Santa_Chiara' });
+  const filterResidenceOltrefersina = ref({ checked: false, value: 'Oltrefersina' });
+  const filterResidenceVillazzano = ref({ checked: false, value: 'Villazzano' });
+  const filterResidenceMattarello = ref({ checked: false, value: 'Mattarello' });
+  const filterResidenceRavina_romagnano = ref({ checked: false, value: 'Ravina_romagnano' });
+  const filterResidenceOltrecastello = ref({ checked: false, value: 'Oltrecastello' });
 
-async function visualizeAdv() {
-    const parameter = {
-        sort : selectedSortOption.value,
-        roomFilter: {
-            Single: filterRoomSingle.value.checked ? filterRoomSingle.value.value : 'None',
-            Double: filterRoomDouble.value.checked ? filterRoomDouble.value.value : 'None',
-            Triple: filterRoomTriple.value.checked ? filterRoomTriple.value.value : 'None',
-        },
-        sexFilter: {
-            Male: filterSexMale.value.checked ? filterSexMale.value.value : 'None',
-            Female: filterSexFemale.value.checked ? filterSexFemale.value.value : 'None',
-            Mixed: filterSexMixed.value.checked ? filterSexMixed.value.value : 'None',
-        },
-        residenceFilter: {
-            Povo: filterResidencePovo.value.checked ? filterResidencePovo.value.value : 'None',
-            Bondone: filterResidenceBondone.value.checked ? filterResidenceBondone.value.value : 'None',
-            Sardagna: filterResidenceSardagna.value.checked ? filterResidenceSardagna.value.value : 'None',
-            Centro_storico_Piedicastello: filterResidenceCentro_storico_Piedicastello.value.checked ? filterResidenceCentro_storico_Piedicastello.value.value : 'None',
-            Meano: filterResidenceMeano.value.checked ? filterResidenceMeano.value.value : 'None',
-            Argentario: filterResidenceArgentario.value.checked ? filterResidenceArgentario.value.value : 'None',
-            San_Giuseppe_Santa_Chiara: filterResidenceSan_Giuseppe_Santa_Chiara.value.checked ? filterResidenceSan_Giuseppe_Santa_Chiara.value.value : 'None',
-            Oltrefersina: filterResidenceOltrefersina.value.checked ? filterResidenceOltrefersina.value.value : 'None',
-            Villazzano: filterResidenceVillazzano.value.checked ? filterResidenceVillazzano.value.value : 'None',
-            Mattarello: filterResidenceMattarello.value.checked ? filterResidenceMattarello.value.value : 'None',
-            Ravina_romagnano: filterResidenceRavina_romagnano.value.checked ? filterResidenceRavina_romagnano.value.value : 'None',
-            Oltrecastello: filterResidenceOltrecastello.value.checked ? filterResidenceOltrecastello.value.value : 'None',
-        }
-    };
+  async function visualizeAdv() {
+      const parameter = {
+          sort : selectedSortOption.value,
+          roomFilter: {
+              Single: filterRoomSingle.value.checked ? filterRoomSingle.value.value : 'None',
+              Double: filterRoomDouble.value.checked ? filterRoomDouble.value.value : 'None',
+              Triple: filterRoomTriple.value.checked ? filterRoomTriple.value.value : 'None',
+          },
+          sexFilter: {
+              Male: filterSexMale.value.checked ? filterSexMale.value.value : 'None',
+              Female: filterSexFemale.value.checked ? filterSexFemale.value.value : 'None',
+              Mixed: filterSexMixed.value.checked ? filterSexMixed.value.value : 'None',
+          },
+          residenceFilter: {
+              Povo: filterResidencePovo.value.checked ? filterResidencePovo.value.value : 'None',
+              Bondone: filterResidenceBondone.value.checked ? filterResidenceBondone.value.value : 'None',
+              Sardagna: filterResidenceSardagna.value.checked ? filterResidenceSardagna.value.value : 'None',
+              Centro_storico_Piedicastello: filterResidenceCentro_storico_Piedicastello.value.checked ? filterResidenceCentro_storico_Piedicastello.value.value : 'None',
+              Meano: filterResidenceMeano.value.checked ? filterResidenceMeano.value.value : 'None',
+              Argentario: filterResidenceArgentario.value.checked ? filterResidenceArgentario.value.value : 'None',
+              San_Giuseppe_Santa_Chiara: filterResidenceSan_Giuseppe_Santa_Chiara.value.checked ? filterResidenceSan_Giuseppe_Santa_Chiara.value.value : 'None',
+              Oltrefersina: filterResidenceOltrefersina.value.checked ? filterResidenceOltrefersina.value.value : 'None',
+              Villazzano: filterResidenceVillazzano.value.checked ? filterResidenceVillazzano.value.value : 'None',
+              Mattarello: filterResidenceMattarello.value.checked ? filterResidenceMattarello.value.value : 'None',
+              Ravina_romagnano: filterResidenceRavina_romagnano.value.checked ? filterResidenceRavina_romagnano.value.value : 'None',
+              Oltrecastello: filterResidenceOltrecastello.value.checked ? filterResidenceOltrecastello.value.value : 'None',
+          }
+      };
 
-    try {
-        const ul = document.getElementById('ads');
-        const resp = await fetch("http://localhost:3000/advertisements", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(parameter),
-        });
+      try {
+          const form = document.getElementById('ads');
+          const resp = await fetch("http://localhost:3000/advertisements", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(parameter),
+          });
 
-        while (ul.firstChild) {
-            ul.removeChild(ul.lastChild);
-        }
+          while (form.firstChild) {
+              form.removeChild(form.lastChild);
+          }
 
-        const json = await resp.json();
-        json.map(function(adv) {
-            let li = document.createElement('li');
-            let span = document.createElement('span');
-            let a = document.createElement('a');
-            a.href = `http://localhost:${3000}/advertisements/${adv._id}`;
-            a.textContent = adv.title;
-            span.appendChild(a);
-            li.appendChild(span);
-            ul.appendChild(li);
-        });
-    }
-    catch (ex) {
-        console.error(ex);
-    }
-}
+          const json = await resp.json();
+          json.map(function(adv) {
+              let fieldset = document.createElement('fieldset');
+              let a_title = document.createElement('a');
+              let p_owner = document.createElement('p');
+              let p_residence = document.createElement('p');
 
-async function sort_and_filter() {
-    try {
-        visualizeAdv()
-    }   
-    catch (ex) {
-        console.error(ex);
-    }
-}
+              const node_title = document.createTextNode(adv.title);
+              const node_owner = document.createTextNode("Proprietario: "+adv.owner);
+              const node_residence = document.createTextNode("Residenza: "+adv.residence_zone);
 
-function clearAll() {
-    showAll();
+              a_title.href = location.href+ `advertisement`;
+              a_title.appendChild(node_title);
+              a_title.onclick = function() { localStorage.setItem("adv", adv._id); };
 
-    filterRoomSingle.value.checked = false;
-    filterRoomDouble.value.checked = false;
-    filterRoomTriple.value.checked = false;
-    filterSexMale.value.checked = false;
-    filterSexFemale.value.checked = false;
-    filterSexMixed.value.checked = false;
-    filterResidencePovo.value.checked = false;
-    filterResidenceBondone.value.checked = false;
-    filterResidenceSardagna.value.checked = false;
-    filterResidenceCentro_storico_Piedicastello.value.checked = false;
-    filterResidenceMeano.value.checked = false;
-    filterResidenceArgentario.value.checked = false;
-    filterResidenceSan_Giuseppe_Santa_Chiara.value.checked = false;
-    filterResidenceOltrefersina.value.checked = false;
-    filterResidenceVillazzano.value.checked = false;
-    filterResidenceMattarello.value.checked = false;
-    filterResidenceRavina_romagnano.value.checked = false;
-    filterResidenceOltrecastello.value.checked = false;
-}
+              p_owner.appendChild(node_owner);
+              p_residence.appendChild(node_residence);
 
-function showAll() {
-    filterRoomSingle.value.checked = true;
-    filterRoomDouble.value.checked = true;
-    filterRoomTriple.value.checked = true;
-    filterSexMale.value.checked = true;
-    filterSexFemale.value.checked = true;
-    filterSexMixed.value.checked = true;
-    filterResidencePovo.value.checked = true;
-    filterResidenceBondone.value.checked = true;
-    filterResidenceSardagna.value.checked = true;
-    filterResidenceCentro_storico_Piedicastello.value.checked = true;
-    filterResidenceMeano.value.checked = true;
-    filterResidenceArgentario.value.checked = true;
-    filterResidenceSan_Giuseppe_Santa_Chiara.value.checked = true;
-    filterResidenceOltrefersina.value.checked = true;
-    filterResidenceVillazzano.value.checked = true;
-    filterResidenceMattarello.value.checked = true;
-    filterResidenceRavina_romagnano.value.checked = true;
-    filterResidenceOltrecastello.value.checked = true;
+              fieldset.appendChild(a_title);
+              fieldset.appendChild(p_owner);
+              fieldset.appendChild(p_residence);
 
-    sort_and_filter();
-}
+              form.appendChild(fieldset);
+          });
+      }
+      catch (ex) {
+          console.error(ex);
+      }
+  }
 
-onMounted(() =>{
-  clearAll();
-})
+  async function sort_and_filter() {
+      try {
+          visualizeAdv()
+      }   
+      catch (ex) {
+          console.error(ex);
+      }
+  }
+
+  function clearAll() {
+      showAll();
+
+      filterRoomSingle.value.checked = false;
+      filterRoomDouble.value.checked = false;
+      filterRoomTriple.value.checked = false;
+      filterSexMale.value.checked = false;
+      filterSexFemale.value.checked = false;
+      filterSexMixed.value.checked = false;
+      filterResidencePovo.value.checked = false;
+      filterResidenceBondone.value.checked = false;
+      filterResidenceSardagna.value.checked = false;
+      filterResidenceCentro_storico_Piedicastello.value.checked = false;
+      filterResidenceMeano.value.checked = false;
+      filterResidenceArgentario.value.checked = false;
+      filterResidenceSan_Giuseppe_Santa_Chiara.value.checked = false;
+      filterResidenceOltrefersina.value.checked = false;
+      filterResidenceVillazzano.value.checked = false;
+      filterResidenceMattarello.value.checked = false;
+      filterResidenceRavina_romagnano.value.checked = false;
+      filterResidenceOltrecastello.value.checked = false;
+  }
+
+  function showAll() {
+      filterRoomSingle.value.checked = true;
+      filterRoomDouble.value.checked = true;
+      filterRoomTriple.value.checked = true;
+      filterSexMale.value.checked = true;
+      filterSexFemale.value.checked = true;
+      filterSexMixed.value.checked = true;
+      filterResidencePovo.value.checked = true;
+      filterResidenceBondone.value.checked = true;
+      filterResidenceSardagna.value.checked = true;
+      filterResidenceCentro_storico_Piedicastello.value.checked = true;
+      filterResidenceMeano.value.checked = true;
+      filterResidenceArgentario.value.checked = true;
+      filterResidenceSan_Giuseppe_Santa_Chiara.value.checked = true;
+      filterResidenceOltrefersina.value.checked = true;
+      filterResidenceVillazzano.value.checked = true;
+      filterResidenceMattarello.value.checked = true;
+      filterResidenceRavina_romagnano.value.checked = true;
+      filterResidenceOltrecastello.value.checked = true;
+
+      sort_and_filter();
+  }
+
+  onMounted(() =>{
+    clearAll();
+  })
 
 </script>
 
@@ -263,12 +276,12 @@ onMounted(() =>{
 
   <div class="adsList">
     <h2><span>Lista Annunci</span></h2>
-    <li id="ads"></li>
+    <form id="ads"></form>
   </div>
 
 </template>
 
-<style scoped>
+<style>
   h2 {
     font-weight: 500;
     font-size: 2.0rem;
@@ -280,6 +293,26 @@ onMounted(() =>{
     text-align: left;
     display: block;
     color: hsla(160, 100%, 37%, 1);
+  }
+  p{
+    font-weight: 500;
+    text-align: left;
+    display: block;
+    color: white;
+    margin-left: 20px;
+  }
+  a{
+    font-weight: 500;
+    text-align: left;
+    display: block;
+    color: hsla(160, 100%, 37%, 1);
+  }
+  fieldset{
+    padding: 10px;
+    outline: none;
+    width: auto;
+    margin-top: 5px;
+    border-radius: 10px;
   }
   .sort_and_filterform {
     padding: 10px;
@@ -339,13 +372,11 @@ onMounted(() =>{
     border: 1px solid #ccc;
     outline: none;
   }
-  .adsList {
+ /* .adsList {
     margin-top: 30px;
     font-weight: 500;
     text-align: left;
     display: block;
-  }
-  .adsList li{
     color: white;
-  }
+  }*/
 </style>
