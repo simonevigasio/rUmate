@@ -58,8 +58,8 @@ router.post("/publish", auth, async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     // check if exist another advertisement in the Database with the same owner
-    let ad = await Advertisement.findOne({owner: req.user._id});
-    if (ad) return res.status(400).send("User already has an advertisement");
+    let ad = await Advertisement.findOne({user_id: req.body.user_id});
+    if (ad) return res.status(400).send({message: "User already has an advertisement published"});
 
     // load the advertisement in the Database
     ad = new Advertisement(req.body);

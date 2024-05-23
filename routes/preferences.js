@@ -43,7 +43,7 @@ router.post("/", auth, async (req, res) => {
     if (!ad) return res.status(400).send({message: "Advertisement does not exist"});
 
     // verify whether the user is the owner of the advertisement
-    if (ad.user_id == user._id) return res.status(400).send({message: "The user is the onwer of the advertisement"});
+    if (ad.user_id === user._id) return res.status(400).send({message: "The user is the onwer of the advertisement"});
 
     // verify whether the user exceeds the number of preferences
     const prefs = await Preference.find({interested_user_id: req.body.interested_user_id});
@@ -51,7 +51,7 @@ router.post("/", auth, async (req, res) => {
     
     // verify whether the user has already signed the preference on that advertisement
     let pref = prefs.filter((p) => p.advertisement_id == req.body.advertisement_id);
-    if (!pref) return res.status(400).send({message: "The user has already signed the precerence on this advertisement"});
+    if (pref.length != 0) return res.status(400).send({message: "The user has already signed the precerence of this advertisement"});
 
     // create and save a new preference in the database
     pref = new Preference(req.body);
@@ -61,5 +61,5 @@ router.post("/", auth, async (req, res) => {
     return res.send(pref);
 });
 
-// export the router
+// export the apis
 module.exports = router;

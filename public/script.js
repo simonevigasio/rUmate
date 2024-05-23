@@ -159,7 +159,7 @@ async function publishAd() {
     advertisement_config = {
         title: document.getElementById("publishAdTitle").value,
         description: document.getElementById("publishAdDescription").value,
-        prize: document.getElementById("publishAdPrize").value,
+        price: document.getElementById("publishAdPrize").value,
         room: document.getElementById("publishAdRoom").value,
         flat_sex: document.getElementById("publishAdFlat_sex").value,
         residence_zone: document.getElementById("publishAdResidence_zone").value,
