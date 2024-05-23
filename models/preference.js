@@ -11,7 +11,6 @@ const preferenceSchema = new mongoose.Schema({
         required: true,
         minlength: 3,
         maxlength: 50,
-        unique: true,
         type: String
     },
 });

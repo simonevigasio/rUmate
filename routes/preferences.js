@@ -20,8 +20,13 @@ router.post("/", auth, async (req, res) => {
     const ad = await Advertisement.findOne({_id: req.body.advertisement_id});
     if (!ad) return res.status(400).send({message: "Advertisement doesn't exist"});
 
-    let pref = await Preference.findOne({interested_user: req.body.interested_user, advertisement_id: req.body.advertisement_id});
-    if (!user) return res.status(400).send({message: "Invalid username or password"});
+    let prefs = await Preference.find({interested_user: req.body.interested_user});
+    if (prefs.length == 3) return res.status(400).send({message: "The user has already 3 preferences"})
+
+    let pref = prefs.filter((p) => {
+        return p.advertisement_id == req.body.advertisement_id
+    });
+    if (!pref) return res.status(400).send({message: "The user have already set the preference on this advertisement"});
 
     pref = new Preference(req.body);
     await pref.save();
