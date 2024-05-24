@@ -3,21 +3,22 @@ import { ref, onMounted } from 'vue';
 
 export default {
     setup() {
-        const receiverVc = ref('');
-        const receiverAm = ref('');
+        const user1 = localStorage.getItem("username")
+        const user2 = ref('')
         const msgContent = ref('');
+        const chatMessageLists = ref({});
 
-        async function visualizeChat() {
-            const users = {
-                sender: localStorage.getItem("username"),
-                receiver: receiverVc.value,
-            };
+        async function fetchChatsPeriodically() {
+            await fetchChats();
+            if(user2.value !== '') showChatMessages();
+            setInterval(fetchChats, 10000);
+        }
 
+        async function fetchChats() {
             try {
-                // GET request to visualize the chat corresponding to the two users given in the front-end
-                const ul = document.getElementById('chat');
-                const queryString = new URLSearchParams(users).toString();
-                const resp = await fetch(`http://localhost:3000/chats/messages?${queryString}`, {
+                // GET request to visualize all chats corresponding to the user given in the front-end
+                const ul = document.getElementById('chatsList');
+                const resp = await fetch(`http://localhost:3000/chats/${user1}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                 });
@@ -27,27 +28,45 @@ export default {
                 }
 
                 const json = await resp.json();
+
                 json.forEach(chat => {
                     let li = document.createElement('li');
-                    li.textContent = chat.content;
+                    let user2Id = (chat.receiverId === user1) ? chat.senderId : chat.receiverId;
+                    li.textContent = user2Id;
                     ul.appendChild(li);
-                });
 
-                showChats();
+                    if (!chatMessageLists.value[user2Id]) {
+                        chatMessageLists.value[user2Id] = chat.messageList;
+                    }
+                });
             } catch (ex) {
                 // in case of exception from the backend request, log the error 
                 console.error(ex);
             }
         }
 
-        async function showChats() {
-            const user = localStorage.getItem("username");
+        function showChatMessages() {
+            const ul = document.getElementById('chat');
 
+            if (chatMessageLists.value[user2]) {
+                while (ul.firstChild) {
+                    ul.removeChild(ul.lastChild);
+                }
+            
+                chatMessageLists.value[user2].forEach(chat => {
+                    let li = document.createElement('li');
+                    li.textContent = chat.content;
+                    ul.appendChild(li);
+                });
+            } else {
+                fetchChatMessages();
+            }
+        }
+
+        async function fetchChatMessages() {
             try {
-                // GET request to visualize all chats corresponding to the user given in the front-end
-                const ul = document.getElementById('chatsList');
-                const queryString = new URLSearchParams({ user }).toString();
-                const resp = await fetch(`http://localhost:3000/chats/UserChats?${queryString}`, {
+                const ul = document.getElementById('chat');
+                const resp = await fetch(`http://localhost:3000/chats/${user1}/${user2.value}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                 });
@@ -57,31 +76,55 @@ export default {
                 }
 
                 const json = await resp.json();
-                json.forEach(chat => {
+                json.forEach(message => {
                     let li = document.createElement('li');
-                    if(chat.receiverId == user){
-                        li.textContent = chat.senderId;
-                    }else li.textContent = chat.receiverId;
+                    li.textContent = message.content;
                     ul.appendChild(li);
                 });
+
             } catch (ex) {
                 // in case of exception from the backend request, log the error 
+                console.error(ex);
+            }
+        }
+
+        async function createChat() {
+            const chat_config = {
+                senderId: user1,
+                receiverId: user2.value,
+            };
+
+            try {
+                const resp = await fetch(`http://localhost:3000/chats/${user1}/addChat/${user2.value}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                    body: JSON.stringify(chat_config),
+                });
+                const json = await resp.json();
+                console.log(json);
+
+                const ul = document.getElementById('chatsList');
+                let li = document.createElement('li');
+                li.textContent = chat_config.receiverId;
+                ul.appendChild(li);
+
+                chatMessageLists.value[chat_config.receiverId] = [];
+            }   
+            catch (ex) {
                 console.error(ex);
             }
         }
 
         async function publishMessage() {
-            // create a new message, reading the input given by the user in the front-end
             const message_config = {
-                senderId: localStorage.getItem("username"),
-                receiverId: receiverAm.value,
+                senderId: user1,
+                receiverId: user2.value,
                 content: msgContent.value,
                 timestamp: new Date().toISOString()
             };
 
             try {
-                // POST request to upload the message on the Database
-                const resp = await fetch("http://localhost:3000/chats/addMessage", {
+                const resp = await fetch(`http://localhost:3000/chats/${user1}/addMessage/${user2.value}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                     body: JSON.stringify(message_config),
@@ -89,23 +132,34 @@ export default {
                 const json = await resp.json();
                 console.log(json);
 
-                // Refresh the chats after publishing a new message
-                visualizeChat();
-                showChats();
+                if(!chatMessageLists.value[message_config.receiverId]){
+                    const ul = document.getElementById('chatsList');
+                    let li = document.createElement('li');
+                    li.textContent = chat_config.receiverId;
+                    ul.appendChild(li);
+
+                    chatMessageLists.value[message_config.receiverId] = [];
+                }
+
+                chatMessageLists.value[message_config.receiverId].push(message_config);
+
+                showChatMessages();
             }   
             catch (ex) {
-                // in case of exception from the backend request, log the error 
                 console.error(ex);
             }
         }
 
-        onMounted(showChats);
+        onMounted(fetchChatsPeriodically);
 
         return {
-            receiverVc,
-            receiverAm,
+            user1,
+            user2,
             msgContent,
-            visualizeChat,
+            chatMessageLists,
+            showChatMessages,
+            fetchChatMessages,
+            createChat,
             publishMessage,
         };
     }
@@ -114,33 +168,32 @@ export default {
 
 <template>
 
+<h2 class="green">Lista chat</h2>
 <div class="UserChats">
     <li id="chatsList"></li>
-</div>
+</div><br><br>
 
 <form class="visualizeChatForm">
     <h2 class="green">Visualizza chat</h2>
-    <div class="inputGroup">
-        <div class="input">
-            <label class="tag" for="receiverVc">Destinatario:</label><br>
-            <input id="receiverVc" v-model="receiverVc" placeholder="Inserisci destinatario qui"></input>
-        </div>
+    <div class="input">
+        <label class="tag" for="receiverAm">Utente:</label><br>
+        <input id="receiverAm" v-model="user2" placeholder="Inserisci destinatario qui"></input>
     </div>
 
-    <h2><button class="button" type="button" @click="visualizeChat()">Visualizza chat</button></h2>
+    <div class="buttons">
+        <button class="button" type="button" @click="showChatMessages()">Visualizza chat</button>
+        <button class="button" type="button" @click="createChat()">Crea chat</button>
+    </div>
+
+    <br><br><div class="chatMessages">
+        <li id="chat"></li>
+    </div>
 </form>
 
-<div class="chatMessages">
-    <li id="chat"></li>
-</div>
 
 <form class="visualizeChatForm">
     <h2 class="green">Pubblica messaggio</h2>
     <div class="inputGroup">
-        <div class="input">
-            <label class="tag" for="receiverAm">Destinarario:</label><br>
-            <input id="receiverAm" v-model="receiverAm" placeholder="Inserisci destinatario qui"></input>
-        </div>
         <div class="textarea">
             <label class="tag" for="content">contenuto:</label><br>
             <textarea id="content" v-model="msgContent" placeholder="Inserisci contenuto qui..."></textarea>
@@ -170,17 +223,21 @@ export default {
         margin-top: 15px;
         border-radius: 20px;
     }
-    .button{
-        font-weight: 500;
+    .buttons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+   .button {
+        flex: 1;
         font-size: 1.2rem;
-        padding: 10px;
-        outline: none;
-        width: auto;
-        height: 50px;
+        width: 130px;
+        height: auto;
         border-radius: 20px;
         border: none;
-        margin-top: 30px;
-        margin-bottom: 15px;
+        margin-left: 15px;
+        padding: 10px;
+        outline: none;
         background-color: hsla(160, 100%, 37%, 1);
         color: white;
         cursor: pointer;

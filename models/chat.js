@@ -26,5 +26,15 @@ const chatSchema = new mongoose.Schema({
 // The model is saved on mongoose and could now be used in the code
 const Chat = mongoose.model("Chat", chatSchema);
 
+function validateChat(message) {
+    const schema = Joi.object({
+        senderId: Joi.required(),
+        receiverId: Joi.required(),
+    });
+
+    return schema.validate(message);
+}
+
 // Export the Chat object
 exports.Chat = Chat;
+exports.validateChat = validateChat
