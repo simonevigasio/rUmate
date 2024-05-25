@@ -9,7 +9,7 @@ function isRouteActive(path){
 }
 
 function alreadyLogged(){
-  return localStorage.getItem("username") !== null
+  return localStorage.getItem("token") !== null
 }
 
 async function logout() {
@@ -19,11 +19,9 @@ async function logout() {
       method: "POST",
       headers: { "Content-Type": "application/json"},
     })
-    const json = await resp.json();
-    console.log(json);
-
+  
     setTimeout(() => {
-      router.push('/');
+      window.location.reload();
     }, 1000);
   }
   catch (ex) {
@@ -34,27 +32,62 @@ async function logout() {
 </script>
 
 <template>
-  <div class="logo">
-    <img alt="rUmate logo" class="image" src="../assets/rumate_logo_small.png" width="250" height="250" />
-    <h1 class="title">rUmate</h1>
-    <h3 class="subtitle">Perchè il prossimo coinquilino sei tu!</h3>
-  </div>
+  <ul>
+    <li><img alt="rumate-logo" class="image" src="../assets/rumate_logo_small.png" width="50" height="50" /></li>
+    <li><router-link to="/" :class="['link', { active: isRouteActive('/') }]">Home</router-link></li>
 
-  <div class="topnav">
-    <router-link to="/" :class="{ active: isRouteActive('/') }">Home</router-link>
     <template v-if="!alreadyLogged()">
-      <router-link to="/login" :class="{ active: isRouteActive('/login') }">Log in</router-link>
-      <router-link to="/signin" :class="{ active: isRouteActive('/signin') }">Sign in</router-link>
+      <li><router-link to="/login" :class="['link', {active: isRouteActive('/login')}]" >Login</router-link></li>
+      <li><router-link to="/signin" :class="['link', {active: isRouteActive('/signin')}]">Signin</router-link></li>
     </template>
+    
     <template v-else>
-      <router-link to="/#chat" :class="{ active: isRouteActive('/#chat') }">Chat</router-link>
-      <router-link to="/publishAd" :class="{ active: isRouteActive('/publishAd') }">Il mio annuncio</router-link>
-      <router-link to="/" @click="logout">Log out</router-link>
+      <li><router-link to="/chat" :class="['link', { active: isRouteActive('/#chat') }]">Chat</router-link></li>
+      <li><router-link to="/publishAd" :class="['link', { active: isRouteActive('/publishAd') }]">Il mio annuncio</router-link></li>
+      <li><router-link to="/" class="link" @click="logout">Log out</router-link></li>
     </template>
-  </div>
+
+  </ul>
 </template>
 
 <style scoped>
+
+/* navbar */
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  left: 0px;
+  width: 100%;
+  z-index: 1;
+}
+
+li {
+  float: left;
+}
+
+li .link {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li .link:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #04AA6D;
+}
+
+/*-----------------------------------*/
+
 .logo {
   margin-bottom: 40px;
   position: sticky;
@@ -62,7 +95,7 @@ async function logout() {
 
 .image {
   display: block;
-  margin: 0 auto 1rem;
+  margin: 0 1rem;
 }
 
 .logo h1 {

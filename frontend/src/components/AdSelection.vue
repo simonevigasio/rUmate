@@ -28,7 +28,7 @@
             const json = await resp.json();
 
             title.value = json.title;
-            owner.value = json.owner;
+            owner.value = localStorage.getItem("username");
             description.value = json.description;
             prize.value = json.prize;
             room.value = json.room;

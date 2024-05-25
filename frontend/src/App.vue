@@ -16,20 +16,20 @@ export default{
         <Presentation/>
     </header>
 
-    <main class="form">
+    <main>
       <RouterView/>
     </main>
   </n-space>
 </template>
 
 <style scoped>
-  header {
+  /* header {
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 2rem;
-  }
+  } */
 
   .form {
     text-align: center;

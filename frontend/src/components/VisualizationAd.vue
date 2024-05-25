@@ -160,24 +160,25 @@
 </script>
 
 <template>
-  <h2><span>Visualizza Annunci</span></h2>
+  <!-- <h2><span>Visualizza Annunci</span></h2> -->
 
-  <form class="sort_and_filterform">
-    <fieldset>
+  <div class="split-left">
+    <form>
+
+      <fieldset>
         <span> Scegli ordinamento:</span>
-        <select class="sortAd" v-model="selectedSortOption">
+        <select v-model="selectedSortOption">
             <option disabled value="--Seleziona ordinamento--">--Seleziona ordinamento--</option>
             <option v-for="option in sortOptions" :value="option.value">
               {{ option.text }}
             </option>
         </select>
-    <br>
-    </fieldset>
-    
-    <fieldset>
-      <span>Filtra per il tipo di stanza:</span><br /> 
+      </fieldset>
+
+      <fieldset>
+        <span>Filtra per il tipo di stanza:</span>
         <div class="checkbox-container">
-        <label>
+          <label>
             <input type="checkbox" v-model="filterRoomSingle.checked"></input>
             Singola
         </label><br />
@@ -190,11 +191,10 @@
             Tripla
         </label><br /> 
         </div>
-      <br />
-    </fieldset>
+      </fieldset>
 
-    <fieldset>
-        <span>Filtra per per la tipologia di componenti dell'appartamento:</span><br /> 
+      <fieldset>
+        <span>Filtra per per la tipologia di componenti dell'appartamento:</span>
         <div class="checkbox-container">
           <label>
             <input type="checkbox" v-model="filterSexMale.checked"></input>
@@ -209,11 +209,10 @@
               Misto
           </label><br /> 
         </div>
-        <br />
-    </fieldset>
+      </fieldset>
 
-    <fieldset>
-        <span>Filtra per la residenza dell'appartamento:</span><br /> 
+      <fieldset>
+        <span>Filtra per la residenza dell'appartamento:</span>
         <div class="checkbox-container">
           <label>
             <input type="checkbox" v-model="filterResidencePovo.checked"></input>
@@ -264,17 +263,18 @@
               Oltrecastello
           </label><br />
         </div>
-        <br />   
-    </fieldset>
-  </form>
+      </fieldset>
 
-  <div class="buttons">
-    <button class="button" type="button" @click="showAll()">Mostra ogni annuncio</button>
-    <button class="button" type="button" @click="sort_and_filter();">Applica filtri</button>
-    <button class="button" type="button" @click="clearAll();">Rimuovi filtri</button>
+    </form>
+
+    <div class="buttons">
+      <button class="button" type="button" @click="showAll()">Mostra ogni annuncio</button>
+      <button class="button" type="button" @click="sort_and_filter();">Applica filtri</button>
+      <button class="button" type="button" @click="clearAll();">Rimuovi filtri</button>
+    </div>
   </div>
 
-  <div class="adsList">
+  <div class="split-right">
     <h2><span>Lista Annunci</span></h2>
     <form id="ads"></form>
   </div>
@@ -282,17 +282,76 @@
 </template>
 
 <style>
-  h2 {
-    font-weight: 500;
-    font-size: 2.0rem;
-    padding: 10px;
-    margin-bottom: 5px;
+  .split-left {
+    height: 100%;
+    width: 30%;
+    position: fixed;
+    top: 30px;
+    overflow-x: hidden;
+    padding-top: 20px;
+    left: 0;
+    z-index: 0;
   }
+
+  .split-right {
+    height: 100%;
+    width: 70%;
+    position: fixed;
+    top: 30px;
+    overflow-x: hidden;
+    padding: 20px;
+    right: 0;
+    z-index: 0;
+  }
+
+  fieldset{
+    padding: 10px;
+    outline: none;
+    width: auto;
+    margin-top: 5px;
+  }
+
   span {
     font-weight: 500;
     text-align: left;
     display: block;
     color: hsla(160, 100%, 37%, 1);
+  }
+
+  .button {
+    flex: 1;
+    font-size: 1.2rem;
+    width: 130px;
+    height: 80px;
+    /*border-radius: 20px;*/
+    border: none;
+    padding: 10px;
+    outline: none;
+    background-color: hsla(160, 100%, 37%, 1);
+    color: white;
+    cursor: pointer;
+    margin-right: 3px;
+    margin-left: 3px;
+    margin-bottom: 30px
+  }
+
+  /* get rid the filter bar if the screen dimention is less than 1000px */
+  @media screen and (max-width: 1000px) {
+    .split-left {
+      width: 0%;
+    }
+    .split-right {
+      width: 100%;
+    }
+  }
+
+  /*------------------------------*/
+
+  h2 {
+    font-weight: 500;
+    font-size: 2.0rem;
+    padding: 10px;
+    margin-bottom: 5px;
   }
   p{
     font-weight: 500;
@@ -307,13 +366,6 @@
     display: block;
     color: hsla(160, 100%, 37%, 1);
   }
-  fieldset{
-    padding: 10px;
-    outline: none;
-    width: auto;
-    margin-top: 5px;
-    border-radius: 10px;
-  }
   .sort_and_filterform {
     padding: 10px;
     outline: none;
@@ -327,20 +379,6 @@
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
-  }
-  .button {
-    flex: 1;
-    font-size: 1.2rem;
-    width: 130px;
-    height: 80px;
-    border-radius: 20px;
-    border: none;
-    margin-left: 15px;
-    padding: 10px;
-    outline: none;
-    background-color: hsla(160, 100%, 37%, 1);
-    color: white;
-    cursor: pointer;
   }
   input{
     border-radius: 20px;

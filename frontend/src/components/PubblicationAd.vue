@@ -49,7 +49,6 @@ async function publishAds() {
     const formattedExpiryDate = transformDateFormat(publishAdExpiry_date.value);
 
     const advertisement_config = {
-        owner: localStorage.getItem("username"),
         title: publishAdTitle.value,
         description: publishAdDescription.value,
         price: publishAdPrice.value,
