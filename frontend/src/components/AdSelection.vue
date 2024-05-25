@@ -20,15 +20,22 @@
 
     async function getAdv(){
         try {
-            const resp = await fetch(`http://localhost:${3000}/advertisements/${localStorage.getItem("adv")}`, {
+            let resp = await fetch(`http://localhost:${3000}/advertisements/${localStorage.getItem("adv")}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
 
             const json = await resp.json();
 
+            resp = await fetch(`http://localhost:${3000}/users/${json.user_id}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+
+            const user = await resp.json();
+
             title.value = json.title;
-            owner.value = localStorage.getItem("username");
+            owner.value = user.username;
             description.value = json.description;
             prize.value = json.prize;
             room.value = json.room;

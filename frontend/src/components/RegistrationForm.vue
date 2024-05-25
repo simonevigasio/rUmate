@@ -57,7 +57,6 @@
                 body: JSON.stringify(user),
             });
 
-        
             const token = resp.headers.get('X-Auth-Token');
 
             const json = await resp.json();

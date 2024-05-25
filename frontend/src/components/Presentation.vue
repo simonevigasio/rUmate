@@ -20,9 +20,7 @@ async function logout() {
       headers: { "Content-Type": "application/json"},
     })
   
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    window.location.reload();
   }
   catch (ex) {
     console.error(ex);
