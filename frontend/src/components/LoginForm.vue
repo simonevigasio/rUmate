@@ -62,7 +62,7 @@
 </script>
 
 <template>
-     <h2><span class="green" v-html="message"></span></h2>
+    <h2><span class="green" v-html="message"></span></h2>
 
     <form class="LoginForm">
         <template v-if="!loggedIn">
@@ -78,10 +78,16 @@
                 </div>
             </div>
 
-            <input type="checkbox" id="checkbox" v-model="show" @input="showPassword"><label class="checkboxText" for="checkbox">Mostra password</label>
+            <div class="centeredGroup">
+                <input type="checkbox" id="checkbox" v-model="show" @input="showPassword">
+                <label class="checkboxText" for="checkbox">Mostra password</label>
+            </div>
 
-            <h2><button class="logInButton" type="button" @click="login" :disabled="isButtonDisabled">Log In</button></h2>
+            <div class="centeredGroup">
+                <button class="logInButton" type="button" @click="login" :disabled="isButtonDisabled">Log In</button>
+            </div>
         </template>
+        
         <template v-else>
             <label class="tag">Caricando la home...</label>
         </template>
@@ -94,16 +100,21 @@
         font-size: 2.0rem;
         padding: 10px;
         margin-bottom: 10px;
+        text-align: center;
+        width: 100%;
     }
-    .LoginForm{
+    .LoginForm {
         border-radius: 20px;
         padding: 10px;
         border: 1px solid #ccc;
         outline: none;
-        width: auto;
+        width: 400px;
         margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
-    .logInButton{
+    .logInButton {
         font-weight: 500;
         font-size: 1.2rem;
         padding: 10px;
@@ -120,32 +131,46 @@
         cursor: not-allowed;
     }
     .inputGroup {
-        text-align: center;
+        text-align: left;
         margin-top: 15px;
+        width: 100%;
     }
-    .LoginForm .tag{
+    .input {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .LoginForm .tag {
         font-weight: 500;
         color: white;
-        display: inline-block;
         width: 90px;
-        margin-bottom: 5px;
+        margin-right: 10px;
     }
-    .LoginForm .checkboxText{
-        width: 90px;
-        margin-bottom: 5px;
-        margin-left: 10px;
-    }
-    .LoginForm input{
+    .inputGroup input {
+        width: 200px;
+        height: 40px;
+        margin-bottom: 15px;
         border-radius: 20px;
         padding: 10px;
         border: 1px solid #ccc;
         outline: none;
-        margin-bottom: 15px;
+    }
+    .LoginForm .checkboxText {
+        width: 120px;
+        margin-bottom: 5px;
+        margin-left: 10px;
     }
     .warning {
         color: red;
         font-size: 0.8rem;
         margin-top: 5px;
+        margin-bottom: 15px;
+    }
+    .centeredGroup {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-bottom: 15px;
     }
 </style>

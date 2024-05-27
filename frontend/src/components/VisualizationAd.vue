@@ -160,14 +160,13 @@
 </script>
 
 <template>
-  <!-- <h2><span>Visualizza Annunci</span></h2> -->
 
   <div class="split-left">
     <form>
 
       <fieldset>
         <span> Scegli ordinamento:</span>
-        <select v-model="selectedSortOption">
+        <select class="select" v-model="selectedSortOption">
             <option disabled value="--Seleziona ordinamento--">--Seleziona ordinamento--</option>
             <option v-for="option in sortOptions" :value="option.value">
               {{ option.text }}
@@ -292,6 +291,16 @@
     left: 0;
     z-index: 0;
   }
+  .split-left .select {
+        width: 200px;
+        height: 40px;
+        margin-bottom: 15px;
+        margin-top: 15px;
+        border-radius: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        outline: none;
+    }
 
   .split-right {
     height: 100%;
@@ -338,12 +347,24 @@
   /* get rid the filter bar if the screen dimention is less than 1000px */
   @media screen and (max-width: 1000px) {
     .split-left {
-      width: 0%;
-    }
-    .split-right {
-      width: 100%;
-    }
+    width: 100%;
+    position: relative;
+    height: auto;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
   }
+
+  .split-right {
+    width: 100%;
+    position: relative;
+    height: auto;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    margin-top: 5px;
+  }
+}
 
   /*------------------------------*/
 
@@ -366,13 +387,13 @@
     display: block;
     color: hsla(160, 100%, 37%, 1);
   }
-  .sort_and_filterform {
+  .split-left {
     padding: 10px;
     outline: none;
     width: auto;
     margin-top: 5px;
   }
-  .sort_and_filterform fieldset{
+  .split-left fieldset{
     border-radius: 10px;
   }
   .buttons {
@@ -387,20 +408,20 @@
     outline: none;
     margin-bottom: 15px;
   }
-  .sort_and_filterform .tag {
+  .split-left .tag {
         font-weight: 500;
         display: inline-block;
         width: 90px;
         margin-bottom: 5px;
         color: white;
   }
-  .sort_and_filterform label {
+  .split-left label {
         font-weight: 500;
         display: inline;
         width: 100px;
         color: white;
   }
-  .sort_and_filterform select{
+  .split-left select{
     width: 200px;
     height: 40px;
     margin-bottom: 20px;
@@ -410,11 +431,4 @@
     border: 1px solid #ccc;
     outline: none;
   }
- /* .adsList {
-    margin-top: 30px;
-    font-weight: 500;
-    text-align: left;
-    display: block;
-    color: white;
-  }*/
 </style>

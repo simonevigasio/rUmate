@@ -124,9 +124,14 @@
                 </div>
             </div>
 
-            <input type="checkbox" class="checkbox" v-model="show" @input="showPassword"><label class="checkboxText" for="checkbox">Mostra password</label>
+            <div class="centeredGroup">
+                <input type="checkbox" class="checkbox" v-model="show" @input="showPassword">
+                <label class="checkboxText" for="checkbox">Mostra password</label>
+            </div>
             
-            <h2><button class="button" type="button" @click="trySignup" :disabled="isButtonDisabled">Sign In</button></h2>
+            <div class="centeredGroup">
+                <button class="button" type="button" @click="trySignup" :disabled="isButtonDisabled">Sign In</button>
+            </div>
         </template>
 
         <template v-else>
@@ -141,6 +146,8 @@
         font-size: 2.0rem;
         padding: 10px;
         margin-bottom: 10px;
+        text-align: center;
+        width: 100%;
     }
     .registrationForm {
         border-radius: 20px;
@@ -150,16 +157,18 @@
         width: 400px;
         margin-top: 15px;
         border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     .button {
         font-weight: 500;
         font-size: 1.2rem;
         padding: 10px;
         outline: none;
-        width: 130px;
+        width: 100px;
         border-radius: 20px;
         border: none;
-        margin-top: 30px;
         background-color: hsla(160, 100%, 37%, 1);
         color: white;
         cursor: pointer;
@@ -171,6 +180,7 @@
     .inputGroup {
         text-align: left;
         margin-top: 15px;
+        width: 100%;
     }
     .registrationForm .tag {
         font-weight: 500;
@@ -191,11 +201,8 @@
     .registrationForm .input{
         margin-bottom: 20px;
     }
-    .registrationForm .checkbox {
-        margin-top: 25px;
-    }
     .registrationForm .checkboxText{
-        width: 90px;
+        width: 120px;
         margin-bottom: 5px;
         margin-left: 10px;
     }
@@ -208,5 +215,11 @@
         color: hsla(160, 100%, 37%, 1);
         font-size: 0.8rem;
         margin-top: 5px;
+    }
+    .centeredGroup {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 15px;
     }
 </style>

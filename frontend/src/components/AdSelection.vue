@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed } from 'vue'
+    import { ref } from 'vue'
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
@@ -81,13 +81,19 @@
         </fieldset>
     </form>
 
-    <div class="buttons">
-        <template v-if="alreadyLogged()">
+    <template v-if="alreadyLogged()">
+        <div class="buttons">
             <button class="button" type="button" @click="addPreferenceList()">Mostra preferenza annuncio</button>
             <button class="button" type="button" @click="startChat();">Avvia chat</button>
-        </template>
-        <button class="button" type="button" @click="backToHome();">Torna alla lista annunci</button>
-    </div>
+            <button class="button" type="button" @click="backToHome();">Torna alla lista annunci</button>
+        </div>
+    </template>
+
+    <template v-else>
+        <div class="singleButton">
+            <button class="button" type="button" @click="backToHome();">Torna alla lista annunci</button>
+        </div>
+    </template>
 
 </template>
 
@@ -115,11 +121,11 @@
         display: flex;
         justify-content: space-between;
     }
-    .button {
+    .buttons .button {
         flex: 1;
         font-size: 1.2rem;
-        width: 130px;
-        height: 80px;
+        width: auto;
+        height: auto;
         border-radius: 20px;
         border: none;
         margin-left: 15px;
@@ -128,5 +134,20 @@
         background-color: hsla(160, 100%, 37%, 1);
         color: white;
         cursor: pointer;
+    }
+    .singleButton .button {
+        font-weight: 500;
+        font-size: 1.2rem;
+        padding: 10px;
+        outline: none;
+        width: auto;
+        border-radius: 20px;
+        border: none;
+        background-color: hsla(160, 100%, 37%, 1);
+        color: white;
+        cursor: pointer;
+        display: flex;
+        margin-top: 15px;
+        margin-left: 50px;
     }
 </style>

@@ -10,7 +10,7 @@
 
 */
 const _ = require("lodash");
-const auth = require("../middleware/authorize");
+const auth = require("../middleware/auth");
 const { Chat, validateChat } = require("../models/chat");
 const { User } = require("../models/user");
 const { Message, validateMessage } = require("../models/message");

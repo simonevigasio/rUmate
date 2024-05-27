@@ -1,22 +1,51 @@
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { io } from 'socket.io-client';
 
 export default {
     setup() {
-        const user1 = localStorage.getItem("username")
-        const user2 = ref('')
+        const user1 = localStorage.getItem("username");
+        const user2 = ref('');
         const msgContent = ref('');
         const chatMessageLists = ref({});
+        const socket = io('http://localhost:3000');
 
-        async function fetchChatsPeriodically() {
-            await fetchChats();
-            if(user2.value !== '') showChatMessages();
-            setInterval(fetchChats, 10000);
-        }
+        socket.on("connect", () => {
+            console.log("Connected to server");
+        });
+
+        socket.on("receiveMessage", (message) => {
+            console.log("Message received: ", message);
+            if(message.senderId !== user1){
+                if (!chatMessageLists.value[message.senderId]) {
+                    const ul = document.getElementById('chatsList');
+                    let li = document.createElement('li');
+                    li.textContent = message.senderId;
+                    ul.appendChild(li);
+
+                    chatMessageLists.value[message.senderId] = [];
+                }
+                chatMessageLists.value[message.senderId].push(message);
+            }
+            else if(message.receiverId !== user1){
+                if (!chatMessageLists.value[message.receiverId]) {
+                    const ul = document.getElementById('chatsList');
+                    let li = document.createElement('li');
+                    li.textContent = message.receiverId;
+                    ul.appendChild(li);
+
+                    chatMessageLists.value[message.receiverId] = [];
+                }
+                chatMessageLists.value[message.receiverId].push(message);
+            }
+
+            if (user2.value === message.senderId || user2.value === message.receiverId) {
+                showChatMessages();
+            }
+        });
 
         async function fetchChats() {
             try {
-                // GET request to visualize all chats corresponding to the user given in the front-end
                 const ul = document.getElementById('chatsList');
                 const resp = await fetch(`http://localhost:3000/chats/${user1}`, {
                     method: "GET",
@@ -35,27 +64,26 @@ export default {
                     li.textContent = user2Id;
                     ul.appendChild(li);
 
-                    if (!chatMessageLists.value[user2Id]) {
-                        chatMessageLists.value[user2Id] = chat.messageList;
-                    }
+                    chatMessageLists.value[user2Id] = chat.messageList;
+
+                    socket.emit("joinRoom", { user1, user2: user2Id });
                 });
             } catch (ex) {
-                // in case of exception from the backend request, log the error 
                 console.error(ex);
             }
         }
 
         function showChatMessages() {
-            const ul = document.getElementById('chat');
+            if (chatMessageLists.value[user2.value]) {
+                const ul = document.getElementById('chat');
 
-            if (chatMessageLists.value[user2]) {
                 while (ul.firstChild) {
                     ul.removeChild(ul.lastChild);
                 }
-            
-                chatMessageLists.value[user2].forEach(chat => {
+
+                chatMessageLists.value[user2.value].forEach(message => {
                     let li = document.createElement('li');
-                    li.textContent = chat.content;
+                    li.textContent = message.content;
                     ul.appendChild(li);
                 });
             } else {
@@ -71,19 +99,24 @@ export default {
                     headers: { "Content-Type": "application/json" },
                 });
 
+                const json = await resp.json();
+
                 while (ul.firstChild) {
                     ul.removeChild(ul.lastChild);
                 }
 
-                const json = await resp.json();
                 json.forEach(message => {
                     let li = document.createElement('li');
                     li.textContent = message.content;
                     ul.appendChild(li);
+
+                    if (!chatMessageLists.value[user2.value]) {
+                        chatMessageLists.value[user2.value] = [];
+                    }
+                    chatMessageLists.value[user2.value].push(message);
                 });
 
             } catch (ex) {
-                // in case of exception from the backend request, log the error 
                 console.error(ex);
             }
         }
@@ -109,7 +142,9 @@ export default {
                 ul.appendChild(li);
 
                 chatMessageLists.value[chat_config.receiverId] = [];
-            }   
+
+                socket.emit("joinRoom", { user1, user2: user2.value });
+            }
             catch (ex) {
                 console.error(ex);
             }
@@ -123,6 +158,8 @@ export default {
                 timestamp: new Date().toISOString()
             };
 
+            msgContent.value = '';
+
             try {
                 const resp = await fetch(`http://localhost:3000/chats/${user1}/addMessage/${user2.value}`, {
                     method: "POST",
@@ -132,33 +169,33 @@ export default {
                 const json = await resp.json();
                 console.log(json);
 
-                if(!chatMessageLists.value[message_config.receiverId]){
-                    const ul = document.getElementById('chatsList');
-                    let li = document.createElement('li');
-                    li.textContent = chat_config.receiverId;
-                    ul.appendChild(li);
-
+                if (!chatMessageLists.value[message_config.receiverId]) {
                     chatMessageLists.value[message_config.receiverId] = [];
                 }
 
-                chatMessageLists.value[message_config.receiverId].push(message_config);
+                socket.emit("sendMessage", message_config);
 
-                showChatMessages();
-            }   
-            catch (ex) {
+            } catch (ex) {
                 console.error(ex);
             }
         }
 
-        onMounted(fetchChatsPeriodically);
+
+        onMounted(() => {
+            fetchChats();
+        });
+
+        onBeforeUnmount(() => {
+            socket.disconnect();
+        });
 
         return {
             user1,
             user2,
             msgContent,
             chatMessageLists,
-            showChatMessages,
             fetchChatMessages,
+            showChatMessages,
             createChat,
             publishMessage,
         };
@@ -167,43 +204,42 @@ export default {
 </script>
 
 <template>
+    <h2 class="green">Lista chat</h2>
+    <div class="UserChats">
+        <li id="chatsList"></li>
+    </div><br><br>
 
-<h2 class="green">Lista chat</h2>
-<div class="UserChats">
-    <li id="chatsList"></li>
-</div><br><br>
-
-<form class="visualizeChatForm">
-    <h2 class="green">Visualizza chat</h2>
-    <div class="input">
-        <label class="tag" for="receiverAm">Utente:</label><br>
-        <input id="receiverAm" v-model="user2" placeholder="Inserisci destinatario qui"></input>
-    </div>
-
-    <div class="buttons">
-        <button class="button" type="button" @click="showChatMessages()">Visualizza chat</button>
-        <button class="button" type="button" @click="createChat()">Crea chat</button>
-    </div>
-
-    <br><br><div class="chatMessages">
-        <li id="chat"></li>
-    </div>
-</form>
-
-
-<form class="visualizeChatForm">
-    <h2 class="green">Pubblica messaggio</h2>
-    <div class="inputGroup">
-        <div class="textarea">
-            <label class="tag" for="content">contenuto:</label><br>
-            <textarea id="content" v-model="msgContent" placeholder="Inserisci contenuto qui..."></textarea>
+    <form class="visualizeChatForm">
+        <h2 class="green">Visualizza chat</h2>
+        <div class="input">
+            <label class="tag" for="receiverAm">Utente:</label><br>
+            <input id="receiverAm" v-model="user2" placeholder="Inserisci destinatario qui"></input>
         </div>
-    </div>
 
-    <h2><button class="button" type="button" @click="publishMessage()">Pubblica messaggio</button></h2>
-</form>
+        <div class="buttons">
+            <button class="button" type="button" @click="showChatMessages()">Visualizza chat</button>
+            <button class="button" type="button" @click="createChat()">Crea chat</button>
+        </div>
+
+        <br><br>
+        <div class="chatMessages">
+            <li id="chat"></li>
+        </div>
+    </form>
+
+    <form class="visualizeChatForm">
+        <h2 class="green">Pubblica messaggio</h2>
+        <div class="inputGroup">
+            <div class="textarea">
+                <label class="tag" for="content">contenuto:</label><br>
+                <textarea id="content" v-model="msgContent" placeholder="Inserisci contenuto qui..."></textarea>
+            </div>
+        </div>
+
+        <h2><button class="button" type="button" @click="publishMessage()">Pubblica messaggio</button></h2>
+    </form>
 </template>
-  
+
 <style>
   .placeholder-style::placeholder {
         color: #ccc;
