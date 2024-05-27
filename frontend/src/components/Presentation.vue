@@ -40,9 +40,9 @@ async function logout() {
     </template>
     
     <template v-else>
-      <li><router-link to="/chat" :class="['link', { active: isRouteActive('/#chat') }]">Chat</router-link></li>
-      <li><router-link to="/publishAd" :class="['link', { active: isRouteActive('/publishAd') }]">Il mio annuncio</router-link></li>
-      <li><router-link to="/" class="link" @click="logout">Log out</router-link></li>
+      <router-link to="/#chat" :class="{ active: isRouteActive('/#chat') }">Chat</router-link>
+      <router-link to="/publishAd" :class="{ active: isRouteActive('/publishAd') }">Il mio annuncio</router-link>
+      <router-link to="/" @click="logout">Log out</router-link>
     </template>
 
   </ul>

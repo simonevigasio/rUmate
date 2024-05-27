@@ -6,6 +6,7 @@ const express = require('express');
 const auth = require("./routes/authenticate");
 const advertisements = require("./routes/advertisements");
 const users = require("./routes/users");
+const chats = require("./routes/chats");
 const preferences = require("./routes/preferences");
 const mongoose = require('mongoose');
 
@@ -32,6 +33,7 @@ app.use("/authenticate", auth);
 app.use("/users", users);
 app.use("/advertisements", advertisements);
 app.use("/preferences", preferences);
+app.use("/chats", chats);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "./public", "home.html"));
