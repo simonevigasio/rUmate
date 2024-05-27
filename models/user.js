@@ -1,3 +1,9 @@
+/*  
+    tools imported for the declaration of the user schema
+    jwt -> json web token lib
+    mongoose -> connection with MongoDB 
+    Joi -> data validator for the schema
+*/
 const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 const Joi = require("joi");
