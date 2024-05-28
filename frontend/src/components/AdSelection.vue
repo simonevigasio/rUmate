@@ -7,7 +7,7 @@
     const title = ref('');
     const owner = ref('');
     const description = ref('');
-    const prize = ref('');
+    const price = ref('');
     const room = ref('');
     const flat_sex = ref('');
     const residence_zone = ref('');
@@ -37,11 +37,11 @@
             title.value = json.title;
             owner.value = user.username;
             description.value = json.description;
-            prize.value = json.prize;
+            price.value = json.price;
             room.value = json.room;
             flat_sex.value = json.flat_sex;
             residence_zone.value = json.residence_zone;
-            expiry_date.value = json.expiry_date;
+            expiry_date.value = json.expiry_date.substring(0, 10);
             roommate.value = json.roommate;
 
         }
@@ -71,7 +71,7 @@
         <fieldset>
             <span>Proprietario: </span><p v-html="owner"></p>
             <span>Descrizione: </span><p v-html="description"></p>
-            <span>Prezzo: </span><p v-html="prize"></p>
+            <span>Prezzo: </span><p v-html="price"></p>
             <span>Tipo di stanza: </span><p v-html="room"></p>
             <span>Sesso inquilini: </span><p v-html="flat_sex"></p>
             <span>Residenza: </span><p v-html="residence_zone"></p>

@@ -27,6 +27,12 @@ router.get("/:id", async (req, res) => {
     res.send(_.pick(user, ["username"]));
 });
 
+// GET the user_id from the user's username
+router.get("/getId/:username", async (req, res) => {
+    const user = await User.findOne({ username: req.params.username });
+    res.send(user._id);
+});
+
 // POST request used for login users
 router.post("/", async (req, res) => {
     // check is the body of the request has all required information

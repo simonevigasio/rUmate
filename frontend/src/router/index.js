@@ -3,9 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 // Import components
 import RegistrationForm from '../components/RegistrationForm.vue'
 import LoginForm from '../components/LoginForm.vue'
-import VisualizationAd from '../components/VisualizationAd.vue'          //  _test da togliere
+import VisualizationAd from '../components/VisualizationAd.vue'
 import AdSelection from '../components/AdSelection.vue'
-import PubblicationAd from '../components/PubblicationAd.vue'
+import PersonalSection from '../components/PersonalSection.vue'
 import VisualizationChat from '../components/VisualizationChat.vue'
 
 const routes = [
@@ -13,7 +13,7 @@ const routes = [
   { path: '/advertisement', component: AdSelection },
   { path: '/signin', component: RegistrationForm},
   { path: '/login', component: LoginForm },
-  { path: '/publishAd', component: PubblicationAd },
+  { path: '/personalSection', component: PersonalSection },
   { path: '/chat', component: VisualizationChat },
 ];
 

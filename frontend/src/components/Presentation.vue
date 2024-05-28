@@ -32,7 +32,7 @@ async function logout() {
 <template>
   <ul>
     <li><img alt="rumate-logo" class="image" src="../assets/rumate_logo_small.png" width="50" height="50" /></li>
-    <li><router-link to="/" :class="['link', { active: isRouteActive('/') }]">Home</router-link></li>
+    <li><router-link to="/" :class="['link', { active: isRouteActive('/') || isRouteActive('/advertisement') }]">Home</router-link></li>
 
     <template v-if="!alreadyLogged()">
       <li><router-link to="/login" :class="['link', {active: isRouteActive('/login')}]" >Login</router-link></li>
@@ -41,7 +41,7 @@ async function logout() {
     
     <template v-else>
       <li><router-link to="/chat" :class="['link', {active: isRouteActive('/chat')}]">Chat</router-link></li>
-      <li><router-link to="/publishAd" :class="['link', {active: isRouteActive('/publishAd')}]">Il mio annuncio</router-link></li>
+      <li><router-link to="/personalSection" :class="['link', {active: isRouteActive('/personalSection')}]">Area personale</router-link></li>
       <li><router-link to="/" class='link' @click="logout">Log out</router-link></li>
     </template>
 

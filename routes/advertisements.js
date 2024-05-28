@@ -50,6 +50,13 @@ router.get("/:id", async (req, res) => {
     return res.send(ad);
 });
 
+// GET request to find a specific advertisement knowing its owner's id
+router.get("/getByUser/:userId", async (req, res) => {
+    const ad = await Advertisement.findOne({user_id: req.params.userId});
+    if (!ad) return res.status(404).send("Advertisement not found");
+    return res.send(ad);
+});
+
 // POST request to add an advertisement in the database
 router.post("/publish", auth, async (req, res) => {
     // validate if the advertisement is correct, using the validate function

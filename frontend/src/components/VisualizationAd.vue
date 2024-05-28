@@ -68,30 +68,39 @@
               form.removeChild(form.lastChild);
           }
 
-          const json = await resp.json();
-          json.map(function(adv) {
-              let fieldset = document.createElement('fieldset');
-              let a_title = document.createElement('a');
-              let p_owner = document.createElement('p');
-              let p_residence = document.createElement('p');
+          const ads = await resp.json();
 
-              const node_title = document.createTextNode(adv.title);
-              const node_owner = document.createTextNode("Proprietario: "+adv.owner);
-              const node_residence = document.createTextNode("Residenza: "+adv.residence_zone);
-
-              a_title.href = location.href+ `advertisement`;
-              a_title.appendChild(node_title);
-              a_title.onclick = function() { localStorage.setItem("adv", adv._id); };
-
-              p_owner.appendChild(node_owner);
-              p_residence.appendChild(node_residence);
-
-              fieldset.appendChild(a_title);
-              fieldset.appendChild(p_owner);
-              fieldset.appendChild(p_residence);
-
-              form.appendChild(fieldset);
+          const owners = ads.map(async (adv) => {
+              const userResp = await fetch(`http://localhost:3000/users/${adv.user_id}`);
+              const user = await userResp.json();
+              return { ...adv, username: user.username };
           });
+
+          const adsWithUsers = await Promise.all(owners);
+
+          adsWithUsers.forEach((adv) => {
+            let fieldset = document.createElement('fieldset');
+            let a_title = document.createElement('a');
+            let p_owner = document.createElement('p');
+            let p_residence = document.createElement('p');
+
+            const node_title = document.createTextNode(adv.title);
+            const node_owner = document.createTextNode("Proprietario: " + adv.username);
+            const node_residence = document.createTextNode("Residenza: " + adv.residence_zone);
+
+            a_title.href = location.href + `advertisement`;
+            a_title.appendChild(node_title);
+            a_title.onclick = function() { localStorage.setItem("adv", adv._id); };
+
+            p_owner.appendChild(node_owner);
+            p_residence.appendChild(node_residence);
+
+            fieldset.appendChild(a_title);
+            fieldset.appendChild(p_owner);
+            fieldset.appendChild(p_residence);
+
+            form.appendChild(fieldset);
+        });
       }
       catch (ex) {
           console.error(ex);
@@ -283,13 +292,16 @@
 <style>
   .split-left {
     height: 100%;
-    width: 30%;
     position: fixed;
     top: 30px;
     overflow-x: hidden;
     padding-top: 20px;
     left: 0;
     z-index: 0;
+    padding: 10px;
+    outline: none;
+    width: auto;
+    margin-top: 5px;
   }
   .split-left .select {
         width: 200px;
@@ -386,12 +398,6 @@
     text-align: left;
     display: block;
     color: hsla(160, 100%, 37%, 1);
-  }
-  .split-left {
-    padding: 10px;
-    outline: none;
-    width: auto;
-    margin-top: 5px;
   }
   .split-left fieldset{
     border-radius: 10px;
