@@ -303,4 +303,64 @@ async function publishMessage() {
     }
 }
 
+async function generateNotificationExample() {
+    // create a new message, reading the input given by the user in the front-end
+    const notification_config = {
+        notification_type: "System",
+        content: "Questa notifica è un esempio.",
+        sending_time: moment().format("YYYY MM DD")
+    };
+
+    try {
+        // POST request to upload the message on the Database
+        resp = await fetch("../notifications", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+            body: JSON.stringify(notification_config),
+        })
+        json = await resp.json();
+        console.log(json);
+    }   
+    catch (ex) {
+        // in case of exception from the backend request, log the error 
+        console.error(ex);
+    }
+}
+
+async function readNotifications(){
+    try {
+        const form = document.getElementById('notif');
+        // GET request to take notifications from the Database
+        //const queryString = new URLSearchParams(user).toString();
+        const resp = await fetch('../notifications', {
+                method: "GET",
+                headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+            });
+        json = await resp.json();
+
+        let fieldset = document.createElement('fieldset');
+        let span_type = document.createElement('span');
+        let p_content = document.createElement('p');
+        let p_date = document.createElement('p');
+
+        const node_type = document.createTextNode(json.notification_type);
+        const node_content = document.createTextNode("Contenuto: "+json.content);
+        const node_date = document.createTextNode("Invio: "+json.sending_date);
+
+        span_type.appendChild(node_type);
+        p_content.appendChild(node_content);
+        p_date.appendChild(node_date);
+
+        fieldset.appendChild(span_type);
+        fieldset.appendChild(p_content);
+        fieldset.appendChild(p_date);
+
+        form.appendChild(fieldset);
+    }   
+    catch (ex) {
+        // in case of exception from the backend request, log the error 
+        console.error(ex);
+    }
+}
+
 visualizeAdv();

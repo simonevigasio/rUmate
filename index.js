@@ -8,6 +8,7 @@ const advertisements = require("./routes/advertisements");
 const users = require("./routes/users");
 const chats = require("./routes/chats");
 const preferences = require("./routes/preferences");
+const notifications = require("./routes/notifications");
 const mongoose = require('mongoose');
 
 const mongoString = process.env.DATABASE_URL;
@@ -34,6 +35,7 @@ app.use("/users", users);
 app.use("/advertisements", advertisements);
 app.use("/preferences", preferences);
 app.use("/chats", chats);
+app.use("/notifications", notifications);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "./public", "home.html"));

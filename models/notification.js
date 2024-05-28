@@ -16,7 +16,7 @@ const notificationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    message_type:{
+    notification_type:{
         required: true,
         type: String,
         enum:['Preference', 'Message', 'System']                                   //system è da vedere
@@ -43,7 +43,7 @@ function validateNotification(notification) {
 
     const schema = Joi.object({
         user_id: Joi.objectId().required(),
-        message_type: Joi.string().valid('Preference', 'Message', 'System').required(),
+        notification_type: Joi.string().valid('Preference', 'Message', 'System').required(),
         content: Joi.string().max(500).required(),
         sending_time: Joi.date().min(now).max(now).format("YYYY MM DD"),
     });
