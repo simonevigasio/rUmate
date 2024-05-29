@@ -88,7 +88,10 @@
             const node_owner = document.createTextNode("Proprietario: " + adv.username);
             const node_residence = document.createTextNode("Residenza: " + adv.residence_zone);
 
-            a_title.href = location.href + `advertisement`;
+            if(adv.username === localStorage.getItem("username")){
+              a_title.href = location.href + `personalSection`;
+            }else a_title.href = location.href + `advertisement`;
+
             a_title.appendChild(node_title);
             a_title.onclick = function() { localStorage.setItem("adv", adv._id); };
 

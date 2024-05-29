@@ -12,6 +12,7 @@ export default {
         const publishAdExpiry_date = ref('')
         const publishAdRoommate = ref('')
         
+        const userId = ref('');
         const title = ref('');
         const owner = ref('');
         const description = ref('');
@@ -56,6 +57,27 @@ export default {
             return parts.join(" ");
         }
 
+        function clearParameters() {
+            publishAdTitle.value = '';
+            publishAdDescription.value = '';
+            publishAdPrice.value = '';
+            publishAdRoom.value = '';
+            publishAdSex.value = '';
+            publishAdZone.value = '';
+            publishAdExpiry_date.value = '';
+            publishAdRoommate.value = '';
+
+            title.value = '';
+            owner.value = '';
+            description.value = '';
+            price.value = '';
+            room.value = '';
+            flat_sex.value = '';
+            residence_zone.value = '';
+            expiry_date.value = '';
+            roommate.value = '';
+        }
+
         async function hasAd() {
             try {
                 const username = localStorage.getItem("username");
@@ -66,9 +88,9 @@ export default {
 
                 if (!resp.ok) throw new Error('Failed to fetch user data');
 
-                const userId = await resp.json();
+                userId.value = await resp.json();
 
-                resp = await fetch(`http://localhost:${3000}/advertisements//getByUser/${userId}`, {
+                resp = await fetch(`http://localhost:${3000}/advertisements//getByUser/${userId.value}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                 });
@@ -84,7 +106,7 @@ export default {
                 room.value = json.room;
                 flat_sex.value = json.flat_sex;
                 residence_zone.value = json.residence_zone;
-                expiry_date.value = json.expiry_date.substring(0, 10);
+                expiry_date.value = transformDateFormat(json.expiry_date).substring(0, 10);
                 roommate.value = json.roommate;
 
                 adIsThere.value = true;
@@ -129,7 +151,7 @@ export default {
                 room.value = advertisement_config.room;
                 flat_sex.value = advertisement_config.flat_sex;
                 residence_zone.value = advertisement_config.residence_zone;
-                expiry_date.value = advertisement_config.expiry_date.substring(0, 10);
+                expiry_date.value = transformDateFormat(advertisement_config.expiry_date).substring(0, 10);
                 roommate.value = advertisement_config.roommate;
 
                 adIsThere.value = true;
@@ -138,8 +160,20 @@ export default {
             }
         }
 
-        function deleteAd(){
+        async function deleteAd() {
+            try {
+                let resp = await fetch(`http://localhost:3000/advertisements/delete/${userId.value}`, {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                });
 
+                if (!resp.ok) throw new Error('Failed to delete the advertisement');
+
+                clearParameters();
+                adIsThere.value = false;
+            } catch (ex) {
+                console.error(ex);
+            }
         }
 
         function showInterested(){
@@ -167,6 +201,7 @@ export default {
             publishAdZone,
             publishAdExpiry_date,
             publishAdRoommate,
+            userId,
             title,
             owner,
             description,
@@ -185,7 +220,8 @@ export default {
             deleteAd,
             showInterested,
             notifyInterested,
-            showPreferences
+            showPreferences,
+            clearParameters
         };
     }
 }
@@ -213,7 +249,7 @@ export default {
                     <div class="select">
                         <label class="tag" for="room">Tipo di stanza:</label>
                         <select class="room" v-model="publishAdRoom">
-                            <option disabled value="">--Seleziona tipo di stanza--</option>
+                            <option disabled value="--Seleziona tipo di stanza--">--Seleziona tipo di stanza--</option>
                             <option v-for="option in roomOptions" :key="option.value" :value="option.value">
                                 {{ option.text }}
                             </option>
@@ -222,7 +258,7 @@ export default {
                     <div class="select">
                         <label class="tag" for="gender">Sesso inquilini:</label>
                         <select class="gender" v-model="publishAdSex">
-                            <option disabled value="">--Seleziona sesso inquilini--</option>
+                            <option disabled value="--Seleziona sesso inquilini--">--Seleziona sesso inquilini--</option>
                             <option v-for="option in sexOptions" :key="option.value" :value="option.value">
                                 {{ option.text }}
                             </option>
@@ -231,7 +267,7 @@ export default {
                     <div class="select">
                         <label class="tag" for="zone">Residenza:</label>
                         <select class="zone" v-model="publishAdZone">
-                            <option disabled value="">--Seleziona zona di residenza--</option>
+                            <option disabled value="--Seleziona zona di residenza--">--Seleziona zona di residenza--</option>
                             <option v-for="option in zoneOptions" :key="option.value" :value="option.value">
                                 {{ option.text }}
                             </option>

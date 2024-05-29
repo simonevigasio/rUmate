@@ -10,12 +10,12 @@ const { Advertisement } = require("../models/advertisement");
 const express = require('express');
 const router = express.Router();
 
-// this api (GET) gathers all the preferences of one user
+// this api (GET) gathers all the preferences of one advertisement
 router.get("/my-prefs", auth, async (req, res) => {
 
     // get the published advertisement of the user authenticated 
     const ad = await Advertisement.findOne({user_id: req.user._id});
-    if (!ad) return res.status(400).send({ message: "User id not found in the database"});
+    if (!ad) return res.status(400).send({ message: "There is no advertisement published by this user in the database"});
     
     // find all the preferences of the following advertisement
     const prefs = await Preference.find({advertisement_id: ad._id});
@@ -51,7 +51,7 @@ router.post("/", auth, async (req, res) => {
     
     // verify whether the user has already signed the preference on that advertisement
     let pref = prefs.filter((p) => p.advertisement_id == req.body.advertisement_id);
-    if (pref.length != 0) return res.status(400).send({message: "The user has already signed the precerence of this advertisement"});
+    if (pref.length != 0) return res.status(400).send({message: "The user has already signed the preference of this advertisement"});
 
     // create and save a new preference in the database
     pref = new Preference(req.body);
