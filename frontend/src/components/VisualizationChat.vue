@@ -187,35 +187,6 @@ export default {
                 console.error(ex);
             }
         }
-
-        async function createChat() {
-            const chat_config = {
-                senderId: user1,
-                receiverId: user2.value,
-            };
-
-            try {
-                const resp = await fetch(`http://localhost:3000/chats/${user1}/addChat/${user2.value}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
-                    body: JSON.stringify(chat_config),
-                });
-                const json = await resp.json();
-                console.log(json);
-
-                const form = document.getElementById('chatsList');
-                let li = document.createElement('li');
-                li.textContent = chat_config.receiverId;
-                form.appendChild(li);
-
-                chatMessageLists.value[chat_config.receiverId] = [];
-
-                socket.emit("joinRoom", { user1, user2: user2.value });
-            }
-            catch (ex) {
-                console.error(ex);
-            }
-        }
         function chatDisplayed() {
           return  isNull(user2.value);
         }
@@ -235,7 +206,6 @@ export default {
             chatMessageLists,
             fetchChatMessages,
             showChatMessages,
-            createChat,
             publishMessage,
             chatDisplayed,
         };

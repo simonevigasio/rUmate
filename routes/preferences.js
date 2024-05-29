@@ -11,7 +11,7 @@ const express = require('express');
 const router = express.Router();
 
 // this api (GET) gathers all the preferences of one advertisement
-router.get("/my-prefs", auth, async (req, res) => {
+router.get("/my-adv", auth, async (req, res) => {
 
     // get the published advertisement of the user authenticated 
     const ad = await Advertisement.findOne({user_id: req.user._id});
@@ -23,6 +23,19 @@ router.get("/my-prefs", auth, async (req, res) => {
     // send back the list of all preferences found
     return res.send(prefs)
 });
+
+// this api (GET) gathers all the preferences of an user
+router.get("/my-prefs", auth, async (req, res) => {
+
+    // find all the preferences of the following user
+    const prefs = await Preference.find({interested_user_id: req.user._id});
+    if (!prefs) return res.status(400).send({ message: "There are no preferences related to the user in the database"});
+
+    // send back the list of all preferences found
+    return res.send(prefs)
+});
+
+
 
 // this api (POST) creates a new preference between an interested user and one advertisement
 router.post("/", auth, async (req, res) => {

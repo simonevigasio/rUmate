@@ -90,7 +90,7 @@ export default {
 
                 userId.value = await resp.json();
 
-                resp = await fetch(`http://localhost:${3000}/advertisements//getByUser/${userId.value}`, {
+                resp = await fetch(`http://localhost:${3000}/advertisements/getByUser/${userId.value}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                 });
@@ -184,8 +184,18 @@ export default {
 
         }
 
-        function showPreferences(){
-
+        async function showPreferences(){
+            try {
+                const resp = await fetch(`http://localhost:3000/preferences/my-prefs`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                });
+                const json = await resp.json();
+                console.log(json);
+            }
+            catch (ex) {
+                console.error(ex);
+            }
         }
 
         onMounted(() => {

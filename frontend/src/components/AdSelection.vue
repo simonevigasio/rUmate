@@ -52,12 +52,49 @@
 
     getAdv();
     
-    function addPreferenceList(){
+    async function addPreferenceList(){
+        let user = localStorage.getItem("username");
+        const preference_config = {
+            interested_user_id: null,
+            advertisement_id: localStorage.getItem("adv"),
+        };
 
+        try {
+            const resp = await fetch(`http://localhost:3000/preferences/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                body: JSON.stringify(preference_config),
+            });
+            const json = await resp.json();
+            console.log(json);
+        }
+        catch (ex) {
+            console.error(ex);
+        }
     }
-    function startChat(){
 
+    async function startChat(){
+        let user = localStorage.getItem("username");
+        const chat_config = {
+            senderId: user,
+            receiverId: owner.value,
+        };
+
+        try {
+            const resp = await fetch(`http://localhost:3000/chats/${user}/addChat/${owner.value}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                body: JSON.stringify(chat_config),
+            });
+            const json = await resp.json();
+            console.log(json);
+        }
+        catch (ex) {
+            console.error(ex);
+        }
+        router.push('/chat');
     }
+
     function backToHome(){
         router.push('/');
     }
@@ -83,7 +120,7 @@
 
     <template v-if="alreadyLogged()">
         <div class="buttons">
-            <button class="button" type="button" @click="addPreferenceList()">Mostra preferenza annuncio</button>
+            <button class="button" type="button" @click="addPreferenceList()">Aggiungi preferenza annuncio</button>
             <button class="button" type="button" @click="startChat();">Avvia chat</button>
             <button class="button" type="button" @click="backToHome();">Torna alla lista annunci</button>
         </div>
