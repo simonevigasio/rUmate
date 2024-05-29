@@ -1,6 +1,7 @@
 <script>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { io } from 'socket.io-client';
+import { isNull } from 'lodash';
 
 export default {
     setup() {
@@ -18,10 +19,11 @@ export default {
             console.log("Message received: ", message);
             if(message.senderId !== user1){
                 if (!chatMessageLists.value[message.senderId]) {
-                    const ul = document.getElementById('chatsList');
-                    let li = document.createElement('li');
-                    li.textContent = message.senderId;
-                    ul.appendChild(li);
+                    const form = document.getElementById('chatsList');
+                    let p = document.createElement('p');
+                    const node_chat = document.createTextNode(message.senderId);
+                    p.appendChild(node_chat);
+                    form.appendChild(p);
 
                     chatMessageLists.value[message.senderId] = [];
                 }
@@ -29,10 +31,11 @@ export default {
             }
             else if(message.receiverId !== user1){
                 if (!chatMessageLists.value[message.receiverId]) {
-                    const ul = document.getElementById('chatsList');
-                    let li = document.createElement('li');
-                    li.textContent = message.receiverId;
-                    ul.appendChild(li);
+                    const form = document.getElementById('chatsList');
+                    let p = document.createElement('p');
+                    const node_chat = document.createTextNode(message.receiverId);
+                    p.appendChild(node_chat);
+                    form.appendChild(p);
 
                     chatMessageLists.value[message.receiverId] = [];
                 }
@@ -43,112 +46,6 @@ export default {
                 showChatMessages();
             }
         });
-
-        async function fetchChats() {
-            try {
-                const ul = document.getElementById('chatsList');
-                const resp = await fetch(`http://localhost:3000/chats/${user1}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                });
-
-                while (ul.firstChild) {
-                    ul.removeChild(ul.lastChild);
-                }
-
-                const json = await resp.json();
-
-                json.forEach(chat => {
-                    let li = document.createElement('li');
-                    let user2Id = (chat.receiverId === user1) ? chat.senderId : chat.receiverId;
-                    li.textContent = user2Id;
-                    ul.appendChild(li);
-
-                    chatMessageLists.value[user2Id] = chat.messageList;
-
-                    socket.emit("joinRoom", { user1, user2: user2Id });
-                });
-            } catch (ex) {
-                console.error(ex);
-            }
-        }
-
-        function showChatMessages() {
-            if (chatMessageLists.value[user2.value]) {
-                const ul = document.getElementById('chat');
-
-                while (ul.firstChild) {
-                    ul.removeChild(ul.lastChild);
-                }
-
-                chatMessageLists.value[user2.value].forEach(message => {
-                    let li = document.createElement('li');
-                    li.textContent = message.content;
-                    ul.appendChild(li);
-                });
-            } else {
-                fetchChatMessages();
-            }
-        }
-
-        async function fetchChatMessages() {
-            try {
-                const ul = document.getElementById('chat');
-                const resp = await fetch(`http://localhost:3000/chats/${user1}/${user2.value}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                });
-
-                const json = await resp.json();
-
-                while (ul.firstChild) {
-                    ul.removeChild(ul.lastChild);
-                }
-
-                json.forEach(message => {
-                    let li = document.createElement('li');
-                    li.textContent = message.content;
-                    ul.appendChild(li);
-
-                    if (!chatMessageLists.value[user2.value]) {
-                        chatMessageLists.value[user2.value] = [];
-                    }
-                    chatMessageLists.value[user2.value].push(message);
-                });
-
-            } catch (ex) {
-                console.error(ex);
-            }
-        }
-
-        async function createChat() {
-            const chat_config = {
-                senderId: user1,
-                receiverId: user2.value,
-            };
-
-            try {
-                const resp = await fetch(`http://localhost:3000/chats/${user1}/addChat/${user2.value}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
-                    body: JSON.stringify(chat_config),
-                });
-                const json = await resp.json();
-                console.log(json);
-
-                const ul = document.getElementById('chatsList');
-                let li = document.createElement('li');
-                li.textContent = chat_config.receiverId;
-                ul.appendChild(li);
-
-                chatMessageLists.value[chat_config.receiverId] = [];
-
-                socket.emit("joinRoom", { user1, user2: user2.value });
-            }
-            catch (ex) {
-                console.error(ex);
-            }
-        }
 
         async function publishMessage() {
             const message_config = {
@@ -180,8 +77,150 @@ export default {
             }
         }
 
+        async function fetchChats() {
+            try {
+                const user = localStorage.getItem("username");
+                user2.value = null;
+                const form = document.getElementById('chatsList');
+                const resp = await fetch(`http://localhost:3000/chats/${user}`, {
+                            method: "GET",
+                            headers: { "Content-Type": "application/json" },
+                        });
 
-        onMounted(() => {
+                const json = await resp.json();
+                
+                while (form.firstChild) {
+                    form.removeChild(form.lastChild);
+                }
+
+                json.map(function(chat) {
+                    let user2Id = (chat.receiverId === user) ? chat.senderId : chat.receiverId;
+
+                    let fieldset = document.createElement('fieldset');
+                    let a_chat = document.createElement('a');
+
+                    const node_chat = document.createTextNode(user2Id);
+
+                    a_chat.appendChild(node_chat);
+                    a_chat.onclick = function() { 
+                        user2.value = user2Id;
+                        showChatMessages();
+                    };
+
+                    fieldset.appendChild(a_chat);
+
+                    form.appendChild(fieldset);
+                    socket.emit("joinRoom", { user1, user2: user2Id });
+                });
+            }
+            catch (ex) {
+                console.error(ex);
+            }
+        }
+
+        function showChatMessages() {
+            if (chatMessageLists.value[user2.value]) {
+                const form = document.getElementById('chatMessages');
+                let h2_name = document.createElement('h2');
+                let fieldset = document.createElement('fieldset');
+
+                while (form.firstChild) {
+                    form.removeChild(form.lastChild);
+                }
+                const node_name = document.createTextNode(user2.value);
+                h2_name.appendChild(node_name);
+                h2_name.classList.add("green")
+                form.appendChild(h2_name);
+
+                chatMessageLists.value[user2.value].forEach(message => {
+                    let p = document.createElement('p');
+                    const node_chat = document.createTextNode(message.content);
+                    p.appendChild(node_chat);
+                    let textStyle = (message.senderId === user1) ? "right" : "left";
+                    p.style.textAlign = textStyle;
+                    fieldset.appendChild(p);
+                    fieldset.appendChild(p);
+                });
+                form.appendChild(fieldset);
+            } else {
+                fetchChatMessages();
+            }
+        }
+
+        async function fetchChatMessages() {
+            try {
+                const form = document.getElementById('chatMessages');
+                let h2_name = document.createElement('h2');
+                let fieldset = document.createElement('fieldset');
+                const resp = await fetch(`http://localhost:3000/chats/${user1}/${user2.value}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                const json = await resp.json();
+
+
+                while (form.firstChild) {
+                    form.removeChild(form.lastChild);
+                }
+                const node_name = document.createTextNode(user2.value);
+                h2_name.appendChild(node_name);
+                h2_name.classList.add("green")
+                form.appendChild(h2_name);
+
+                json.forEach(message => {
+                    let p = document.createElement('p');
+                    const node_chat = document.createTextNode(message.content);
+                    p.appendChild(node_chat);
+                    let textStyle = (message.senderId === user1) ? "right" : "left";
+                    p.style.textAlign = textStyle;
+                    fieldset.appendChild(p);
+
+                    if (!chatMessageLists.value[user2.value]) {
+                        chatMessageLists.value[user2.value] = [];
+                    }
+                    chatMessageLists.value[user2.value].push(message);
+                });
+                form.appendChild(fieldset);
+
+            } catch (ex) {
+                console.error(ex);
+            }
+        }
+
+        async function createChat() {
+            const chat_config = {
+                senderId: user1,
+                receiverId: user2.value,
+            };
+
+            try {
+                const resp = await fetch(`http://localhost:3000/chats/${user1}/addChat/${user2.value}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                    body: JSON.stringify(chat_config),
+                });
+                const json = await resp.json();
+                console.log(json);
+
+                const form = document.getElementById('chatsList');
+                let li = document.createElement('li');
+                li.textContent = chat_config.receiverId;
+                form.appendChild(li);
+
+                chatMessageLists.value[chat_config.receiverId] = [];
+
+                socket.emit("joinRoom", { user1, user2: user2.value });
+            }
+            catch (ex) {
+                console.error(ex);
+            }
+        }
+        function chatDisplayed() {
+          return  isNull(user2.value);
+        }
+
+        onMounted(() =>{
             fetchChats();
         });
 
@@ -198,115 +237,189 @@ export default {
             showChatMessages,
             createChat,
             publishMessage,
+            chatDisplayed,
         };
     }
 }
+
 </script>
 
 <template>
-    <h2 class="green">Lista chat</h2>
-    <div class="UserChats">
-        <li id="chatsList"></li>
-    </div><br><br>
 
-    <form class="visualizeChatForm">
-        <h2 class="green">Visualizza chat</h2>
-        <div class="input">
-            <label class="tag" for="receiverAm">Utente:</label><br>
-            <input id="receiverAm" v-model="user2" placeholder="Inserisci destinatario qui"></input>
-        </div>
+  <div class="split-left">
+    <h2><span>Lista Chat</span></h2>
+    <form id="chatsList"></form>
+  </div>
 
-        <div class="buttons">
-            <button class="button" type="button" @click="showChatMessages()">Visualizza chat</button>
-            <button class="button" type="button" @click="createChat()">Crea chat</button>
-        </div>
+  <div class="split-right">    
+    <form id="chatMessages"></form>
+    <template v-if="!chatDisplayed()">
+      <textarea id="content" v-model="msgContent" placeholder="Inserisci contenuto qui..."></textarea>
+      <button class="button" type="button" @click="publishMessage()">Invia</button>
+    </template>
 
-        <br><br>
-        <div class="chatMessages">
-            <li id="chat"></li>
-        </div>
-    </form>
+  </div>
 
-    <form class="visualizeChatForm">
-        <h2 class="green">Pubblica messaggio</h2>
-        <div class="inputGroup">
-            <div class="textarea">
-                <label class="tag" for="content">contenuto:</label><br>
-                <textarea id="content" v-model="msgContent" placeholder="Inserisci contenuto qui..."></textarea>
-            </div>
-        </div>
-
-        <h2><button class="button" type="button" @click="publishMessage()">Pubblica messaggio</button></h2>
-    </form>
 </template>
 
 <style>
-  .placeholder-style::placeholder {
-        color: #ccc;
+  .split-left {
+    height: 100%;
+    width: 30%;
+    position: fixed;
+    top: 30px;
+    overflow-x: hidden;
+    padding-top: 20px;
+    left: 0;
+    z-index: 0;
+  }
+  .split-left .select {
+    width: 200px;
+    height: 40px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    outline: none;
     }
-    h2 {
-        font-weight: 500;
-        font-size: 2.0rem;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-    .visualizeChatForm {
-        border-radius: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        outline: none;
-        width: 350px;
-        margin-top: 15px;
-        border-radius: 20px;
-    }
-    .buttons {
-        margin-top: 20px;
-        display: flex;
-        justify-content: space-between;
-    }
-   .button {
-        flex: 1;
-        font-size: 1.2rem;
-        width: 130px;
-        height: auto;
-        border-radius: 20px;
-        border: none;
-        margin-left: 15px;
-        padding: 10px;
-        outline: none;
-        background-color: hsla(160, 100%, 37%, 1);
-        color: white;
-        cursor: pointer;
-    }
-    .button:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
-    .inputGroup {
-        text-align: left;
-        margin-top: 15px;
-    }
-    .visualizeChatForm .tag {
+
+  .split-right {
+    height: 100%;
+    width: 70%;
+    position: fixed;
+    overflow-x: hidden;
+    padding: 20px;
+    right: 0;
+    z-index: 0;
+  }
+
+  fieldset{
+    padding: 10px;
+    outline: none;
+    width: auto;
+    border-radius: 10px;
+    margin-top: 5px;
+  }
+
+  span {
+    font-weight: 500;
+    text-align: left;
+    display: block;
+    color: hsla(160, 100%, 37%, 1);
+  }
+
+  textarea {
+    font-weight: 500;
+    width: 85%;
+    height: 80px;
+    border-radius: 20px;
+    text-align: left;
+    margin-right: 3px;
+    margin-left: 3px;
+    margin-bottom: 30px;
+    margin-top: 20px
+  }
+
+  button {
+    flex: 1;
+    font-size: 1.2rem;
+    width: 10%;
+    height: 50px;
+    border-radius: 50px;
+    border: none;
+    padding: 10px;
+    outline: none;
+    background-color: hsla(160, 100%, 37%, 1);
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    margin-top: 20px;
+    margin-right: 3px;
+    margin-bottom: 30px
+  }
+
+  /* get rid the filter bar if the screen dimention is less than 1000px */
+  @media screen and (max-width: 1000px) {
+    .split-left {
+    width: 100%;
+    position: relative;
+    height: auto;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+  }
+
+  .split-right {
+    width: 100%;
+    position: relative;
+    height: auto;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    margin-top: 5px;
+  }
+}
+
+  /*------------------------------*/
+
+  h2 {
+    font-weight: 500;
+    font-size: 2.0rem;
+    padding: 10px;
+    margin-bottom: 5px;
+  }
+  p{
+    font-weight: 500;
+    text-align: left;
+    display: block;
+    color: white;
+    margin-left: 20px;
+  }
+  a{
+    font-weight: 500;
+    text-align: left;
+    display: block;
+    color: hsla(160, 100%, 37%, 1);
+  }
+  .split-left {
+    padding: 10px;
+    outline: none;
+    width: auto;
+    margin-top: 5px;
+  }
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  input{
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-bottom: 15px;
+  }
+  .split-left .tag {
         font-weight: 500;
         display: inline-block;
         width: 90px;
         margin-bottom: 5px;
         color: white;
-    }
-    .visualizeChatForm input,
-    .visualizeChatForm select,
-    .visualizeChatForm textarea {
-        width: 200px;
-        height: 40px;
-        margin-bottom: 15px;
-        margin-top: 15px;
-        border-radius: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        outline: none;
-    }
-    .visualizeChatForm textarea {
-        width: 300px;
-        height: 100px;
-    }
+  }
+  .split-left label {
+        font-weight: 500;
+        display: inline;
+        width: 100px;
+        color: white;
+  }
+  .split-left select{
+    width: 200px;
+    height: 40px;
+    margin-bottom: 20px;
+    margin-top: 15px;
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
 </style>
