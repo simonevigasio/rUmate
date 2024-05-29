@@ -21,6 +21,13 @@ export default {
                 if (!chatMessageLists.value[message.senderId]) {
                     const form = document.getElementById('chatsList');
                     let p = document.createElement('p');
+
+                    p.style.fontWeight = "500";
+                    p.style.textAlign = "left";
+                    p.style.display = "block";
+                    p.style.color = "white";
+                    p.style.marginLeft = "20px";
+
                     const node_chat = document.createTextNode(message.senderId);
                     p.appendChild(node_chat);
                     form.appendChild(p);
@@ -33,6 +40,13 @@ export default {
                 if (!chatMessageLists.value[message.receiverId]) {
                     const form = document.getElementById('chatsList');
                     let p = document.createElement('p');
+
+                    p.style.fontWeight = "500";
+                    p.style.textAlign = "left";
+                    p.style.display = "block";
+                    p.style.color = "white";
+                    p.style.marginLeft = "20px";
+
                     const node_chat = document.createTextNode(message.receiverId);
                     p.appendChild(node_chat);
                     form.appendChild(p);
@@ -97,7 +111,19 @@ export default {
                     let user2Id = (chat.receiverId === user) ? chat.senderId : chat.receiverId;
 
                     let fieldset = document.createElement('fieldset');
+
+                    fieldset.style.padding = "10px";
+                    fieldset.style.outline = "none";
+                    fieldset.style.width = "auto";
+                    fieldset.style.borderRadius = "5px";
+
                     let a_chat = document.createElement('a');
+
+                    a_chat.style.fontWeight = "500";
+                    a_chat.style.textAlign = "left";
+                    a_chat.style.display = "block";
+                    a_chat.style.color = "hsla(160, 100%, 37%, 1)";
+                    a_chat.style.marginLeft = "20px";
 
                     const node_chat = document.createTextNode(user2Id);
 
@@ -122,7 +148,18 @@ export default {
             if (chatMessageLists.value[user2.value]) {
                 const form = document.getElementById('chatMessages');
                 let h2_name = document.createElement('h2');
+
+                h2_name.style.fontWeight = "500";
+                h2_name.style.fontSize = "2.0rem";
+                h2_name.style.padding = "10px";
+                h2_name.style.marginBottom ="5px";
+
                 let fieldset = document.createElement('fieldset');
+
+                fieldset.style.padding = "10px";
+                fieldset.style.outline = "none";
+                fieldset.style.width = "auto";
+                fieldset.style.borderRadius = "5px";
 
                 while (form.firstChild) {
                     form.removeChild(form.lastChild);
@@ -134,6 +171,12 @@ export default {
 
                 chatMessageLists.value[user2.value].forEach(message => {
                     let p = document.createElement('p');
+
+                    p.style.fontWeight = "500";
+                    p.style.textAlign = "left";
+                    p.style.display = "block";
+                    p.style.color = "white";
+
                     const node_chat = document.createTextNode(message.content);
                     p.appendChild(node_chat);
                     let textStyle = (message.senderId === user1) ? "right" : "left";
@@ -151,7 +194,19 @@ export default {
             try {
                 const form = document.getElementById('chatMessages');
                 let h2_name = document.createElement('h2');
+
+                h2_name.style.fontWeight = "500";
+                h2_name.style.fontSize = "2.0rem";
+                h2_name.style.padding = "10px";
+                h2_name.style.marginBottom ="5px";
+                
                 let fieldset = document.createElement('fieldset');
+
+                fieldset.style.padding = "10px";
+                fieldset.style.outline = "none";
+                fieldset.style.width = "auto";
+                fieldset.style.borderRadius = "5px";
+
                 const resp = await fetch(`http://localhost:3000/chats/${user1}/${user2.value}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
@@ -170,6 +225,12 @@ export default {
 
                 json.forEach(message => {
                     let p = document.createElement('p');
+                    
+                    p.style.fontWeight = "500";
+                    p.style.textAlign = "left";
+                    p.style.display = "block";
+                    p.style.color = "white";
+
                     const node_chat = document.createTextNode(message.content);
                     p.appendChild(node_chat);
                     let textStyle = (message.senderId === user1) ? "right" : "left";
@@ -232,7 +293,7 @@ export default {
 
 </template>
 
-<style>
+<style scoped>
   .split-left {
     height: 100%;
     width: 30%;
@@ -258,18 +319,11 @@ export default {
     height: 100%;
     width: 70%;
     position: fixed;
+    top: 40px;
     overflow-x: hidden;
     padding: 20px;
     right: 0;
     z-index: 0;
-  }
-
-  fieldset{
-    padding: 10px;
-    outline: none;
-    width: auto;
-    border-radius: 10px;
-    margin-top: 5px;
   }
 
   span {
@@ -295,8 +349,8 @@ export default {
     flex: 1;
     font-size: 1.2rem;
     width: 10%;
-    height: 50px;
-    border-radius: 50px;
+    height: 80px;
+    border-radius: 20px;
     border: none;
     padding: 10px;
     outline: none;
@@ -309,29 +363,44 @@ export default {
     margin-bottom: 30px
   }
 
-  /* get rid the filter bar if the screen dimention is less than 1000px */
   @media screen and (max-width: 1000px) {
-    .split-left {
-    width: 100%;
-    position: relative;
-    height: auto;
-    top: 0;
-    left: 0;
-    padding-top: 20px;
-  }
+      .split-left {
+      width: 100%;
+      position: relative;
+      height: auto;
+      top: 0;
+      left: 0;
+      padding-top: 20px;
+    }
 
-  .split-right {
-    width: 100%;
-    position: relative;
-    height: auto;
-    top: 0;
-    right: 0;
-    padding: 20px;
-    margin-top: 5px;
-  }
-}
+    .split-right {
+      width: 100%;
+      position: relative;
+      height: auto;
+      top: 0;
+      right: 0;
+      padding: 20px;
+      margin-top: 5px;
+    }
 
-  /*------------------------------*/
+    button {
+      flex: 1;
+      font-size: 1.2rem;
+      width: 13%;
+      height: 80px;
+      border-radius: 20px;
+      border: none;
+      padding: 10px;
+      outline: none;
+      background-color: hsla(160, 100%, 37%, 1);
+      color: white;
+      cursor: pointer;
+      position: absolute;
+      margin-top: 20px;
+      margin-right: 3px;
+      margin-bottom: 30px
+    }
+  }
 
   h2 {
     font-weight: 500;
@@ -358,38 +427,5 @@ export default {
     width: auto;
     margin-top: 5px;
   }
-  .buttons {
-    display: flex;
-    justify-content: space-between;
-  }
-  input{
-    border-radius: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    outline: none;
-    margin-bottom: 15px;
-  }
-  .split-left .tag {
-        font-weight: 500;
-        display: inline-block;
-        width: 90px;
-        margin-bottom: 5px;
-        color: white;
-  }
-  .split-left label {
-        font-weight: 500;
-        display: inline;
-        width: 100px;
-        color: white;
-  }
-  .split-left select{
-    width: 200px;
-    height: 40px;
-    margin-bottom: 20px;
-    margin-top: 15px;
-    border-radius: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    outline: none;
-  }
+
 </style>

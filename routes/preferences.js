@@ -24,7 +24,7 @@ router.get("/my-adv", auth, async (req, res) => {
     return res.send(prefs)
 });
 
-// this api (GET) gathers all the preferences of an user
+// this api (GET) gathers all the preferences of a user
 router.get("/my-prefs", auth, async (req, res) => {
 
     // find all the preferences of the following user

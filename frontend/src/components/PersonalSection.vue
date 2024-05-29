@@ -1,5 +1,5 @@
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 export default {
     setup() {
@@ -24,6 +24,10 @@ export default {
         const roommate = ref('');
         
         const adIsThere = ref(false);
+
+        const isButtonDisabled = computed(() => {
+            return !publishAdTitle.value || !publishAdDescription.value || !publishAdPrice.value || !publishAdTitle.value || !publishAdRoom.value || !publishAdSex.value || !publishAdZone.value || !publishAdExpiry_date.value || !publishAdRoommate.value;
+        })
 
         const roomOptions = ref([
             { text: 'Singola', value: 'Single' },
@@ -184,22 +188,88 @@ export default {
 
         }
 
-        async function showPreferences(){
+        async function showPreferences() {
             try {
+                const form = document.getElementById('prefs');
                 const resp = await fetch(`http://localhost:3000/preferences/my-prefs`, {
                     method: "GET",
-                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "X-Auth-Token": localStorage.getItem("token") 
+                    },
                 });
-                const json = await resp.json();
-                console.log(json);
-            }
-            catch (ex) {
+
+                if (!resp.ok) throw new Error('Failed to fetch preferences');
+
+                while (form.firstChild) {
+                    form.removeChild(form.lastChild);
+                }
+
+                const pref = await resp.json();
+                console.log(pref);
+                
+                /*const ads = pref.map(async (preference) => {
+                    console.log(preference.advertisement_id);
+                    const adResp = await fetch(`http://localhost:3000/advertisement/${preference.advertisement_id}`);
+                    const ad = await adResp.json();
+                    return { ...preference, ad: ad };
+                });
+
+                const preferencesWithAds = await Promise.all(ads);
+
+                const owners = preferencesWithAds.map(async (preference) => {
+                    const userResp = await fetch(`http://localhost:3000/users/${preference.ad.user_id}`);
+                    const user = await userResp.json();
+                    return { ...preference, owner: user.username };
+                });
+
+                const preferencesComplete = await Promise.all(owners);*/
+
+                pref.forEach((preference) => {
+                    let fieldset = document.createElement('fieldset');
+                    fieldset.style.padding = "10px";
+                    fieldset.style.outline = "none";
+                    fieldset.style.width = "auto";
+                    fieldset.style.borderRadius = "10px";
+                    fieldset.style.marginTop = "5px";
+
+                    let a_ad = document.createElement('a');
+                    let p_owner = document.createElement('p');
+
+                    a_ad.style.fontWeight = "500";
+                    a_ad.style.textAlign = "left";
+                    a_ad.style.display = "block";
+                    a_ad.style.color = "hsla(160, 100%, 37%, 1)";
+                    a_ad.style.marginLeft = "20px";
+
+                    p_owner.style.fontWeight = "500";
+                    p_owner.style.textAlign = "left";
+                    p_owner.style.display = "block";
+                    p_owner.style.color = "white";
+                    p_owner.style.marginLeft = "20px";
+
+                    const node_title = document.createTextNode(preference.advertisement_id);
+                    const node_owner = document.createTextNode("Proprietario: " + preference.interested_user_id);
+ 
+                    a_ad.appendChild(node_title);
+                    a_ad.onclick = function() { localStorage.setItem("pref", preference._id); };
+
+                    p_owner.appendChild(node_owner);
+
+                    fieldset.appendChild(a_ad);
+                    fieldset.appendChild(p_owner);
+
+                    form.appendChild(fieldset);
+                });
+            } catch (ex) {
                 console.error(ex);
             }
         }
 
+
         onMounted(() => {
             hasAd();
+            showPreferences();
         });
 
         return {
@@ -230,8 +300,8 @@ export default {
             deleteAd,
             showInterested,
             notifyInterested,
-            showPreferences,
-            clearParameters
+            clearParameters,
+            isButtonDisabled
         };
     }
 }
@@ -240,7 +310,7 @@ export default {
 <template>
     <div class="left-side">
         <template v-if="!adIsThere">
-            <br><h2><span class="green">Pubblica annuncio</span></h2>
+            <h2><span class="green">Pubblica annuncio</span></h2>
 
             <form class="publishAdForm">
                 <div class="inputGroup">
@@ -293,12 +363,14 @@ export default {
                     </div>
                 </div>
 
-                <h2><button class="button" type="button" @click="publishAds()">Pubblica annuncio</button></h2>
+                <div class="singleButton">
+                    <button class="button" type="button" @click="publishAds()" :disabled="isButtonDisabled">Pubblica annuncio</button>
+                </div>
             </form>
         </template>
 
         <template v-else>
-            <br><h2 class="green">Il mio annuncio: <span class="green" v-html="title"></span></h2>
+            <h2 class="green">Il mio annuncio: <span class="green" v-html="title"></span></h2>
 
             <form class="Advertisement">
                 <fieldset>
@@ -322,13 +394,12 @@ export default {
     </div>
 
     <div class="right-side">
-        <br><h2><span class="green">Le mie preferenze:</span></h2>
-
-        <button class="button" type="button" @click="showPreferences()">Mostra preferenze</button>
+        <h2><span class="green">Le mie preferenze:</span></h2>
+        <form id="prefs"></form>
     </div>
 </template>
 
-<style>
+<style scoped>
     .left-side {
         height: 100%;
         position: fixed;
@@ -361,17 +432,37 @@ export default {
     .Advertisement fieldset{
         padding: 10px;
         outline: none;
-        width: 300px;
+        width: 500px;
         border-radius: 10px;
     }
     .placeholder-style::placeholder {
         color: #ccc;
     }
-    h2 {
+    .left-side h2 {
         font-weight: 500;
         font-size: 2.0rem;
         padding: 10px;
         margin-bottom: 10px;
+        margin-top: 10px;
+    }
+    .right-side h2 {
+        font-weight: 500;
+        font-size: 2.0rem;
+        padding: 10px;
+        margin-bottom: 10px;
+        margin-top: 20px;
+    }
+    span{
+        font-weight: 500;
+        text-align: left;
+        display: block;
+        color: hsla(160, 100%, 37%, 1);
+    }
+    p {
+        font-weight: 500;
+        text-align: left;
+        display: block;
+        color: white;
     }
     .publishAdForm {
         border-radius: 20px;
@@ -379,19 +470,22 @@ export default {
         border: 1px solid #ccc;
         outline: none;
         width: 350px;
-        margin-top: 15px;
+        margin-top: 5px;
         border-radius: 20px;
     }
-    .button{
-        font-weight: 500;
+    .singleButton {
+        margin-left: 85px;
+    }
+    .button {
+        flex: 1;
         font-size: 1.2rem;
-        padding: 10px;
-        outline: none;
-        width: auto;
+        width: 130px;
+        height: 80px;
         border-radius: 20px;
         border: none;
-        margin-top: 30px;
-        margin-bottom: 15px;
+        margin-left: 15px;
+        padding: 10px;
+        outline: none;
         background-color: hsla(160, 100%, 37%, 1);
         color: white;
         cursor: pointer;
@@ -431,5 +525,41 @@ export default {
         margin-top: 20px;
         display: flex;
         justify-content: space-between;
+        width: 500px;
+    }
+    @media screen and (max-width: 1000px) {
+        .left-side {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            height: auto;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+        }
+        .right-side  {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            height: auto;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+        }
+        .Advertisement{
+            padding: 10px;
+            outline: none;
+            width: 300px;
+            margin-top: 5px;
+            margin-left: 98px;
+        }
+
+        .Advertisement fieldset {
+            width: 300px;
+        }
+
+        h2 {
+            margin-left: 98px;
+        }
     }
 </style>

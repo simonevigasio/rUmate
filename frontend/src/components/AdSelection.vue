@@ -102,67 +102,86 @@
 </script>
 
 <template>
-    <h2><span class="green" v-html="title"></span></h2>
+    <div class="container">
+        <h2><span class="green" v-html="title"></span></h2>
 
-    <form class="Advertisement">
-        <fieldset>
-            <span>Proprietario: </span><p v-html="owner"></p>
-            <span>Descrizione: </span><p v-html="description"></p>
-            <span>Prezzo: </span><p v-html="price"></p>
-            <span>Tipo di stanza: </span><p v-html="room"></p>
-            <span>Sesso inquilini: </span><p v-html="flat_sex"></p>
-            <span>Residenza: </span><p v-html="residence_zone"></p>
-            <span>Scadenza annuncio: </span><p v-html="expiry_date"></p>
-            <span>Numero inquilini: </span><p v-html="roommate"></p>
+        <form class="Advertisement">
+            <fieldset>
+                <span>Proprietario: </span><p v-html="owner"></p>
+                <span>Descrizione: </span><p v-html="description"></p>
+                <span>Prezzo: </span><p v-html="price"></p>
+                <span>Tipo di stanza: </span><p v-html="room"></p>
+                <span>Sesso inquilini: </span><p v-html="flat_sex"></p>
+                <span>Residenza: </span><p v-html="residence_zone"></p>
+                <span>Scadenza annuncio: </span><p v-html="expiry_date"></p>
+                <span>Numero inquilini: </span><p v-html="roommate"></p>
 
-        </fieldset>
-    </form>
+            </fieldset>
+        </form>
 
-    <template v-if="alreadyLogged()">
-        <div class="buttons">
-            <button class="button" type="button" @click="addPreferenceList()">Aggiungi preferenza annuncio</button>
-            <button class="button" type="button" @click="startChat();">Avvia chat</button>
-            <button class="button" type="button" @click="backToHome();">Torna alla lista annunci</button>
-        </div>
-    </template>
+        <template v-if="alreadyLogged()">
+            <div class="buttons">
+                <button class="button" type="button" @click="addPreferenceList()">Aggiungi preferenza annuncio</button>
+                <button class="button" type="button" @click="startChat();">Avvia chat</button>
+                <button class="button" type="button" @click="backToHome();">Torna alla lista annunci</button>
+            </div>
+        </template>
 
-    <template v-else>
-        <div class="singleButton">
-            <button class="button" type="button" @click="backToHome();">Torna alla lista annunci</button>
-        </div>
-    </template>
-
+        <template v-else>
+            <div class="singleButton">
+                <button class="button" type="button" @click="backToHome();">Torna alla lista annunci</button>
+            </div>
+        </template>
+    </div>
 </template>
 
 <style scoped>
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    span{
+        font-weight: 500;
+        text-align: left;
+        display: block;
+        color: hsla(160, 100%, 37%, 1);
+    }
     h2 {
         font-weight: 500;
         font-size: 2.0rem;
         padding: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+    }
+    p {
+        font-weight: 500;
+        text-align: left;
+        display: block;
+        color: white;
     }
     .Advertisement{
         padding: 10px;
         outline: none;
-        width: auto;
+        width: 1300px;
         margin-top: 5px;
     }
     .Advertisement fieldset{
         padding: 10px;
         outline: none;
-        width: 300px;
         border-radius: 10px;
     }
     .buttons {
         margin-top: 20px;
         display: flex;
         justify-content: space-between;
+        width: 500px;
     }
     .buttons .button {
         flex: 1;
         font-size: 1.2rem;
-        width: auto;
-        height: auto;
+        width: 130px;
+        height: 80px;
         border-radius: 20px;
         border: none;
         margin-left: 15px;
@@ -185,6 +204,23 @@
         cursor: pointer;
         display: flex;
         margin-top: 15px;
-        margin-left: 50px;
+        margin-left: 45px;
+    }
+    @media screen and (max-width: 1000px) {
+        .Advertisement{
+            padding: 10px;
+            outline: none;
+            width: 300px;
+            margin-top: 5px;
+            margin-left: 108px;
+        }
+
+        h2 {
+            margin-left: 108px;
+        }
+
+        .singleButton{
+            margin-left: 108px;
+        }
     }
 </style>

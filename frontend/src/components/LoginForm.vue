@@ -62,46 +62,54 @@
 </script>
 
 <template>
-    <h2><span class="green" v-html="message"></span></h2>
+    <div class="container">
+        <h2><span class="green" v-html="message"></span></h2>
 
-    <form class="LoginForm">
-        <template v-if="!loggedIn">
-            <div class="inputGroup">
-                <div class="input">
-                    <label class="tag" for="username">Username:</label>
-                    <input id="username" v-model="username" placeholder="Inserisci username qui">
+        <form class="LoginForm">
+            <template v-if="!loggedIn">
+                <div class="inputGroup">
+                    <div class="input">
+                        <label class="tag" for="username">Username:</label>
+                        <input id="username" v-model="username" placeholder="Inserisci username qui">
+                    </div>
+                    <div class="input">
+                        <label class="tag" for="password">Password:</label>
+                        <input id="password" :type="passwordType" v-model="password" placeholder="Inserisci password qui">
+                        <p class="warning">{{ warning }}</p>
+                    </div>
                 </div>
-                <div class="input">
-                    <label class="tag" for="password">Password:</label>
-                    <input id="password" :type="passwordType" v-model="password" placeholder="Inserisci password qui">
-                    <p class="warning">{{ warning }}</p>
+
+                <div class="centeredGroup">
+                    <input type="checkbox" id="checkbox" v-model="show" @input="showPassword">
+                    <label class="checkboxText" for="checkbox">Mostra password</label>
                 </div>
-            </div>
 
-            <div class="centeredGroup">
-                <input type="checkbox" id="checkbox" v-model="show" @input="showPassword">
-                <label class="checkboxText" for="checkbox">Mostra password</label>
-            </div>
-
-            <div class="centeredGroup">
-                <button class="logInButton" type="button" @click="login" :disabled="isButtonDisabled">Log In</button>
-            </div>
-        </template>
-        
-        <template v-else>
-            <label class="tag">Caricando la home...</label>
-        </template>
-    </form>
+                <div class="centeredGroup">
+                    <button class="logInButton" type="button" @click="login" :disabled="isButtonDisabled">Log In</button>
+                </div>
+            </template>
+            
+            <template v-else>
+                <label class="tag">Caricando la home...</label>
+            </template>
+        </form>
+    </div>
 </template>
 
 <style scoped>
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
     h2 {
         font-weight: 500;
         font-size: 2.0rem;
         padding: 10px;
         margin-bottom: 10px;
         text-align: center;
-        width: 100%;
+        width: 400px;
     }
     .LoginForm {
         border-radius: 20px;
@@ -115,13 +123,13 @@
         align-items: center;
     }
     .logInButton {
-        font-weight: 500;
         font-size: 1.2rem;
-        padding: 10px;
-        outline: none;
-        width: 100px;
+        width: 130px;
+        height: 50px;
         border-radius: 20px;
         border: none;
+        padding: 10px;
+        outline: none;
         background-color: hsla(160, 100%, 37%, 1);
         color: white;
         cursor: pointer;
@@ -135,14 +143,9 @@
         margin-top: 15px;
         width: 100%;
     }
-    .input {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin-bottom: 15px;
-    }
     .LoginForm .tag {
         font-weight: 500;
+        display: inline-block;
         color: white;
         width: 90px;
         margin-right: 10px;
@@ -155,6 +158,9 @@
         padding: 10px;
         border: 1px solid #ccc;
         outline: none;
+    }
+    .LoginForm .input{
+        margin-bottom: 20px;
     }
     .LoginForm .checkboxText {
         width: 120px;

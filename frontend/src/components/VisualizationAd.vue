@@ -80,17 +80,43 @@
 
           adsWithUsers.forEach((adv) => {
             let fieldset = document.createElement('fieldset');
+            fieldset.style.padding = "10px";
+            fieldset.style.outline = "none";
+            fieldset.style.width = "auto";
+            fieldset.style.borderRadius = "10px";
+            fieldset.style.marginTop = "5px";
+
             let a_title = document.createElement('a');
             let p_owner = document.createElement('p');
             let p_residence = document.createElement('p');
+
+            a_title.style.fontWeight = "500";
+            a_title.style.textAlign = "left";
+            a_title.style.display = "block";
+            a_title.style.color = "hsla(160, 100%, 37%, 1)";
+            a_title.style.marginLeft = "20px";
+
+            p_owner.style.fontWeight = "500";
+            p_owner.style.textAlign = "left";
+            p_owner.style.display = "block";
+            p_owner.style.color = "white";
+            p_owner.style.marginLeft = "20px";
+
+            p_residence.style.fontWeight = "500";
+            p_residence.style.textAlign = "left";
+            p_residence.style.display = "block";
+            p_residence.style.color = "white";
+            p_residence.style.marginLeft = "20px";
 
             const node_title = document.createTextNode(adv.title);
             const node_owner = document.createTextNode("Proprietario: " + adv.username);
             const node_residence = document.createTextNode("Residenza: " + adv.residence_zone);
 
             if(adv.username === localStorage.getItem("username")){
-              a_title.href = location.href + `personalSection`;
-            }else a_title.href = location.href + `advertisement`;
+                a_title.href = location.href + `personalSection`;
+            } else {
+                a_title.href = location.href + `advertisement`;
+            }
 
             a_title.appendChild(node_title);
             a_title.onclick = function() { localStorage.setItem("adv", adv._id); };
@@ -175,7 +201,6 @@
 
   <div class="split-left">
     <form>
-
       <fieldset>
         <span> Scegli ordinamento:</span>
         <select class="select" v-model="selectedSortOption">
@@ -275,7 +300,6 @@
           </label><br />
         </div>
       </fieldset>
-
     </form>
 
     <div class="buttons">
@@ -292,7 +316,7 @@
 
 </template>
 
-<style>
+<style scoped>
   .split-left {
     height: 100%;
     position: fixed;
@@ -305,117 +329,6 @@
     outline: none;
     width: auto;
     margin-top: 5px;
-  }
-  .split-left .select {
-        width: 200px;
-        height: 40px;
-        margin-bottom: 15px;
-        margin-top: 15px;
-        border-radius: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        outline: none;
-    }
-
-  .split-right {
-    height: 100%;
-    width: 70%;
-    position: fixed;
-    top: 30px;
-    overflow-x: hidden;
-    padding: 20px;
-    right: 0;
-    z-index: 0;
-  }
-
-  fieldset{
-    padding: 10px;
-    outline: none;
-    width: auto;
-    margin-top: 5px;
-  }
-
-  span {
-    font-weight: 500;
-    text-align: left;
-    display: block;
-    color: hsla(160, 100%, 37%, 1);
-  }
-
-  .button {
-    flex: 1;
-    font-size: 1.2rem;
-    width: 130px;
-    height: 80px;
-    /*border-radius: 20px;*/
-    border: none;
-    padding: 10px;
-    outline: none;
-    background-color: hsla(160, 100%, 37%, 1);
-    color: white;
-    cursor: pointer;
-    margin-right: 3px;
-    margin-left: 3px;
-    margin-bottom: 30px
-  }
-
-  /* get rid the filter bar if the screen dimention is less than 1000px */
-  @media screen and (max-width: 1000px) {
-    .split-left {
-    width: 100%;
-    position: relative;
-    height: auto;
-    top: 0;
-    left: 0;
-    padding-top: 20px;
-  }
-
-  .split-right {
-    width: 100%;
-    position: relative;
-    height: auto;
-    top: 0;
-    right: 0;
-    padding: 20px;
-    margin-top: 5px;
-  }
-}
-
-  /*------------------------------*/
-
-  h2 {
-    font-weight: 500;
-    font-size: 2.0rem;
-    padding: 10px;
-    margin-bottom: 5px;
-  }
-  p{
-    font-weight: 500;
-    text-align: left;
-    display: block;
-    color: white;
-    margin-left: 20px;
-  }
-  a{
-    font-weight: 500;
-    text-align: left;
-    display: block;
-    color: hsla(160, 100%, 37%, 1);
-  }
-  .split-left fieldset{
-    border-radius: 10px;
-  }
-  .buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-  }
-  input{
-    border-radius: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    outline: none;
-    margin-bottom: 15px;
   }
   .split-left .tag {
         font-weight: 500;
@@ -439,5 +352,86 @@
     padding: 10px;
     border: 1px solid #ccc;
     outline: none;
+  }
+  .split-left input {
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-bottom: 15px;
+  }
+  .split-left fieldset{
+    padding: 10px;
+    outline: none;
+    width: auto;
+    border-radius: 10px;
+    margin-top: 5px;
+  }
+  .split-right {
+    height: 100%;
+    width: 70%;
+    position: fixed;
+    top: 30px;
+    overflow-x: hidden;
+    padding: 20px;
+    right: 0;
+    z-index: 0;
+  }
+  .split-right h2 {
+    font-weight: 500;
+    font-size: 2.0rem;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    width: 400px;
+  }
+  span {
+    font-weight: 500;
+    text-align: left;
+    display: block;
+    color: hsla(160, 100%, 37%, 1);
+  }
+  .button {
+    flex: 1;
+    font-size: 1.2rem;
+    width: 130px;
+    height: 80px;
+    border-radius: 20px;
+    border: none;
+    padding: 10px;
+    outline: none;
+    background-color: hsla(160, 100%, 37%, 1);
+    color: white;
+    cursor: pointer;
+    margin-right: 3px;
+    margin-left: 3px;
+    margin-bottom: 30px
+  }
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  /* get rid the filter bar if the screen dimention is less than 1000px */
+  @media screen and (max-width: 1000px) {
+      .split-left {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        height: auto;
+        top: 0;
+        left: 0;
+        padding-top: 20px;
+      }
+
+      .split-right {
+        width: 100%;
+        position: relative;
+        height: auto;
+        top: 0;
+        right: 0;
+        padding: 20px;
+        margin-top: 5px;
+      }
   }
 </style>

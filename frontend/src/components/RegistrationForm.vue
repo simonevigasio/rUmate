@@ -102,6 +102,7 @@
 </script>
 
 <template>
+    <div class="container">
     <h2><span class="green" v-html="message"></span></h2>
 
     <form class="registrationForm">
@@ -130,7 +131,7 @@
             </div>
             
             <div class="centeredGroup">
-                <button class="button" type="button" @click="trySignup" :disabled="isButtonDisabled">Sign In</button>
+                <button class="SignInbutton" type="button" @click="trySignup" :disabled="isButtonDisabled">Sign In</button>
             </div>
         </template>
 
@@ -138,16 +139,23 @@
             <label class="tag">Caricando la home...</label>
         </template>
     </form>
+    </div>
 </template>
 
 <style scoped>
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
     h2 {
         font-weight: 500;
         font-size: 2.0rem;
         padding: 10px;
         margin-bottom: 10px;
         text-align: center;
-        width: 100%;
+        width: 400px;
     }
     .registrationForm {
         border-radius: 20px;
@@ -161,19 +169,19 @@
         flex-direction: column;
         align-items: center;
     }
-    .button {
-        font-weight: 500;
+    .SignInbutton {
         font-size: 1.2rem;
-        padding: 10px;
-        outline: none;
-        width: 100px;
+        width: 130px;
+        height: 50px;
         border-radius: 20px;
         border: none;
+        padding: 10px;
+        outline: none;
         background-color: hsla(160, 100%, 37%, 1);
         color: white;
         cursor: pointer;
     }
-    .button:disabled {
+    .SignInbutton:disabled {
         background-color: #ccc;
         cursor: not-allowed;
     }
