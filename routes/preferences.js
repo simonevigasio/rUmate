@@ -10,14 +10,14 @@ const { Advertisement } = require("../models/advertisement");
 const express = require('express');
 const router = express.Router();
 
-// this api (GET) gathers all the preferences of one advertisement
+// this api (GET) gathers all the preferences of an advertisement published by a specific user
 router.get("/my-adv", auth, async (req, res) => {
 
-    // get the published advertisement of the user authenticated 
+    // get the published advertisement of the authenticated user who is the owner of such advertisement
     const ad = await Advertisement.findOne({user_id: req.user._id});
     if (!ad) return res.status(400).send({ message: "There is no advertisement published by this user in the database"});
     
-    // find all the preferences of the following advertisement
+    // find all preferences of that advertisement
     const prefs = await Preference.find({advertisement_id: ad._id});
 
     // send back the list of all preferences found
@@ -72,6 +72,16 @@ router.post("/", auth, async (req, res) => {
 
     // send back the new preference saved in the database
     return res.send(pref);
+});
+
+// DELETE request to delete a specific preference from the database
+router.delete("/delete/:advertisementId", async (req, res) => {
+    // find the preference and delete it
+    const pref = await Preference.findOneAndDelete({interested_user_id: req.user._id, advertisement_id: req.params.advertisementId});
+    if (!pref) {
+        return res.status(404).send("Preference not found");
+    }
+    return res.send("Preference deleted successfully");
 });
 
 // export the apis

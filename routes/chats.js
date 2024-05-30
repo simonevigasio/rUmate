@@ -126,4 +126,14 @@ router.post("/:senderId/addMessage/:receiverId", auth, async (req, res) => {
     return res.send(chat);
 });
 
+// DELETE request to delete a specific chat from the database knowing its users' IDs
+router.delete("/delete/:senderId/:receiverId", async (req, res) => {
+    // find the chat by its users' IDs and delete it
+    const chat = await Chat.findOneAndDelete({senderId: req.params.senderId, receiverId: req.params.receiverId});
+    if (!chat) {
+        return res.status(404).send("Chat not found");
+    }
+    return res.send("Chat deleted successfully");
+});
+
 module.exports = router;

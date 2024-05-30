@@ -58,4 +58,14 @@ router.post("/logout", (req, res) => {
     res.redirect('/');
 });
 
+// DELETE request to delete a specific user from the database
+router.delete("/delete", async (req, res) => {
+    // find the user and delete it
+    const user = await User.findOneAndDelete({_id: req.user._id});
+    if (!user) {
+        return res.status(404).send("User not found");
+    }
+    return res.send("User deleted successfully");
+});
+
 module.exports = router;

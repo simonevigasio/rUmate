@@ -1,5 +1,5 @@
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router';
 
 export default {
@@ -27,6 +27,8 @@ export default {
         const roommate = ref('');
         
         const adIsThere = ref(false);
+
+        const showingInterested = ref(false);
 
         const isButtonDisabled = computed(() => {
             return !publishAdTitle.value || !publishAdDescription.value || !publishAdPrice.value || !publishAdTitle.value || !publishAdRoom.value || !publishAdSex.value || !publishAdZone.value || !publishAdExpiry_date.value || !publishAdRoommate.value;
@@ -83,6 +85,10 @@ export default {
             residence_zone.value = '';
             expiry_date.value = '';
             roommate.value = '';
+        }
+
+        function retoggleAd() {
+            showingInterested.value = false;
         }
 
         async function hasAd() {
@@ -183,8 +189,90 @@ export default {
             }
         }
 
-        function showInterested(){
+        async function startChat(){
+            const chat_config = {
+                senderId: localStorage.getItem("username"),
+                receiverId: localStorage.getItem("chatUser")
+            };
 
+            try {
+                const resp = await fetch(`http://localhost:3000/chats/${localStorage.getItem("username")}/addChat/${localStorage.getItem("chatUser")}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                    body: JSON.stringify(chat_config),
+                });
+                const json = await resp.json();
+                console.log(json);
+            }
+            catch (ex) {
+                console.error(ex);
+            }
+            router.push('/chat');
+        }
+
+        async function showInterested(){
+            showingInterested.value = true;
+
+            await nextTick();
+
+            try {
+                const form = document.getElementById('interestedUsers');
+                let resp = await fetch(`http://localhost:3000/preferences/my-adv`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json", 
+                        "X-Auth-Token": localStorage.getItem("token") 
+                    }
+                }); 
+
+                if (!resp.ok) throw new Error('Failed to fetch preferences');
+
+                while (form.firstChild) {
+                    form.removeChild(form.lastChild);
+                }
+
+                const pref = await resp.json();
+
+                const users = pref.map(async (preference) => {
+                    const userResp = await fetch(`http://localhost:3000/users/${preference.interested_user_id}`);
+                    const user = await userResp.json();
+                    return { ...preference, username: user.username };
+                });
+                const prefWithUsers = await Promise.all(users);
+
+                prefWithUsers.forEach((preference) => {
+                    let fieldset = document.createElement('fieldset');
+                    fieldset.style.padding = "10px";
+                    fieldset.style.outline = "none";
+                    fieldset.style.width = "auto";
+                    fieldset.style.borderRadius = "10px";
+                    fieldset.style.marginTop = "5px";
+
+                    let a_user = document.createElement('a');
+
+                    a_user.style.fontWeight = "500";
+                    a_user.style.textAlign = "left";
+                    a_user.style.display = "block";
+                    a_user.style.color = "hsla(160, 100%, 37%, 1)";
+                    a_user.style.marginLeft = "20px";
+
+                    console.log(preference.username);
+                    const node_title = document.createTextNode(preference.username);
+ 
+                    a_user.appendChild(node_title);
+                    a_user.onclick = function() {                         
+                        localStorage.setItem("chatUser", preference.username);
+                        startChat();
+                    };
+
+                    fieldset.appendChild(a_user);
+
+                    form.appendChild(fieldset);
+                });
+            }
+            catch (ex) {
+                console.error(ex);
+            }
         }
 
         function notifyInterested(){
@@ -304,7 +392,9 @@ export default {
             showInterested,
             notifyInterested,
             clearParameters,
-            isButtonDisabled
+            isButtonDisabled,
+            showingInterested,
+            retoggleAd
         };
     }
 }
@@ -373,28 +463,39 @@ export default {
         </template>
 
         <template v-else>
-            <h2 class="green">Il mio annuncio: <span class="green" v-html="title"></span></h2>
+            <template v-if="!showingInterested">
+                <h2 class="green">Il mio annuncio: <span class="green" v-html="title"></span></h2>
 
-            <form class="Advertisement">
-                <fieldset>
-                    <span>Proprietario: </span><p v-html="owner"></p>
-                    <span>Descrizione: </span><p v-html="description"></p>
-                    <span>Prezzo: </span><p v-html="price"></p>
-                    <span>Tipo di stanza: </span><p v-html="room"></p>
-                    <span>Sesso inquilini: </span><p v-html="flat_sex"></p>
-                    <span>Residenza: </span><p v-html="residence_zone"></p>
-                    <span>Scadenza annuncio: </span><p v-html="expiry_date"></p>
-                    <span>Numero inquilini: </span><p v-html="roommate"></p>
-                </fieldset>
-            </form>
+                <form class="Advertisement">
+                    <fieldset>
+                        <span>Proprietario: </span><p v-html="owner"></p>
+                        <span>Descrizione: </span><p v-html="description"></p>
+                        <span>Prezzo: </span><p v-html="price"></p>
+                        <span>Tipo di stanza: </span><p v-html="room"></p>
+                        <span>Sesso inquilini: </span><p v-html="flat_sex"></p>
+                        <span>Residenza: </span><p v-html="residence_zone"></p>
+                        <span>Scadenza annuncio: </span><p v-html="expiry_date"></p>
+                        <span>Numero inquilini: </span><p v-html="roommate"></p>
+                    </fieldset>
+                </form>
 
-            <div class="buttons">
-                <button class="button" type="button" @click="deleteAd()">Elimina annuncio</button>
-                <button class="button" type="button" @click="showInterested()">Mostra interessati</button>
-                <button class="button" type="button" @click="notifyInterested()">Notifica interessati</button>
-            </div>
+                <div class="buttons">
+                    <button class="button" type="button" @click="deleteAd()">Elimina annuncio</button>
+                    <button class="button" type="button" @click="showInterested()">Mostra interessati</button>
+                    <button class="button" type="button" @click="notifyInterested()">Notifica interessati</button>
+                </div>
+            </template>
+                
+            <template v-else>
+                <h2><span class="green">Interessati al mio annuncio:</span></h2>
+                <form id="interestedUsers"></form>
+
+                <br><div class="singleButton">
+                    <button class="button" type="button" @click="retoggleAd()">Torna all'annuncio</button>
+                </div>
+            </template>
         </template>
-    </div>
+    </div>    
 
     <div class="right-side">
         <h2><span class="green">Le mie preferenze:</span></h2>

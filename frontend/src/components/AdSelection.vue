@@ -92,6 +92,7 @@
         catch (ex) {
             console.error(ex);
         }
+        localStorage.setItem("chatUser", owner.value);
         router.push('/chat');
     }
 

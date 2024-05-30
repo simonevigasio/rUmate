@@ -248,12 +248,22 @@ export default {
                 console.error(ex);
             }
         }
+
         function chatDisplayed() {
-          return  isNull(user2.value);
+          return  isNull(user2.value) && user2.value !== '';
         }
 
         onMounted(() =>{
             fetchChats();
+
+            if(localStorage.getItem("chatUser") && localStorage.getItem("chatUser") != ''){
+              user2.value = localStorage.getItem("chatUser");
+              
+              showChatMessages()
+              setTimeout(() => {
+                  localStorage.setItem("chatUser", '');
+              }, 1000);
+            }
         });
 
         onBeforeUnmount(() => {
