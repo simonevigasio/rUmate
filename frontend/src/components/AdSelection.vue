@@ -20,7 +20,7 @@
 
     async function getAdv(){
         try {
-            let resp = await fetch(`http://localhost:${3000}/advertisements/${localStorage.getItem("adv")}`, {
+            let resp = await fetch(`http://localhost:${3000}/advertisements/getById/${localStorage.getItem("adv")}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });

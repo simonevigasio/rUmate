@@ -1,8 +1,11 @@
 <script>
 import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router';
 
 export default {
     setup() {
+        const router = useRouter();
+
         const publishAdTitle = ref('')
         const publishAdDescription = ref('')
         const publishAdPrice = ref('')
@@ -206,26 +209,23 @@ export default {
                 }
 
                 const pref = await resp.json();
-                console.log(pref);
                 
-                /*const ads = pref.map(async (preference) => {
-                    console.log(preference.advertisement_id);
-                    const adResp = await fetch(`http://localhost:3000/advertisement/${preference.advertisement_id}`);
+                const ads = pref.map(async (preference) => {
+                    const adResp = await fetch(`http://localhost:3000/advertisements/getById/${preference.advertisement_id}`);
                     const ad = await adResp.json();
-                    return { ...preference, ad: ad };
+                    return { ...preference, ad_name: ad.title, ad_owner: ad.user_id };
                 });
+                const prefWithAds = await Promise.all(ads);
 
-                const preferencesWithAds = await Promise.all(ads);
-
-                const owners = preferencesWithAds.map(async (preference) => {
-                    const userResp = await fetch(`http://localhost:3000/users/${preference.ad.user_id}`);
+                const owners = prefWithAds.map(async (preference) => {
+                    const userResp = await fetch(`http://localhost:3000/users/${preference.ad_owner}`);
                     const user = await userResp.json();
-                    return { ...preference, owner: user.username };
+                    return { ...preference, username: user.username };
                 });
+                const prefWithUsers = await Promise.all(owners);
 
-                const preferencesComplete = await Promise.all(owners);*/
 
-                pref.forEach((preference) => {
+                prefWithUsers.forEach((preference) => {
                     let fieldset = document.createElement('fieldset');
                     fieldset.style.padding = "10px";
                     fieldset.style.outline = "none";
@@ -248,11 +248,14 @@ export default {
                     p_owner.style.color = "white";
                     p_owner.style.marginLeft = "20px";
 
-                    const node_title = document.createTextNode(preference.advertisement_id);
-                    const node_owner = document.createTextNode("Proprietario: " + preference.interested_user_id);
+                    const node_title = document.createTextNode(preference.ad_name);
+                    const node_owner = document.createTextNode("Proprietario: " + preference.username);
  
                     a_ad.appendChild(node_title);
-                    a_ad.onclick = function() { localStorage.setItem("pref", preference._id); };
+                    a_ad.onclick = function() {                         
+                        localStorage.setItem("adv", preference.advertisement_id); 
+                        router.push('/advertisement');
+                    };
 
                     p_owner.appendChild(node_owner);
 

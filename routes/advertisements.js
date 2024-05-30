@@ -73,7 +73,7 @@ router.get("/", async (req, res) => {
 });*/
 
 // GET request to find a specific advertisement knowing its ID
-router.get("/:id", async (req, res) => {
+router.get("/getById/:id", async (req, res) => {
     const ad = await Advertisement.findOne({_id: req.params.id});
     if (!ad) return res.status(404).send("Advertisement not found");
     return res.send(ad);
