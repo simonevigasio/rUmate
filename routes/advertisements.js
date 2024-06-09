@@ -5,72 +5,33 @@
     mongoose -> connection with MongoDB 
     express -> is a framework for Node.js
     router -> import the RESTful requests 
-
 */
 const _ = require("lodash");
 const auth = require("../middleware/auth");
 const { Advertisement, validate } = require("../models/advertisement");
-const mongoose = require("mongoose");
 const express = require('express');
 const router = express.Router();
 
+// GET ads using filters and sorting options
+router.get("/", async (req, res) => {
 
-// POST request to get all the advertisements from the Database that respect the parameters
-router.post("/", async (req, res) => {
-    query = new mongoose.Query();
+    // get all the ads from the database
+    const query = Advertisement.find();
 
-    queryRoom = new mongoose.Query();
-    Object.entries(req.body.roomFilter).map(filter => {
-        queryRoom.or([{ room : filter[1] }]);
-    });
-    querySex = new mongoose.Query();
-    Object.entries(req.body.sexFilter).map(filter => {
-        querySex.or([{ flat_sex: filter[1] }]);
-    });
-    queryResidence = new mongoose.Query();
-    Object.entries(req.body.residenceFilter).map(filter => {
-        queryResidence.or([{ residence_zone: filter[1] }]);
-    });
-    query.and([queryRoom.getFilter(),querySex.getFilter(),queryResidence.getFilter()]);
+    // apply filters if selected
+    if (req.query.roomFilter) query.in("room", JSON.parse(req.query.roomFilter));
+    if (req.query.sexFilter) query.in("flat_sex", JSON.parse(req.query.sexFilter));
+    if (req.query.residenceFilter) query.in("residence_zone", JSON.parse(req.query.residenceFilter));
 
-    // this part of the query permits to sort the ads
-    if(req.body.sort == 'Price'){   query.sort({ price: 'asc'});    }
-    if(req.body.sort == 'Expiry_date'){ query.sort({ expiry_date: 'asc'});  }
+    // sort the ads filtered
+    const sort = req.query.sort;
+    if (sort == "Price") query.sort({ price: "asc" });
+    else if (sort == "Expiry_date") query.sort({ expiry_date: "asc" });
 
-    // save in ads all the advertisements found in the Database which respect the query criteria 
-    const ads = await Advertisement.find(query);
-
+    // execute the command 
+    const ads = await query.exec();
     return res.send(ads);
 });
-
-/*
-// GET request to get all the advertisements from the Database that respect the parameters
-router.get("/", async (req, res) => {
-    query = new mongoose.Query();
-
-    queryRoom = new mongoose.Query();
-    Object.entries(req.query.roomFilter).map(filter => {
-        queryRoom.or([{ room : filter[1] }]);
-    });
-    querySex = new mongoose.Query();
-    Object.entries(req.query.sexFilter).map(filter => {
-        querySex.or([{ flat_sex: filter[1] }]);
-    });
-    queryResidence = new mongoose.Query();
-    Object.entries(req.query.residenceFilter).map(filter => {
-        queryResidence.or([{ residence_zone: filter[1] }]);
-    });
-    query.and([queryRoom.getFilter(),querySex.getFilter(),queryResidence.getFilter()]);
-
-    // this part of the query permits to sort the ads
-    if(req.query.sort == 'Price'){   query.sort({ price: 'asc'});    }
-    if(req.query.sort == 'Expiry_date'){ query.sort({ expiry_date: 'asc'});  }
-
-    // save in ads all the advertisements found in the Database which respect the query criteria 
-    const ads = await Advertisement.find(query);
-
-    return res.send(ads);
-});*/
 
 // GET request to find a specific advertisement knowing its ID
 router.get("/getById/:id", async (req, res) => {

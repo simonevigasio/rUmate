@@ -36,7 +36,6 @@ router.get("/my-prefs", auth, async (req, res) => {
 });
 
 
-
 // this api (POST) creates a new preference between an interested user and one advertisement
 router.post("/", auth, async (req, res) => {
 
