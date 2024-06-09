@@ -60,7 +60,13 @@
 
       try {
           const form = document.getElementById('ads');
-          const url = `http://localhost:3000/advertisements?sort=${sort}&roomFilter=${roomFilter}&sexFilter=${sexFilter}&residenceFilter=${residenceFilter}`;
+          let url = `http://localhost:3000/advertisements?sort=${sort}`;
+          if (roomFilter[1]) url += `&roomFilter=${roomFilter[0]}`;
+          if (sexFilter[1]) url += `&sexFilter=${sexFilter[0]}`;
+          if (residenceFilter[1]) url += `&residenceFilter=${residenceFilter[0]}`;
+
+          console.log(url);
+
           const resp = await fetch(url, {
               method: "GET",
               headers: { "Content-Type": "application/json" },
@@ -140,13 +146,17 @@
 
   function stringifyFilter(filters) {
     let query = '[';
+    let filterUsed = false;
     filters.map((filter, index) => {
+      if (filter != 'None') {
+        filterUsed = true;
+      }
       query += ('"' + filter + '"');
       if (index != filters.length - 1) {
         query += ", ";
       }
     });
-    return query + "]";
+    return [query + "]", filterUsed];
   }
 
   async function sort_and_filter() {

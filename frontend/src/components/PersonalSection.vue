@@ -143,7 +143,7 @@ export default {
             };
 
             try {
-                const resp = await fetch("http://localhost:3000/advertisements/publish", {
+                const resp = await fetch("http://localhost:3000/advertisements/", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/json", 
