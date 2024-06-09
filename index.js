@@ -35,7 +35,9 @@ database.once('connected', () => {
 app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+app.use(cors({
+    exposedHeaders: ['X-Auth-Token'] 
+}));
 
 app.use("/authenticate", auth);
 app.use("/users", users);

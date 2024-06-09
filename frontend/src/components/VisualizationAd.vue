@@ -65,8 +65,6 @@
           if (sexFilter[1]) url += `&sexFilter=${sexFilter[0]}`;
           if (residenceFilter[1]) url += `&residenceFilter=${residenceFilter[0]}`;
 
-          console.log(url);
-
           const resp = await fetch(url, {
               method: "GET",
               headers: { "Content-Type": "application/json" },
