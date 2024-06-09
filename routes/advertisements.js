@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
     // get all the ads from the database
     const query = Advertisement.find();
 
-    // apply filters if selected
+    // apply filters if inserted into the query of the request
     if (req.query.roomFilter) query.in("room", JSON.parse(req.query.roomFilter));
     if (req.query.sexFilter) query.in("flat_sex", JSON.parse(req.query.sexFilter));
     if (req.query.residenceFilter) query.in("residence_zone", JSON.parse(req.query.residenceFilter));
@@ -48,7 +48,8 @@ router.get("/getByUser/:userId", async (req, res) => {
 });
 
 // POST request to add an advertisement in the database
-router.post("/publish", auth, async (req, res) => {
+router.post("/", auth, async (req, res) => {
+
     // validate if the advertisement is correct, using the validate function
     req.body.user_id = req.user._id;
     const { error } = validate(req.body);

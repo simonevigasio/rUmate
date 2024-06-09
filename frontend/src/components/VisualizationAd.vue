@@ -28,40 +28,42 @@
   const filterResidenceOltrecastello = ref({ checked: false, value: 'Oltrecastello' });
 
   async function visualizeAdv() {
-      const parameter = {
-          sort : selectedSortOption.value,
-          roomFilter: {
-              Single: filterRoomSingle.value.checked ? filterRoomSingle.value.value : 'None',
-              Double: filterRoomDouble.value.checked ? filterRoomDouble.value.value : 'None',
-              Triple: filterRoomTriple.value.checked ? filterRoomTriple.value.value : 'None',
-          },
-          sexFilter: {
-              Male: filterSexMale.value.checked ? filterSexMale.value.value : 'None',
-              Female: filterSexFemale.value.checked ? filterSexFemale.value.value : 'None',
-              Mixed: filterSexMixed.value.checked ? filterSexMixed.value.value : 'None',
-          },
-          residenceFilter: {
-              Povo: filterResidencePovo.value.checked ? filterResidencePovo.value.value : 'None',
-              Bondone: filterResidenceBondone.value.checked ? filterResidenceBondone.value.value : 'None',
-              Sardagna: filterResidenceSardagna.value.checked ? filterResidenceSardagna.value.value : 'None',
-              Centro_storico_Piedicastello: filterResidenceCentro_storico_Piedicastello.value.checked ? filterResidenceCentro_storico_Piedicastello.value.value : 'None',
-              Meano: filterResidenceMeano.value.checked ? filterResidenceMeano.value.value : 'None',
-              Argentario: filterResidenceArgentario.value.checked ? filterResidenceArgentario.value.value : 'None',
-              San_Giuseppe_Santa_Chiara: filterResidenceSan_Giuseppe_Santa_Chiara.value.checked ? filterResidenceSan_Giuseppe_Santa_Chiara.value.value : 'None',
-              Oltrefersina: filterResidenceOltrefersina.value.checked ? filterResidenceOltrefersina.value.value : 'None',
-              Villazzano: filterResidenceVillazzano.value.checked ? filterResidenceVillazzano.value.value : 'None',
-              Mattarello: filterResidenceMattarello.value.checked ? filterResidenceMattarello.value.value : 'None',
-              Ravina_romagnano: filterResidenceRavina_romagnano.value.checked ? filterResidenceRavina_romagnano.value.value : 'None',
-              Oltrecastello: filterResidenceOltrecastello.value.checked ? filterResidenceOltrecastello.value.value : 'None',
-          }
-      };
+      
+      const sort = selectedSortOption.value;
+
+      const roomFilter = stringifyFilter([
+          filterRoomSingle.value.checked ? filterRoomSingle.value.value : 'None',
+          filterRoomDouble.value.checked ? filterRoomDouble.value.value : 'None',
+          filterRoomTriple.value.checked ? filterRoomTriple.value.value : 'None',
+      ]);
+
+      const sexFilter = stringifyFilter([
+          filterSexMale.value.checked ? filterSexMale.value.value : 'None',
+          filterSexFemale.value.checked ? filterSexFemale.value.value : 'None',
+          filterSexMixed.value.checked ? filterSexMixed.value.value : 'None',
+      ]);
+
+      const residenceFilter = stringifyFilter([
+          filterResidencePovo.value.checked ? filterResidencePovo.value.value : 'None',
+          filterResidenceBondone.value.checked ? filterResidenceBondone.value.value : 'None',
+          filterResidenceSardagna.value.checked ? filterResidenceSardagna.value.value : 'None',
+          filterResidenceCentro_storico_Piedicastello.value.checked ? filterResidenceCentro_storico_Piedicastello.value.value : 'None',
+          filterResidenceMeano.value.checked ? filterResidenceMeano.value.value : 'None',
+          filterResidenceArgentario.value.checked ? filterResidenceArgentario.value.value : 'None',
+          filterResidenceSan_Giuseppe_Santa_Chiara.value.checked ? filterResidenceSan_Giuseppe_Santa_Chiara.value.value : 'None',
+          filterResidenceOltrefersina.value.checked ? filterResidenceOltrefersina.value.value : 'None',
+          filterResidenceVillazzano.value.checked ? filterResidenceVillazzano.value.value : 'None',
+          filterResidenceMattarello.value.checked ? filterResidenceMattarello.value.value : 'None',
+          filterResidenceRavina_romagnano.value.checked ? filterResidenceRavina_romagnano.value.value : 'None',
+          filterResidenceOltrecastello.value.checked ? filterResidenceOltrecastello.value.value : 'None',
+      ]);
 
       try {
           const form = document.getElementById('ads');
-          const resp = await fetch("http://localhost:3000/advertisements", {
-              method: "POST",
+          const url = `http://localhost:3000/advertisements?sort=${sort}&roomFilter=${roomFilter}&sexFilter=${sexFilter}&residenceFilter=${residenceFilter}`;
+          const resp = await fetch(url, {
+              method: "GET",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(parameter),
           });
 
           while (form.firstChild) {
@@ -134,6 +136,17 @@
       catch (ex) {
           console.error(ex);
       }
+  }
+
+  function stringifyFilter(filters) {
+    let query = '[';
+    filters.map((filter, index) => {
+      query += ('"' + filter + '"');
+      if (index != filters.length - 1) {
+        query += ", ";
+      }
+    });
+    return query + "]";
   }
 
   async function sort_and_filter() {

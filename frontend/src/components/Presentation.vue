@@ -49,8 +49,6 @@ async function logout() {
 </template>
 
 <style scoped>
-
-/* navbar */
 ul {
   list-style-type: none;
   margin: 0;
@@ -83,8 +81,6 @@ li .link:hover:not(.active) {
 .active {
   background-color: #04AA6D;
 }
-
-/*-----------------------------------*/
 
 .logo {
   margin-bottom: 40px;
@@ -161,5 +157,4 @@ li .link:hover:not(.active) {
     text-align: left;
   }
 }
-
 </style>
