@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="#">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js;">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <title>Home</title>
+</head>
+<body>
+<form action="signup" method="post" name="signupform" id="signupform">
+    <span>Registrati</span>
+    <br>
+    <span id="signupUser"></span>
+    <span>username</span>
+    <input name="username" id="signupUsername"/>
+    <br>
+    <span>password</span>
+    <input name="password" id="signupPassword"/>
+    <br>
+    <button type="button" onclick="signup();">signup</button>
+</form>
+
+<br>
+
+<form action="login" method="post" name="loginform" id="loginform">
+    <span>Loggati</span>
+    <br>
+    <span id="loginUser"></span>
+    <span>username</span>
+    <input name="username" id="loginUsername"/>
+    <br>
+    <span>password</span>
+    <input name="password" id="loginPassword"/>
+    <br>
+    <button type="button" onclick="login();">login</button>
+</form>
+
+<br>
+
+<button type="button" onclick="logout();">logout</button>
+
+<br>
+<br>
+
+<form action="messages" method="get" name="viewChatForm" id="messages">
+    <span>destinatario</span>
+    <input name="receiver" id="receiverVc"/>
+    <br>
+
+    <button type="button" onclick="visualizeChat();">visualizza Chat</button>
+</form>
+
+<h1>Chat</h1>
+<ul id="chat"></ul>
+
+<form action="addMessage" method="post" name="addMessageForm" id="addMessage">
+    <span>Aggiungi messaggio</span>
+    <br>
+
+    <span>destinatario</span>
+    <input name="receiver" id="receiverAm"/>
+    <br>
+
+    <span>contenuto</span>
+    <br>
+    <textarea name="content" id="msgContent" placeholder="Insert message content..."> 
+        Insert message content...
+    </textarea>
+    <br>
+
+    <button type="button" onclick="publishMessage();">Aggiungi messaggio</button>
+</form>
+
+<h1>Lista Annunci</h1>
+<ul id="ads"></ul>
+
+<form action="sort_and_filter" method="get" name="sort_and_filterform" id="sort_and_filterform">
+    <fieldset>
+        <span>Scegli ordinamento:</span>
+        <select name="sort" id="sortAd">
+            <option value="">--Seleziona-ordinamento--</option>
+            <option value="Prize">Prezzo</option>
+            <option value="Expiry_date">Scadenza annuncio</option>
+        </select>
+    <br>
+    </fieldset>
+    
+    <fieldset>
+        <span>Filtra per il tipo di stanza:</span><br /> 
+        <label>
+            <input type="checkbox" id="filterRoomSingle" name="roomSingle" value="Single" checked/>
+            Singola
+        </label><br />
+        <label>
+            <input type="checkbox" id="filterRoomDouble" name="roomDouble" value="Double" checked/>
+            Doppia
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterRoomTriple" name="roomTriple" value="Triple" checked/>
+            Tripla
+        </label><br /> 
+        <br />
+
+        <span>Filtra per per la tipologia di componenti dell'appartamento:</span><br /> 
+        <label>
+            <input type="checkbox" id="filterSexMale" name="SexMale" value="Male" checked/>
+            Maschi
+        </label><br />
+        <label>
+            <input type="checkbox" id="filterSexFemale" name="SexFemale" value="Female" checked/>
+            Femmine
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterSexMixed" name="SexMixed" value="Mixed" checked/>
+            Misto
+        </label><br /> 
+        <br /> 
+
+        <span>Filtra per la residenza dell'appartamento:</span><br /> 
+        <label>
+            <input type="checkbox" id="filterResidencePovo" name="residencePovo" value="Povo" checked/>
+            Povo
+        </label><br />
+        <label>
+            <input type="checkbox" id="filterResidenceBondone" name="residenceBondone" value="Bondone" checked/>
+            Bondone
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterResidenceSardagna" name="residenceSardagna" value="Sardagna" checked/>
+            Sardagna
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterResidenceCentro_storico_Piedicastello" name="residenceCentro_storico_Piedicastello" value="Centro_storico_Piedicastello" checked/>
+            Centro_storico_Piedicastello
+        </label><br />
+        <label>
+            <input type="checkbox" id="filterResidenceMeano" name="residenceMeano" value="Meano" checked/>
+            Meano
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterResidenceArgentario" name="residenceArgentario" value="Argentario" checked/>
+            Argentario
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterResidenceSan_Giuseppe_Santa_Chiara" name="residenceSan_Giuseppe_Santa_Chiara" value="San_Giuseppe_Santa_Chiara" checked/>
+            San_Giuseppe_Santa_Chiara
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterResidenceOltrefersina" name="residenceOltrefersina" value="Oltrefersina" checked/>
+            Oltrefersina
+        </label><br />
+        <label>
+            <input type="checkbox" id="filterResidenceVillazzano" name="residenceVillazzano" value="Villazzano" checked/>
+            Villazzano
+        </label><br />
+        <label>
+            <input type="checkbox" id="filterResidenceMattarello" name="residenceMattarello" value="Mattarello" checked/>
+            Mattarello
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterResidenceRavina_romagnano" name="residenceRavina_romagnano" value="Ravina_romagnano" checked/>
+            Ravina_romagnano
+        </label><br /> 
+        <label>
+            <input type="checkbox" id="filterResidenceOltrecastello" name="residenceOltrecastello" value="Oltrecastello" checked/>
+            Oltrecastello
+        </label><br />
+        <br /> 
+
+    </fieldset>
+    <button type="button" onclick="sort_and_filter();">sort_and_filter</button>
+</form>
+
+
+<h1>Lista Annunci</h1>
+<ul id="ads"></ul>
+
+<form action="publishAd" method="post" name="publishAdform" id="publishAdform">
+    <span>Pubblica annuncio</span>
+    <br>
+
+    <span id="pubishAd"></span>
+    <!-- <input name="owner" id="publishAdOwner"/> -->
+
+
+    <span>title</span>
+    <input name="title" id="publishAdTitle"/>
+    <br>
+
+    <span>description</span>
+    <br>
+    <textarea name="description" id="publishAdDescription" placeholder="Insert advertisement description..."> 
+        Insert advertisement description...
+    </textarea>
+    <br>
+
+    <span>prezzo</span>
+    <input name="prize" id="publishAdPrize"/>
+    <span> euro</span>
+    <br>
+
+    <span>Scegli il tipo di stanza:</span>
+    <select name="room" id="publishAdRoom">
+        <option value="Single">Singola</option>
+        <option value="Double">Doppia</option>
+        <option value="Triple">Tripla</option>
+    </select>
+    <br>
+
+    <span>Scegli la tipologia di componenti dell'appartamento:</span>
+    <select name="flat_sex" id="publishAdFlat_sex">
+        <option value="Male">Maschi</option>
+        <option value="Female">Femmine</option>
+        <option value="Mixed">Misto</option>
+    </select>
+    <br>
+
+    <span>Scegli la residenza dell'appartamento:</span>
+    <select name="residence_zone" id="publishAdResidence_zone">
+        <option value="Povo">Povo</option>
+        <option value="Bondone">Bondone</option>
+        <option value="Sardagna">Sardagna</option>
+        <option value="Centro_storico_Piedicastello">Centro_storico_Piedicastello</option>
+        <option value="Meano">Meano</option>
+        <option value="Argentario">Argentario</option>
+        <option value="San_Giuseppe_Santa_Chiara">San_Giuseppe_Santa_Chiara</option>
+        <option value="Oltrefersina">Oltrefersina</option>
+        <option value="Villazzano">Villazzano</option>
+        <option value="Mattarello">Mattarello</option>
+        <option value="Ravina_romagnano">Ravina_romagnano</option>
+        <option value="Oltrecastello">Oltrecastello</option>
+    </select>
+    <br>
+
+    <span>scadenza</span>
+    <input type="date" name="expiry_date" id="publishAdExpiry_date"/>
+    <br>
+
+    <span>numero coinquilini</span>
+    <input name="roommate" id="publishAdRoommate"/>
+    <br>
+
+    <button type="button" onclick="publishAd();">publishAd</button>
+</form>
+
+<script src="script.js"></script>
+
+</body>

@@ -57,10 +57,10 @@
                 body: JSON.stringify(user),
             });
 
-            const token = resp.headers.get('X-Auth-Token');
+            const headers = resp.headers;
+            const token = headers.get("X-Auth-Token");
 
             const json = await resp.json();
-            console.log(json);
 
             localStorage.setItem("token", token);
             localStorage.setItem("username", json.username);
