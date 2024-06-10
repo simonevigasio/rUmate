@@ -19,7 +19,7 @@ mongoose.connect(mongoString);
 const database = mongoose.connection;
 
 database.on('error', (error) => {
-    console.log(error)
+    console.log(error);
 });
 
 database.once('connected', () => {
@@ -28,7 +28,7 @@ database.once('connected', () => {
 
 app.set("trust proxy", 1);
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(cors({
     exposedHeaders: ['X-Auth-Token'] 
 }));
@@ -39,21 +39,17 @@ app.use("/advertisements", advertisements);
 app.use("/preferences", preferences);
 app.use("/chats", chats);
 
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "index.html"));
+});
+
 app.use((req, res) => {
-    res.status(404);
-    res.json({ error: 'Not found' });
+    res.status(404).json({ error: 'Not found' });
 });
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something broke!' });
-});
-
-const frontend = process.env.FRONTEND || path.join( __dirname, '..', 'frontend', 'index.js' );
-app.use('/rUmateApp', express.static( frontend ));
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
 
 module.exports = app;
