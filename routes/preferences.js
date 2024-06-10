@@ -35,7 +35,6 @@ router.get("/my-prefs", auth, async (req, res) => {
     return res.send(prefs)
 });
 
-
 // this api (POST) creates a new preference between an interested user and one advertisement
 router.post("/", auth, async (req, res) => {
 
@@ -55,7 +54,7 @@ router.post("/", auth, async (req, res) => {
     if (!ad) return res.status(400).send({message: "Advertisement does not exist"});
 
     // verify whether the user is the owner of the advertisement
-    if (ad.user_id === user._id) return res.status(400).send({message: "The user is the onwer of the advertisement"});
+    if (ad.user_id == user._id) return res.status(400).send({message: "The user is the onwer of the advertisement"});
 
     // verify whether the user exceeds the number of preferences
     const prefs = await Preference.find({interested_user_id: req.body.interested_user_id});
@@ -74,13 +73,16 @@ router.post("/", auth, async (req, res) => {
 });
 
 // DELETE request to delete a specific preference from the database
-router.delete("/delete/:advertisementId", async (req, res) => {
+router.delete("/:id", async (req, res) => {
+
     // find the preference and delete it
-    const pref = await Preference.findOneAndDelete({interested_user_id: req.user._id, advertisement_id: req.params.advertisementId});
-    if (!pref) {
-        return res.status(404).send("Preference not found");
-    }
-    return res.send("Preference deleted successfully");
+    const pref = await Preference.findOneAndDelete({ _id: req.params.id });
+
+    // verify whether the preference exists
+    if (!pref) return res.status(404).send("Preference not found");
+    
+    // send back the preference deleted
+    return res.send(pref);
 });
 
 // export the apis

@@ -1,42 +1,59 @@
-/*  
-    tools imported for the declaration of RESTful requests 
-    auth -> import a function used to check if the user is authenticated
-    Notification, validate  -> import a model and a function from the notification module
-    mongoose -> connection with MongoDB 
-    express -> is a framework for Node.js
-    router -> import the RESTful requests 
-*/
 const _ = require("lodash");
 const auth = require("../middleware/auth");
 const { Notification, validate } = require("../models/notification");
-const mongoose = require("mongoose");
+const { User } = require("../models/user");
 const express = require('express');
 const router = express.Router();
+const moment = require("moment");
 
-// GET request to find notifications related to an user
+// GET notifications of a specific user
 router.get("/", auth, async (req, res) => {
-    const notif = await Notification.find({user_id: req.user._id});
-    if (!notif) return res.status(404).send("Notification not found");
-    return res.send(notif);
+
+    // get notifications from database and sort them in ascending order
+    const notifs = await Notification.find({ reciver_id: req.user._id }).sort({ date: "asc" });
+
+    // send back the result
+    return res.send(notifs);
 });
 
-// POST request to create a new notification and save it on the DataBase
+// POST a new notification
 router.post("/", auth, async (req, res) => {
-    // validate if the notification is correct, using the validate function
-    req.body.user_id = req.user._id;
+
+    // add the sender and date information
+    req.body.sender_id = req.user._id;
+    req.body.date = moment().format("YYYY MM DD");
+
+    // verify whether the sender is the reciver
+    if (req.body.sender_id == req.body.reciver_id) return res.status(400).send("The sender and reciver are the same");
+
+    // verify the validity of the notification
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    // load the notification in the Database
-    notif = new Notification(req.body);
+    // verify whether the reciver exists
+    const user = await User.findOne({ _id: req.body.reciver_id });
+    if (!user) return res.status(400).send("The reciver doesn't exist");
+
+    // create and save the notification
+    const notif = new Notification(req.body);
     await notif.save();
+
+    // send back the notification
     return res.send(notif);
 });
 
-// DELETE request to remove a notification from the DataBase
-router.delete("/", async (req, res) => {
-    //User.findById("63203694182cd3c22ea480ff").then(doc => { doc.remove();   })
+// DELETE a specific notification
+router.delete("/:id", async (req, res) => {
+
+    // find and delete the notififcation with the given id
+    const notif = await Notification.findOneAndDelete({ _id: req.params.id });
+
+    // verify whether the notification has been found and deleted
+    if (!notif) return res.status(400).send("Notification not found");
+
+    // return the deleted notification
+    return res.send(notif);
 });
 
-// Export the router requests
+// export api
 module.exports = router;

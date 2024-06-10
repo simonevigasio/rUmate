@@ -95,19 +95,9 @@ export default {
 
         async function hasAd() {
             try {
-                const username = localStorage.getItem("username");
-                let resp = await fetch(`http://localhost:3000/users/getId/${username}`, {
+                const resp = await fetch(`http://localhost:3000/advertisements/my-ad`, {
                     method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                });
-
-                if (!resp.ok) throw new Error('Failed to fetch user data');
-
-                userId.value = await resp.json();
-
-                resp = await fetch(`http://localhost:${3000}/advertisements/getByUser/${userId.value}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                 });
 
                 if (!resp.ok) throw new Error('Failed to fetch advertisement data');
@@ -148,8 +138,7 @@ export default {
                 const resp = await fetch("http://localhost:3000/advertisements/", {
                     method: "POST",
                     headers: { 
-                        "Content-Type": "application/json", 
-                        "X-Auth-Token": localStorage.getItem("token") 
+                        "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") 
                     },
                     body: JSON.stringify(advertisement_config),
                 });
@@ -177,9 +166,9 @@ export default {
 
         async function deleteAd() {
             try {
-                let resp = await fetch(`http://localhost:3000/advertisements/delete/${userId.value}`, {
+                let resp = await fetch(`http://localhost:3000/advertisements`, {
                     method: "DELETE",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                 });
 
                 if (!resp.ok) throw new Error('Failed to delete the advertisement');
@@ -359,7 +348,7 @@ export default {
                 const pref = await resp.json();
                 
                 const ads = pref.map(async (preference) => {
-                    const adResp = await fetch(`http://localhost:3000/advertisements/getById/${preference.advertisement_id}`);
+                    const adResp = await fetch(`http://localhost:3000/advertisements/${preference.advertisement_id}`);
                     const ad = await adResp.json();
                     return { ...preference, ad_name: ad.title, ad_owner: ad.user_id };
                 });

@@ -1,24 +1,30 @@
-/*  
-    tools imported for the declaration of RESTful requests 
-    auth -> import a function used to check if the user is authenticated
-    Advertisement, validate  -> import a model and a function from the advertisement module
-    mongoose -> connection with MongoDB 
-    express -> is a framework for Node.js
-    router -> import the RESTful requests 
-*/
 const _ = require("lodash");
 const auth = require("../middleware/auth");
 const { Advertisement, validate } = require("../models/advertisement");
+const { Preference } = require("../models/preference");
 const express = require('express');
 const router = express.Router();
+
+// GET a specific advertisement given the user id
+router.get("/my-ad", auth, async (req, res) => {
+
+    // get from the database the advertisement given the user id
+    const ad = await Advertisement.findOne({ user_id: req.user._id });
+
+    // verify whether the advertisement exists
+    if (!ad) return res.status(404).send("Advertisement not found");
+
+    // send the result
+    return res.send(ad);
+});
 
 // GET ads using filters and sorting options
 router.get("/", async (req, res) => {
 
-    // get all the ads from the database
+    // set all the ads from the database
     const query = Advertisement.find();
 
-    // apply filters if inserted into the query of the request
+    // set filters if inserted into the query of the request
     if (req.query.roomFilter) query.in("room", JSON.parse(req.query.roomFilter));
     if (req.query.sexFilter) query.in("flat_sex", JSON.parse(req.query.sexFilter));
     if (req.query.residenceFilter) query.in("residence_zone", JSON.parse(req.query.residenceFilter));
@@ -28,22 +34,23 @@ router.get("/", async (req, res) => {
     if (sort == "Price") query.sort({ price: "asc" });
     else if (sort == "Expiry_date") query.sort({ expiry_date: "asc" });
 
-    // execute the command 
+    // execute command set 
     const ads = await query.exec();
+
+    // send the retult
     return res.send(ads);
 });
 
-// GET request to find a specific advertisement knowing its ID
-router.get("/getById/:id", async (req, res) => {
-    const ad = await Advertisement.findOne({_id: req.params.id});
-    if (!ad) return res.status(404).send("Advertisement not found");
-    return res.send(ad);
-});
+// GET a precific advertisement given its id
+router.get("/:id", async (req, res) => {
 
-// GET request to find a specific advertisement knowing its owner's id
-router.get("/getByUser/:userId", async (req, res) => {
-    const ad = await Advertisement.findOne({user_id: req.params.userId});
+    // get from the database the advertisment
+    const ad = await Advertisement.findOne({_id: req.params.id});
+
+    // verify whether the advertisement exists
     if (!ad) return res.status(404).send("Advertisement not found");
+
+    // send the result
     return res.send(ad);
 });
 
@@ -63,18 +70,25 @@ router.post("/", auth, async (req, res) => {
     ad = new Advertisement(req.body);
     await ad.save();
 
+    // send the result
     return res.send(ad);
 });
 
-// DELETE request to delete a specific advertisement from the database knowing its owner's ID
-router.delete("/delete/:id", async (req, res) => {
-    // find the advertisement by its owner's ID and delete it
-    const ad = await Advertisement.findOneAndDelete({user_id: req.params.id});
-    if (!ad) {
-        return res.status(404).send("Advertisement not found");
-    }
-    return res.send("Advertisement deleted successfully");
+// DELETE a specific advertisement 
+router.delete("/", auth, async (req, res) => {
+
+    // find the advertisement by its id and delete it
+    const ad = await Advertisement.findOneAndDelete({ user_id: req.user._id });
+
+    // verify whether the advertisement exists
+    if (!ad) return res.status(404).send("Advertisement not found");
+
+    // detele all the preferences related to that advertisement
+    await Preference.deleteMany({ advertisement_id: ad._id });
+
+    // send back the advertisement deleted
+    return res.send(ad);
 });
 
-// Export the router requests
+// export api
 module.exports = router;

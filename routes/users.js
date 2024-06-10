@@ -1,40 +1,26 @@
-/*  
-    tools imported for the declaration of RESTful requests 
-    bcrypt -> import a lib used for encript and the password of the user
-    _ -> import lodash lib useful to manipulate objects and lists
-    auth -> import a function used to check if the user is authenticated
-    User, validate  -> import a model and a function from the user module
-    express -> is a framework for Node.js
-    router -> import the RESTful requests 
-*/
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { User, validate } = require("../models/user");
 const auth = require("../middleware/auth");
 const express = require('express');
+const { Advertisement } = require("../models/advertisement");
+const { Preference } = require("../models/preference");
+const { route } = require("./authenticate");
 const router = express.Router();
 
 // GET request used to access the user account, a middleware is applied 
 router.get("/me", auth, async (req, res) => {
-    // grasp from the database the used
+
+    // grasp from the database the user
     const user = await User.findById(req.user._id);
-    res.send(_.pick(user, ["username"]));
-});
 
-// GET the username from any id
-router.get("/:id", async (req, res) => {
-    const user = await User.findById(req.params.id);
-    res.send(_.pick(user, ["username"]));
-});
-
-// GET the user_id from the user's username
-router.get("/getId/:username", async (req, res) => {
-    const user = await User.findOne({ username: req.params.username });
-    res.send(user._id);
+    // send back the user
+    return res.send(user);
 });
 
 // POST request used for login users
 router.post("/", async (req, res) => {
+
     // check is the body of the request has all required information
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -53,19 +39,37 @@ router.post("/", async (req, res) => {
     });
 });
 
-// POST request used to logout
-router.post("/logout", (req, res) => {
-    res.redirect('/');
+// GET the user given a specific id
+router.get("/:id", async (req, res) => {
+
+    // given the id of the user 
+    const user = await User.findById(req.params.id);
+
+    // send the result
+    return res.send(user);
 });
+
+// POST to logout
+router.post("/logout", (req, res) => res.redirect('/'));
 
 // DELETE request to delete a specific user from the database
-router.delete("/delete", async (req, res) => {
-    // find the user and delete it
-    const user = await User.findOneAndDelete({_id: req.user._id});
-    if (!user) {
-        return res.status(404).send("User not found");
-    }
-    return res.send("User deleted successfully");
+router.delete("/", auth, async (req, res) => {
+
+    // delete the specific advertisement owned by the user
+    const ad = await Advertisement.findOneAndDelete({ _id: req.user._id });
+
+    // delete all the preferences related to the advertisement
+    await Preference.deleteMany({ advertisement_id: ad._id });
+
+    // find and delete the user
+    const user = await User.findOneAndDelete({ _id: req.user._id });
+
+    // verify whether the user exists
+    if (!user) return res.status(404).send("User not found");
+
+    // send back the user deleted
+    return res.send(user);
 });
 
+// export api
 module.exports = router;

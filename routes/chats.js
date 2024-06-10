@@ -1,14 +1,3 @@
-/*  
-    tools imported for the declaration of RESTful requests 
-    auth -> import a function used to check if the user is authenticated
-    Chat -> import a model and a function from the chat module
-    User  -> import a model from the user module
-    Message, validateMessage  -> import a model and a function from the message module
-    mongoose -> connection with MongoDB 
-    express -> is a framework for Node.js
-    router -> import the RESTful requests 
-
-*/
 const _ = require("lodash");
 const auth = require("../middleware/auth");
 const { Chat, validateChat } = require("../models/chat");
@@ -101,9 +90,9 @@ router.post("/:senderId/addMessage/:receiverId", auth, async (req, res) => {
 
     const receiver = await User.findOne({ username: req.body.receiverId });
     if (!receiver) return res.status(400).send("This receiver does not exist");
-
+    
     // check if the sender and the receiver are the same user; if so, error
-    if (req.body.senderId === req.body.receiverId) return res.status(400).send("The sender and the receiver can't be the same users");
+    if (req.body.senderId == req.body.receiverId) return res.status(400).send("The sender and the receiver can't be the same users");
 
     // check if a chat between the two users already exists, otherwise create it and store it
     let chat = await Chat.findOne({
@@ -127,13 +116,11 @@ router.post("/:senderId/addMessage/:receiverId", auth, async (req, res) => {
 });
 
 // DELETE request to delete a specific chat from the database knowing its users' IDs
-router.delete("/delete/:senderId/:receiverId", async (req, res) => {
+router.delete("/:senderId/:receiverId", async (req, res) => {
     // find the chat by its users' IDs and delete it
     const chat = await Chat.findOneAndDelete({senderId: req.params.senderId, receiverId: req.params.receiverId});
-    if (!chat) {
-        return res.status(404).send("Chat not found");
-    }
-    return res.send("Chat deleted successfully");
+    if (!chat) return res.status(404).send("Chat not found");
+    return res.send(chat);
 });
 
 module.exports = router;
