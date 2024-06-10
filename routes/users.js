@@ -33,7 +33,7 @@ router.get("/getId/:username", async (req, res) => {
     res.send(user._id);
 });
 
-// POST request used for login users
+// POST request used for users to login
 router.post("/", async (req, res) => {
     // check is the body of the request has all required information
     const { error } = validate(req.body);

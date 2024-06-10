@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">95.23% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/21</span>
+                <span class='fraction'>20/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>5/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.88% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/18</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -112,40 +112,40 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">/*  
+<span class="cline-any cline-yes">6x</span></td><td class="text"><pre class="prettyprint lang-js">/*  
     tools imported for the declaration of RESTful requests 
     bcrypt -&gt; import a lib used for encript and the password of the user
     _ -&gt; import lodash lib useful to manipulate objects and lists
@@ -160,29 +160,29 @@ const express = require('express');
 const router = express.Router();
 &nbsp;
 // POST request used to register into rUmate
-router.post("/", <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
+router.post("/", async (req, res) =&gt; {
     // check if the body of the request has all requered information
-    const { error } = <span class="cstat-no" title="statement not covered" >validate(req.body);</span>
-<span class="cstat-no" title="statement not covered" >    if (error) <span class="cstat-no" title="statement not covered" >return res.status(400).send(error.details[0].message);</span></span>
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 &nbsp;
     // check if the user is already registered
-    let user = <span class="cstat-no" title="statement not covered" >await User.findOne({username: req.body.username});</span>
-<span class="cstat-no" title="statement not covered" >    if (user) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "User already registered"});</span></span>
+    let user = await User.findOne({username: req.body.username});
+    if (user) return res.status(400).send({message: "User already registered"});
 &nbsp;
     // create a new User oebject to store into the database
-<span class="cstat-no" title="statement not covered" >    user = new User(_.pick(req.body, ["username", "password"]));</span>
+    user = new User(_.pick(req.body, ["username", "password"]));
 &nbsp;
     // hash the password given by the user 
-<span class="cstat-no" title="statement not covered" >    bcrypt.hash(user.password, 10, <span class="fstat-no" title="function not covered" >as</span>ync function(err, hash) {</span>
-<span class="cstat-no" title="statement not covered" >        if (err) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "Invalid password"});</span></span>
+    bcrypt.hash(user.password, 10, async function(err, hash) {
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (err) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "Invalid password"});</span>
         
         // if the password is hashable save the hash in the database 
-<span class="cstat-no" title="statement not covered" >        user.password = hash;</span>
-<span class="cstat-no" title="statement not covered" >        await user.save();</span>
+        user.password = hash;
+        await user.save();
         
         // generate a json-web-token and sent it into the header of the response
-        const token = <span class="cstat-no" title="statement not covered" >user.generateAuthToken();</span>
-<span class="cstat-no" title="statement not covered" >        res.header("X-Auth-Token", token).send(_.pick(user, ["_id", "username"]));</span>
+        const token = user.generateAuthToken();
+        res.header("X-Auth-Token", token).send(_.pick(user, ["_id", "username"]));
     });
 });
 &nbsp;
@@ -193,7 +193,7 @@ module.exports = router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-06-10T14:17:59.550Z
+                at 2024-06-10T22:16:53.755Z
             </div>
         <script src="../prettify.js"></script>
         <script>
