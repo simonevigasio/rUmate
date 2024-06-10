@@ -309,16 +309,28 @@ export default {
                     fieldset.style.borderRadius = "10px";
                     fieldset.style.marginTop = "5px";
 
-                    let p = document.createElement("p");
-                    p.style.fontWeight = "500";
-                    p.style.textAlign = "left";
-                    p.style.display = "block";
-                    p.style.color = "white";
-                    p.style.marginLeft = "20px";
+                    let p_content = document.createElement("p");
+                    p_content.style.fontWeight = "500";
+                    p_content.style.textAlign = "left";
+                    p_content.style.display = "block";
+                    p_content.style.color = "white";
+                    p_content.style.marginLeft = "20px";
 
-                    const node = document.createTextNode(notification.content);
-                    p.appendChild(node);
-                    fieldset.appendChild(p);
+                    let p_type = document.createElement("p");
+                    p_type.style.fontWeight = "500";
+                    p_type.style.textAlign = "left";
+                    p_type.style.display = "block";
+                    p_type.style.color = "white";
+                    p_type.style.marginLeft = "20px";
+
+                    const nodeContent = document.createTextNode(notification.content);
+                    const nodeType = document.createTextNode(notification.notification_type);
+
+                    p_content.appendChild(nodeContent);
+                    p_type.appendChild(nodeType);
+
+                    fieldset.appendChild(p_type);
+                    fieldset.appendChild(p_content);
                     form.appendChild(fieldset);
                 });
             }
