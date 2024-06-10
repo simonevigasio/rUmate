@@ -6,6 +6,8 @@ export default {
     setup() {
         const router = useRouter();
 
+        let num_notifications = ref('');
+
         const publishAdTitle = ref('')
         const publishAdDescription = ref('')
         const publishAdPrice = ref('')
@@ -90,6 +92,9 @@ export default {
 
         function retoggleAd() {
             showingInterested.value = false;
+        }
+
+        function retogglePref() {
             showingNotifications.value = false;
         }
 
@@ -267,7 +272,6 @@ export default {
         }
 
         async function notifyInterested() {
-            showingInterested.value = false;
             showingNotifications.value = true;
 
             await nextTick();
@@ -290,7 +294,7 @@ export default {
 
                 const notifications = await resp.json();
 
-                notifications.forEach((notification) => {
+                notifications.forEach(async (notification) => {
                     let fieldset = document.createElement("fieldset");
                     fieldset.style.padding = "10px";
                     fieldset.style.outline = "none";
@@ -305,6 +309,13 @@ export default {
                     p_content.style.color = "white";
                     p_content.style.marginLeft = "20px";
 
+                    let p_delete = document.createElement("p");
+                    p_delete.style.fontWeight = "500";
+                    p_delete.style.textAlign = "left";
+                    p_delete.style.display = "block";
+                    p_delete.style.color = "white";
+                    p_delete.style.marginLeft = "20px";
+
                     let p_type = document.createElement("p");
                     p_type.style.fontWeight = "500";
                     p_type.style.textAlign = "left";
@@ -312,14 +323,56 @@ export default {
                     p_type.style.color = "white";
                     p_type.style.marginLeft = "20px";
 
-                    const nodeContent = document.createTextNode(notification.content);
-                    const nodeType = document.createTextNode(notification.notification_type);
+                    let a_user = document.createElement('a');
 
-                    p_content.appendChild(nodeContent);
+                    a_user.style.fontWeight = "500";
+                    a_user.style.textAlign = "left";
+                    a_user.style.display = "block";
+                    a_user.style.color = "hsla(160, 100%, 37%, 1)";
+                    a_user.style.marginLeft = "20px";
+
+                    const nodeContent = document.createTextNode(notification.content);
+                    const nodeType = document.createTextNode(notification.type);
+
+                    a_user.appendChild(nodeContent);
+
+                    const resp_user = await fetch(`http://localhost:3000/users/${notification.sender_id}`, {
+                        method: "GET",
+                        headers: {  "Content-Type": "application/json" }
+                    });
+                    const user = await resp_user.json();
+
+                    a_user.onclick = function() {                         
+                        localStorage.setItem("chatUser", user.username);
+                        startChat();
+                    };
+
+                    p_content.appendChild(a_user);
                     p_type.appendChild(nodeType);
 
                     fieldset.appendChild(p_type);
                     fieldset.appendChild(p_content);
+
+                    let delete_button = document.createElement("a");
+                    delete_button.style.fontWeight = "500";
+                    delete_button.style.textAlign = "left";
+                    delete_button.style.display = "block";
+                    delete_button.style.color = "white";
+                    delete_button.style.marginLeft = "20px";
+
+                    const node_delete = document.createTextNode("cancella");
+                    delete_button.appendChild(node_delete);
+
+                    delete_button.onclick = async function() {
+                        await fetch(`http://localhost:3000/notifications/${notification._id}`, {
+                            method: "DELETE",
+                            headers: {  "Content-Type": "application/json" }
+                        });
+                        notifyInterested();
+                    }
+
+                    p_delete.appendChild(delete_button);
+                    fieldset.appendChild(p_delete);
                     form.appendChild(fieldset);
                 });
             }
@@ -329,7 +382,20 @@ export default {
         }
 
         async function showPreferences() {
+            showingNotifications.value = false;
+
             try {
+                const resp_notifs = await fetch("http://localhost:3000/notifications", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json", 
+                        "X-Auth-Token": localStorage.getItem("token") 
+                    }
+                });
+
+                const notifs = await resp_notifs.json();
+                num_notifications.value = notifs.length;
+
                 const form = document.getElementById('prefs');
                 const resp = await fetch(`http://localhost:3000/preferences/my-prefs`, {
                     method: "GET",
@@ -348,14 +414,20 @@ export default {
                 const pref = await resp.json();
                 
                 const ads = pref.map(async (preference) => {
-                    const adResp = await fetch(`http://localhost:3000/advertisements/${preference.advertisement_id}`);
+                    const adResp = await fetch(`http://localhost:3000/advertisements/${preference.advertisement_id}`, {
+                        method: "GET",
+                        headers: {"Content-Type": "application/json"}
+                    });
                     const ad = await adResp.json();
                     return { ...preference, ad_name: ad.title, ad_owner: ad.user_id };
                 });
                 const prefWithAds = await Promise.all(ads);
 
                 const owners = prefWithAds.map(async (preference) => {
-                    const userResp = await fetch(`http://localhost:3000/users/${preference.ad_owner}`);
+                    const userResp = await fetch(`http://localhost:3000/users/${preference.ad_owner}`, {
+                        method: "GET",
+                        headers: {"Content-Type": "application/json"}
+                    });
                     const user = await userResp.json();
                     return { ...preference, username: user.username };
                 });
@@ -443,7 +515,10 @@ export default {
             isButtonDisabled,
             showingInterested,
             showingNotifications,
-            retoggleAd
+            retoggleAd, 
+            retogglePref,
+            num_notifications,
+            showPreferences
         };
     }
 }
@@ -512,7 +587,7 @@ export default {
         </template>
 
         <template v-else>
-            <template v-if="!showingInterested && !showingNotifications">
+            <template v-if="!showingInterested">
                 <h2 class="green">Il mio annuncio: <span class="green" v-html="title"></span></h2>
 
                 <form class="Advertisement">
@@ -531,11 +606,10 @@ export default {
                 <div class="buttons">
                     <button class="button" type="button" @click="deleteAd()">Elimina annuncio</button>
                     <button class="button" type="button" @click="showInterested()">Mostra interessati</button>
-                    <button class="button" type="button" @click="notifyInterested()">Notifica interessati</button>
                 </div>
             </template>
                 
-            <template v-else-if="showingInterested && !showingNotifications">
+            <template v-else>
                 <h2><span class="green">Interessati al mio annuncio:</span></h2>
                 <form id="interestedUsers"></form>
 
@@ -544,20 +618,27 @@ export default {
                 </div>
             </template>
 
-            <template v-else-if="!showingInterested && showingNotifications">
-                <h2><span class="green">Le tue notifiche:</span></h2>
-                <form id="my-notifications"></form>
-
-                <br><div class="singleButton">
-                    <button class="button" type="button" @click="retoggleAd()">Torna all'annuncio</button>
-                </div>
-            </template>
         </template>
     </div>    
 
     <div class="right-side">
-        <h2><span class="green">Le mie preferenze:</span></h2>
-        <form id="prefs"></form>
+
+        <template v-if="!showingNotifications">
+            <h2><span class="green">Le mie preferenze:</span></h2>
+            <form id="prefs"></form>
+
+            <button class="button" type="button" @click="notifyInterested()">Hai {{num_notifications}} notifche</button>
+        </template>
+       
+        <template v-else>
+            <h2><span class="green">Le tue notifiche:</span></h2>
+            <form id="my-notifications"></form>
+
+            <br><div class="singleButton">
+                <button class="button" type="button" @click="showPreferences()">Torna alle preferenze</button>
+            </div>
+        </template>
+
     </div>
 </template>
 

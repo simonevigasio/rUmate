@@ -12,6 +12,10 @@ const notifications = require("./routes/notifications");
 const mongoose = require('mongoose');
 
 const app = express();
+app.use(cors({
+    exposedHeaders: ['X-Auth-Token'] 
+}));
+
 const server = require('http').createServer(app);
 const io = require("socket.io")(server, {
     cors: {
@@ -36,9 +40,6 @@ database.once('connected', () => {
 app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({
-    exposedHeaders: ['X-Auth-Token'] 
-}));
 
 app.use("/authenticate", auth);
 app.use("/users", users);

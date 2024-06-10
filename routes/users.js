@@ -5,7 +5,6 @@ const auth = require("../middleware/auth");
 const express = require('express');
 const { Advertisement } = require("../models/advertisement");
 const { Preference } = require("../models/preference");
-const { route } = require("./authenticate");
 const router = express.Router();
 
 // GET request used to access the user account, a middleware is applied 
@@ -15,6 +14,26 @@ router.get("/me", auth, async (req, res) => {
     const user = await User.findById(req.user._id);
 
     // send back the user
+    return res.send(user);
+});
+
+// GET the user given a specific id
+router.get("/:id", async (req, res) => {
+
+    // given the id of the user 
+    const user = await User.findById(req.params.id);
+
+    // send the result
+    return res.send(user);
+});
+
+// GET the user gove a specific username
+router.get("/username/:username", async (req, res) => {
+
+    // given the username of the user 
+    const user = await User.findOne({ username: req.params.username });
+
+    // send the result
     return res.send(user);
 });
 
@@ -38,7 +57,6 @@ router.post("/", async (req, res) => {
         res.send({ "token": token });
     });
 });
-
 // GET the user given a specific id
 router.get("/:id", async (req, res) => {
 

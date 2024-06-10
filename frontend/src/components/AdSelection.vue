@@ -13,6 +13,7 @@
     const residence_zone = ref('');
     const expiry_date = ref('');
     const roommate = ref('');
+    const user_id = ref('');
 
     function alreadyLogged(){
         return localStorage.getItem("username") !== null
@@ -33,7 +34,8 @@
             });
 
             const user = await resp.json();
-
+            
+            user_id.value = json.user_id;
             title.value = json.title;
             owner.value = user.username;
             description.value = json.description;
@@ -65,8 +67,19 @@
                 headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                 body: JSON.stringify(preference_config),
             });
-            const json = await resp.json();
-            console.log(json);
+            const json = await resp.json();  
+            
+            if (!(json.message == "The user has already signed the preference of this advertisement")) {
+                await fetch("http://localhost:3000/notifications", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                    body: JSON.stringify({
+                        content: `l'utente ${localStorage.getItem("username")} ha aggiunto una preferenza a un tuo annuncio!`,
+                        reciver_id: user_id.value,
+                        type: 'Preference',
+                    }),
+                });
+            }
         }
         catch (ex) {
             console.error(ex);

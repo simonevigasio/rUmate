@@ -86,6 +86,23 @@ export default {
 
                 socket.emit("sendMessage", message_config);
 
+                const resp_user = await fetch(`http://localhost:3000/users/username/${user2.value}`, {
+                  method: "GET",
+                  headers: { "Content-Type": "application/json" },
+                });
+                const user = await resp_user.json();
+                console.log(user);
+
+                await fetch("http://localhost:3000/notifications", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
+                    body: JSON.stringify({
+                        content: `l'utente ${localStorage.getItem("username")} ti ha mandato una messaggio`,
+                        type: 'Message',
+                        reciver_id: user._id, 
+                    }),
+                });
+
             } catch (ex) {
                 console.error(ex);
             }
