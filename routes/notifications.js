@@ -15,9 +15,7 @@ const router = express.Router();
 
 // GET request to find notifications related to an user
 router.get("/", auth, async (req, res) => {
-    const notif = await Notification.findOne({user_id: req.user._id});
-    console.log(notif)
-
+    const notif = await Notification.find({user_id: req.user._id});
     if (!notif) return res.status(404).send("Notification not found");
     return res.send(notif);
 });

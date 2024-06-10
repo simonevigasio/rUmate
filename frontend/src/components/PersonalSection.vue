@@ -29,6 +29,7 @@ export default {
         const adIsThere = ref(false);
 
         const showingInterested = ref(false);
+        const showingNotifications = ref(false);
 
         const isButtonDisabled = computed(() => {
             return !publishAdTitle.value || !publishAdDescription.value || !publishAdPrice.value || !publishAdTitle.value || !publishAdRoom.value || !publishAdSex.value || !publishAdZone.value || !publishAdExpiry_date.value || !publishAdRoommate.value;
@@ -89,6 +90,7 @@ export default {
 
         function retoggleAd() {
             showingInterested.value = false;
+            showingNotifications.value = false;
         }
 
         async function hasAd() {
@@ -275,8 +277,54 @@ export default {
             }
         }
 
-        function notifyInterested(){
+        async function notifyInterested() {
+            showingInterested.value = false;
+            showingNotifications.value = true;
 
+            await nextTick();
+
+            try {
+                const form = document.getElementById("my-notifications");
+                const resp = await fetch("http://localhost:3000/notifications", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json", 
+                        "X-Auth-Token": localStorage.getItem("token") 
+                    }
+                });
+
+                if (!resp.ok) throw new Error("Failed to fetch notifications");
+
+                while (form.firstChild) {
+                    form.removeChild(form.lastChild);
+                }
+
+                const notifications = await resp.json();
+
+                notifications.forEach((notification) => {
+                    let fieldset = document.createElement("fieldset");
+                    fieldset.style.padding = "10px";
+                    fieldset.style.outline = "none";
+                    fieldset.style.width = "auto";
+                    fieldset.style.borderRadius = "10px";
+                    fieldset.style.marginTop = "5px";
+
+                    let p = document.createElement("p");
+                    p.style.fontWeight = "500";
+                    p.style.textAlign = "left";
+                    p.style.display = "block";
+                    p.style.color = "white";
+                    p.style.marginLeft = "20px";
+
+                    const node = document.createTextNode(notification.content);
+                    p.appendChild(node);
+                    fieldset.appendChild(p);
+                    form.appendChild(fieldset);
+                });
+            }
+            catch (ex) {
+                console.error(ex);
+            }
         }
 
         async function showPreferences() {
@@ -357,7 +405,6 @@ export default {
             }
         }
 
-
         onMounted(() => {
             hasAd();
             showPreferences();
@@ -394,6 +441,7 @@ export default {
             clearParameters,
             isButtonDisabled,
             showingInterested,
+            showingNotifications,
             retoggleAd
         };
     }
@@ -463,7 +511,7 @@ export default {
         </template>
 
         <template v-else>
-            <template v-if="!showingInterested">
+            <template v-if="!showingInterested && !showingNotifications">
                 <h2 class="green">Il mio annuncio: <span class="green" v-html="title"></span></h2>
 
                 <form class="Advertisement">
@@ -486,9 +534,18 @@ export default {
                 </div>
             </template>
                 
-            <template v-else>
+            <template v-else-if="showingInterested && !showingNotifications">
                 <h2><span class="green">Interessati al mio annuncio:</span></h2>
                 <form id="interestedUsers"></form>
+
+                <br><div class="singleButton">
+                    <button class="button" type="button" @click="retoggleAd()">Torna all'annuncio</button>
+                </div>
+            </template>
+
+            <template v-else-if="!showingInterested && showingNotifications">
+                <h2><span class="green">Le tue notifiche:</span></h2>
+                <form id="my-notifications"></form>
 
                 <br><div class="singleButton">
                     <button class="button" type="button" @click="retoggleAd()">Torna all'annuncio</button>
