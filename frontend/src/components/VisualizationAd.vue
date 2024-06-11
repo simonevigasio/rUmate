@@ -119,9 +119,9 @@
             const node_residence = document.createTextNode("Residenza: " + adv.residence_zone);
 
             if(adv.username === localStorage.getItem("username")){
-                a_title.href = location.href + `personalSection`;
+                a_title.href = `https://rumate-1.onrender.com/personalSection`;
             } else {
-                a_title.href = location.href + `advertisement`;
+                a_title.href = `https://rumate-1.onrender.com/advertisement`;
             }
 
             a_title.appendChild(node_title);
