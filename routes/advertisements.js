@@ -59,11 +59,11 @@ router.post("/", auth, async (req, res) => {
     // validate if the advertisement is correct, using the validate function
     req.body.user_id = req.user._id;
     const { error } = validate(req.body);
-    if (error) return res.status(400).send({message: "Some fields are blank/incorrect"});
+    if (error) return res.status(400).send("Some fields are blank/incorrect");
 
     // check if exist another advertisement in the Database with the same owner
     let ad = await Advertisement.findOne({user_id: req.body.user_id});
-    if (ad) return res.status(400).send({message: "User already has an advertisement published"});
+    if (ad) return res.status(400).send("User already has an advertisement published");
 
     // load the advertisement in the Database
     ad = new Advertisement(req.body);
