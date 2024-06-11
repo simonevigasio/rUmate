@@ -21,14 +21,14 @@
 
     async function getAdv(){
         try {
-            let resp = await fetch(`http://localhost:${3000}/advertisements/${localStorage.getItem("adv")}`, {
+            let resp = await fetch(`https://rumate.onrender.com/advertisements/${localStorage.getItem("adv")}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
 
             const json = await resp.json();
 
-            resp = await fetch(`http://localhost:${3000}/users/${json.user_id}`, {
+            resp = await fetch(`https://rumate.onrender.com/users/${json.user_id}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
@@ -62,7 +62,7 @@
         };
 
         try {
-            const resp = await fetch(`http://localhost:3000/preferences/`, {
+            const resp = await fetch(`https://rumate.onrender.com/preferences/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                 body: JSON.stringify(preference_config),
@@ -70,7 +70,7 @@
             const json = await resp.json();  
             
             if (!(json.message == "The user has already signed the preference of this advertisement")) {
-                await fetch("http://localhost:3000/notifications", {
+                await fetch("https://rumate.onrender.com/notifications", {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                     body: JSON.stringify({
@@ -94,7 +94,7 @@
         };
 
         try {
-            const resp = await fetch(`http://localhost:3000/chats/${user}/addChat/${owner.value}`, {
+            const resp = await fetch(`https://rumate.onrender.com/chats/${user}/addChat/${owner.value}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                 body: JSON.stringify(chat_config),

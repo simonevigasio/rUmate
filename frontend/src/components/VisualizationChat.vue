@@ -72,7 +72,7 @@ export default {
             msgContent.value = '';
 
             try {
-                const resp = await fetch(`http://localhost:3000/chats/${user1}/addMessage/${user2.value}`, {
+                const resp = await fetch(`https://rumate.onrender.com/chats/${user1}/addMessage/${user2.value}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                     body: JSON.stringify(message_config),
@@ -86,14 +86,14 @@ export default {
 
                 socket.emit("sendMessage", message_config);
 
-                const resp_user = await fetch(`http://localhost:3000/users/username/${user2.value}`, {
+                const resp_user = await fetch(`https://rumate.onrender.com/users/username/${user2.value}`, {
                   method: "GET",
                   headers: { "Content-Type": "application/json" },
                 });
                 const user = await resp_user.json();
                 console.log(user);
 
-                await fetch("http://localhost:3000/notifications", {
+                await fetch("https://rumate.onrender.com/notifications", {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                     body: JSON.stringify({
@@ -113,7 +113,7 @@ export default {
                 const user = localStorage.getItem("username");
                 user2.value = null;
                 const form = document.getElementById('chatsList');
-                const resp = await fetch(`http://localhost:3000/chats/${user}`, {
+                const resp = await fetch(`https://rumate.onrender.com/chats/${user}`, {
                             method: "GET",
                             headers: { "Content-Type": "application/json" },
                         });
@@ -224,7 +224,7 @@ export default {
                 fieldset.style.width = "auto";
                 fieldset.style.borderRadius = "5px";
 
-                const resp = await fetch(`http://localhost:3000/chats/${user1}/${user2.value}`, {
+                const resp = await fetch(`https://rumate.onrender.com/chats/${user1}/${user2.value}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                 });

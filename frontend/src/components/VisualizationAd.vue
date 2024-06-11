@@ -60,7 +60,7 @@
 
       try {
           const form = document.getElementById('ads');
-          let url = `http://localhost:3000/advertisements?sort=${sort}`;
+          let url = `https://rumate.onrender.com/advertisements?sort=${sort}`;
           if (roomFilter[1]) url += `&roomFilter=${roomFilter[0]}`;
           if (sexFilter[1]) url += `&sexFilter=${sexFilter[0]}`;
           if (residenceFilter[1]) url += `&residenceFilter=${residenceFilter[0]}`;
@@ -77,7 +77,7 @@
           const ads = await resp.json();
 
           const owners = ads.map(async (adv) => {
-              const userResp = await fetch(`http://localhost:3000/users/${adv.user_id}`);
+              const userResp = await fetch(`https://rumate.onrender.com/users/${adv.user_id}`);
               const user = await userResp.json();
               return { ...adv, username: user.username };
           });

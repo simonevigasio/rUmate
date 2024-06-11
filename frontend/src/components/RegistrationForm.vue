@@ -51,7 +51,7 @@
         hasPasswordError.value = false
 
         try {
-            const resp = await fetch("http://localhost:3000/authenticate", {
+            const resp = await fetch("https://rumate.onrender.com/authenticate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(user),

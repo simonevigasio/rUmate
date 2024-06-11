@@ -100,7 +100,7 @@ export default {
 
         async function hasAd() {
             try {
-                const resp = await fetch(`http://localhost:3000/advertisements/my-ad`, {
+                const resp = await fetch(`https://rumate.onrender.com/advertisements/my-ad`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                 });
@@ -140,7 +140,7 @@ export default {
             };
 
             try {
-                const resp = await fetch("http://localhost:3000/advertisements/", {
+                const resp = await fetch("https://rumate.onrender.com/advertisements/", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") 
@@ -171,7 +171,7 @@ export default {
 
         async function deleteAd() {
             try {
-                let resp = await fetch(`http://localhost:3000/advertisements`, {
+                let resp = await fetch(`https://rumate.onrender.com/advertisements`, {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                 });
@@ -192,7 +192,7 @@ export default {
             };
 
             try {
-                const resp = await fetch(`http://localhost:3000/chats/${localStorage.getItem("username")}/addChat/${localStorage.getItem("chatUser")}`, {
+                const resp = await fetch(`https://rumate.onrender.com/chats/${localStorage.getItem("username")}/addChat/${localStorage.getItem("chatUser")}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "X-Auth-Token": localStorage.getItem("token") },
                     body: JSON.stringify(chat_config),
@@ -213,7 +213,7 @@ export default {
 
             try {
                 const form = document.getElementById('interestedUsers');
-                let resp = await fetch(`http://localhost:3000/preferences/my-adv`, {
+                let resp = await fetch(`https://rumate.onrender.com/preferences/my-adv`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json", 
@@ -230,7 +230,7 @@ export default {
                 const pref = await resp.json();
 
                 const users = pref.map(async (preference) => {
-                    const userResp = await fetch(`http://localhost:3000/users/${preference.interested_user_id}`);
+                    const userResp = await fetch(`https://rumate.onrender.com/users/${preference.interested_user_id}`);
                     const user = await userResp.json();
                     return { ...preference, username: user.username };
                 });
@@ -278,7 +278,7 @@ export default {
 
             try {
                 const form = document.getElementById("my-notifications");
-                const resp = await fetch("http://localhost:3000/notifications", {
+                const resp = await fetch("https://rumate.onrender.com/notifications", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json", 
@@ -336,7 +336,7 @@ export default {
 
                     a_user.appendChild(nodeContent);
 
-                    const resp_user = await fetch(`http://localhost:3000/users/${notification.sender_id}`, {
+                    const resp_user = await fetch(`https://rumate.onrender.com/users/${notification.sender_id}`, {
                         method: "GET",
                         headers: {  "Content-Type": "application/json" }
                     });
@@ -364,7 +364,7 @@ export default {
                     delete_button.appendChild(node_delete);
 
                     delete_button.onclick = async function() {
-                        await fetch(`http://localhost:3000/notifications/${notification._id}`, {
+                        await fetch(`https://rumate.onrender.com/notifications/${notification._id}`, {
                             method: "DELETE",
                             headers: {  "Content-Type": "application/json" }
                         });
@@ -385,7 +385,7 @@ export default {
             showingNotifications.value = false;
 
             try {
-                const resp_notifs = await fetch("http://localhost:3000/notifications", {
+                const resp_notifs = await fetch("https://rumate.onrender.com/notifications", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json", 
@@ -397,7 +397,7 @@ export default {
                 num_notifications.value = notifs.length;
 
                 const form = document.getElementById('prefs');
-                const resp = await fetch(`http://localhost:3000/preferences/my-prefs`, {
+                const resp = await fetch(`https://rumate.onrender.com/preferences/my-prefs`, {
                     method: "GET",
                     headers: { 
                         "Content-Type": "application/json", 
@@ -414,7 +414,7 @@ export default {
                 const pref = await resp.json();
                 
                 const ads = pref.map(async (preference) => {
-                    const adResp = await fetch(`http://localhost:3000/advertisements/${preference.advertisement_id}`, {
+                    const adResp = await fetch(`https://rumate.onrender.com/advertisements/${preference.advertisement_id}`, {
                         method: "GET",
                         headers: {"Content-Type": "application/json"}
                     });
@@ -424,7 +424,7 @@ export default {
                 const prefWithAds = await Promise.all(ads);
 
                 const owners = prefWithAds.map(async (preference) => {
-                    const userResp = await fetch(`http://localhost:3000/users/${preference.ad_owner}`, {
+                    const userResp = await fetch(`https://rumate.onrender.com/users/${preference.ad_owner}`, {
                         method: "GET",
                         headers: {"Content-Type": "application/json"}
                     });

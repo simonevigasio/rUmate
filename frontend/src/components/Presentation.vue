@@ -15,7 +15,7 @@ function alreadyLogged(){
 async function logout() {
   localStorage.clear();
   try {
-    const resp = await fetch("http://localhost:3000/users/logout", {
+    const resp = await fetch("https://rumate.onrender.com/users/logout", {
       method: "POST",
       headers: { "Content-Type": "application/json"},
     })
