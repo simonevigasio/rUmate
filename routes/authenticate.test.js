@@ -10,12 +10,15 @@ describe('authenticate APIs', () => {
             useUnifiedTopology: true
         });
 
+        server = app.listen();
+
         await User.findOneAndDelete({username: 'Sandro'});
     });
 
     afterAll(async () => {
         await User.findOneAndDelete({username: 'Sandro'});
 
+        await server.close();
         await mongoose.connection.close();
     });
 
@@ -38,26 +41,28 @@ describe('authenticate APIs', () => {
             await User.findOneAndDelete({username: 'Sandro'});
         });
 
-        it('should return 400 if username is missing/not valid', async () => {
+        test('should return 400 if username is missing/not valid', async () => {
             username = '';
             const res = await exec();
             expect(res.status).toBe(400);
+            expect(res.body).toHaveProperty('message', 'Invalid username or password');
         });
 
-        it('should return 400 if password is missing/not valid', async () => {
+        test('should return 400 if password is missing/not valid', async () => {
             password = '';
             const res = await exec();
             expect(res.status).toBe(400);
+            expect(res.body).toHaveProperty('message', 'Invalid username or password');
         });
 
-        it('should return 400 if the username inserted is already being used', async () => {
+        test('should return 400 if the username inserted is already being used', async () => {
             await new User({ username, password }).save();
             const res = await exec();
             expect(res.status).toBe(400);
             expect(res.body).toHaveProperty('message', 'User already registered');
         });
 
-        it('should return 200 and register the user if valid', async () => {
+        test('should return 200 and register the user if valid', async () => {
             const res = await exec();
 
             const user = await User.findOne({ username });

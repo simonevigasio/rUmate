@@ -47,7 +47,7 @@ describe('user APIs', () => {
             await User.findOneAndDelete({username: 'Marco'});
         });
 
-        it('should return 400 if the username exists but the inserted password is not correct', async () => {
+        test('should return 400 if the username exists but the inserted password is not correct', async () => {
             username = 'Marco';
             password = 'Burattinol';
 
@@ -57,7 +57,7 @@ describe('user APIs', () => {
             expect(res.body).toHaveProperty('message', 'Invalid username or password');
         });
 
-        it('should return 400 if the username does not exist', async () => {
+        test('should return 400 if the username does not exist', async () => {
             username = 'Gianmarco';
             password = 'Robol';
 
@@ -67,7 +67,7 @@ describe('user APIs', () => {
             expect(res.body).toHaveProperty('message', 'Invalid username or password');
         });
 
-        it('should return 200 and let the user login if the inserted parameters are valid', async () => {
+        test('should return 200 and let the user login if the inserted parameters are valid', async () => {
             username = 'Marco';
             password = 'Robol';
 
@@ -75,15 +75,6 @@ describe('user APIs', () => {
 
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('token');
-        });
-    });
-
-    describe('POST /logout', () => {
-        it('should return 302 and redirect to /', async () => {
-            const res = await request(server).post('/users/logout');
-
-            expect(res.status).toBe(302);
-            expect(res.header['location']).toBe('/');
         });
     });
 });

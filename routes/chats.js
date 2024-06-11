@@ -16,7 +16,10 @@ router.get("/:userId", async (req, res) => {
         ]
     });
 
-    return res.send(chats);
+    console.log(chats.lenght);
+    if(chats.length === 0){
+        res.status(204).send("There are no chat started for this user yet")
+    }else return res.send(chats);
 });
 
 // GET request to get all messages exchanged between two specific users
@@ -39,11 +42,9 @@ router.get("/:senderId/:receiverId", async (req, res) => {
         ]
     });
 
-    if (!chat) {
-        return res.status(400).send("There are no messages exchanged between these two users yet");
-    }
-
-    return res.send(chat.messageList);
+    if (!chat){
+        return res.status(204).send("There are no messages exchanged between these two users yet");
+    }else return res.send(chat.messageList);
 });
 
 // POST request to add a chat in the database; if the chat already exists, error

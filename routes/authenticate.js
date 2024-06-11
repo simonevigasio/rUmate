@@ -9,7 +9,7 @@ router.post("/", async (req, res) => {
     
     // check if the body of the request has all requered information
     const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send({message: "Invalid username or password"});
 
     // check if the user is already registered
     let user = await User.findOne({username: req.body.username});
@@ -20,8 +20,6 @@ router.post("/", async (req, res) => {
 
     // hash the password given by the user 
     bcrypt.hash(user.password, 10, async function(err, hash) {
-        if (err) return res.status(400).send({message: "Invalid password"});
-        
         // if the password is hashable save the hash in the database 
         user.password = hash;
         await user.save();

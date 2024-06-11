@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
     return res.send(ads);
 });
 
-// GET a precific advertisement given its id
+// GET a specific advertisement given its id
 router.get("/:id", async (req, res) => {
 
     // get from the database the advertisment
@@ -59,7 +59,7 @@ router.post("/", auth, async (req, res) => {
     // validate if the advertisement is correct, using the validate function
     req.body.user_id = req.user._id;
     const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send({message: "Some fields are blank/incorrect"});
 
     // check if exist another advertisement in the Database with the same owner
     let ad = await Advertisement.findOne({user_id: req.body.user_id});
