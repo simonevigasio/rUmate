@@ -47,7 +47,7 @@ app.use("/chats", chats);
 app.use("/notifications", notifications);
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "./public", "home.html"));
+    res.sendFile(path.join(__dirname, "./frontend", "index.html"));
 });
 
 io.on("connection", (socket) => {
