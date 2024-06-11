@@ -3,7 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-let port = process.env.PORT || 3001;
+let port = process.env.PORT || 3000;
 
 export default defineConfig({
   plugins: [
