@@ -1,6 +1,6 @@
 <script setup>
     import { ref, computed } from 'vue'
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
 
     const message = ref('Inserisci le credenziali per accedere')
     const username = ref('')

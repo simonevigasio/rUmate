@@ -1,5 +1,8 @@
 <script setup>
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+
+  const route = useRoute();
 
   const selectedSortOption = ref('');
 
@@ -118,14 +121,17 @@
             const node_owner = document.createTextNode("Proprietario: " + adv.username);
             const node_residence = document.createTextNode("Residenza: " + adv.residence_zone);
 
-            if(adv.username === localStorage.getItem("username")){
-                a_title.href = `https://rumate-1.onrender.com/personalSection`;
-            } else {
-                a_title.href = `https://rumate-1.onrender.com/advertisement`;
-            }
-
             a_title.appendChild(node_title);
-            a_title.onclick = function() { localStorage.setItem("adv", adv._id); };
+            a_title.onclick = function() { 
+              
+              localStorage.setItem("adv", adv._id);   
+            
+              if(adv.username === localStorage.getItem("username")){
+                router.push('/personalSection');
+              } else {
+                router.push('/advertisement');
+              }
+            };
 
             p_owner.appendChild(node_owner);
             p_residence.appendChild(node_residence);
