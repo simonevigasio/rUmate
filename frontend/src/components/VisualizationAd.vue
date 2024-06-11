@@ -1,8 +1,8 @@
 <script setup>
   import { ref, onMounted } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useRouter } from 'vue-router';
 
-  const route = useRoute();
+  const router = useRoute();
 
   const selectedSortOption = ref('');
 
