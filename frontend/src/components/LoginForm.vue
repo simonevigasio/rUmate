@@ -35,7 +35,6 @@
             
             const json = await resp.json();
             
-
             localStorage.setItem("token", json.token);
             localStorage.setItem("username", user.username);
 

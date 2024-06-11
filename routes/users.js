@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
 
     // hash with bcrypt the password and compare it with the hash stored inside the databse
     bcrypt.compare(req.body.password, user.password, function(err, result) {
-        if (!result) return res.status(400).send({message: "Invalid username or password"});
+        if (!result) return res.status(400).send("Invalid username or password");
 
         // generate a token to sent to the user
         const token = user.generateAuthToken();
