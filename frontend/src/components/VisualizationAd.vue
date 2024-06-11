@@ -324,7 +324,6 @@
     </form>
 
     <div class="buttons">
-      <button class="button" type="button" @click="showAll()">Mostra ogni annuncio</button>
       <button class="button" type="button" @click="sort_and_filter();">Applica filtri</button>
       <button class="button" type="button" @click="clearAll();">Rimuovi filtri</button>
     </div>

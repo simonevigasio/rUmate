@@ -8,15 +8,11 @@ const advertisements = require("./routes/advertisements");
 const users = require("./routes/users");
 const chats = require("./routes/chats");
 const preferences = require("./routes/preferences");
-const notifications = require("./routes/notifications");
 const mongoose = require('mongoose');
 
 const app = express();
-app.use(cors({
-    exposedHeaders: ['X-Auth-Token'] 
-}));
-
 const server = require('http').createServer(app);
+const port = process.env.PORT || 3000;
 const io = require("socket.io")(server, {
     cors: {
         origin: "*",
@@ -40,13 +36,13 @@ database.once('connected', () => {
 app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
 app.use("/authenticate", auth);
 app.use("/users", users);
 app.use("/advertisements", advertisements);
 app.use("/preferences", preferences);
 app.use("/chats", chats);
-app.use("/notifications", notifications);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "./frontend", "index.html"));
@@ -71,6 +67,6 @@ io.on("connection", (socket) => {
     });
 });
 
-server.listen(3000, () => {
-    console.log(`Server listening on port ${3000}...`);
+server.listen(port, () => {
+    console.log(`Server listening on port ${port}...`);
 });
