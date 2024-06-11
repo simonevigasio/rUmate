@@ -9,7 +9,7 @@ export default {
         const user2 = ref('');
         const msgContent = ref('');
         const chatMessageLists = ref({});
-        const socket = io('http://localhost:3000');
+        const socket = io('https://rumate.onrender.com/');
 
         socket.on("connect", () => {
             console.log("Connected to server");
