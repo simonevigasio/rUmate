@@ -2,7 +2,7 @@
   import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
 
-  const router = useRoute();
+  const router = useRouter();
 
   const selectedSortOption = ref('');
 
