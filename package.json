@@ -11,7 +11,8 @@
   },
   "jest": {
     "verbose": true,
-    "collectCoverage": true
+    "collectCoverage": true,
+    "testTimeout": 20000
   },
   "repository": {
     "type": "git",

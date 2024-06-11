@@ -62,7 +62,7 @@ router.post("/", auth, async (req, res) => {
     
     // verify whether the user has already signed the preference on that advertisement
     let pref = prefs.filter((p) => p.advertisement_id == req.body.advertisement_id);
-    if (pref.length != 0) return res.status(400).send({message: "The user has already signed the preference of this advertisement"});
+    if (pref.length != 0) return res.status(400).send({message: "The user has already signed the preference for this advertisement"});
 
     // create and save a new preference in the database
     pref = new Preference(req.body);

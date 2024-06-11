@@ -6,6 +6,7 @@ const { User } = require("../models/user");
 const { Advertisement } = require("../models/advertisement");
 const { Preference } = require("../models/preference");
 const bcrypt = require('bcrypt');
+const moment = require('moment');
 
 describe('preference APIs', () => {
     let advertisement1Id;
@@ -14,6 +15,7 @@ describe('preference APIs', () => {
     let advertisement4Id;
     let interestedUserId;
     let userToken;
+    let user1Token;
 
     beforeAll(async () => {
         await mongoose.connect(process.env.DATABASE_URL, {
@@ -23,11 +25,16 @@ describe('preference APIs', () => {
 
         server = app.listen();
 
+        await Preference.deleteMany({});
+        await Advertisement.deleteMany({ $or: [{ title: 'Annuncio di testing #2' }, { title: 'Annuncio di testing #3' }, { title: 'Annuncio di testing #4' }, { title: 'Annuncio di testing #5' }] });
+        await User.deleteMany({ $or: [{ username: 'Simone0' }, { username: 'Simone1' }, { username: 'Simone2' }, { username: 'Simone3' }, { username: 'Simone4' }] });
+
         const user1 = new User({
             username: 'Simone0',
             password: await bcrypt.hash('Vigasio', 10)
         });
         await user1.save();
+        user1Token = jwt.sign({ _id: user1._id }, process.env.SECRET_TOKEN);
 
         const user2 = new User({
             username: 'Simone1',
@@ -62,7 +69,7 @@ describe('preference APIs', () => {
             room: 'Single',
             flat_sex: 'Mixed',
             residence_zone: 'Meano',
-            expiry_date: new Date(2024, 6, 27, 12, 0, 0).toISOString(),
+            expiry_date: moment(new Date(2024, 7, 23)).format("YYYY MM DD"),
             roommate: 4
         });
         await ad1.save();
@@ -76,7 +83,7 @@ describe('preference APIs', () => {
             room: 'Single',
             flat_sex: 'Mixed',
             residence_zone: 'Meano',
-            expiry_date: new Date(2024, 6, 27, 12, 0, 0).toISOString(),
+            expiry_date: moment(new Date(2024, 7, 23)).format("YYYY MM DD"),
             roommate: 4
         });
         await ad2.save();
@@ -90,7 +97,7 @@ describe('preference APIs', () => {
             room: 'Single',
             flat_sex: 'Mixed',
             residence_zone: 'Meano',
-            expiry_date: new Date(2024, 6, 27, 12, 0, 0).toISOString(),
+            expiry_date: moment(new Date(2024, 7, 23)).format("YYYY MM DD"),
             roommate: 4
         });
         await ad3.save();
@@ -104,7 +111,7 @@ describe('preference APIs', () => {
             room: 'Single',
             flat_sex: 'Mixed',
             residence_zone: 'Meano',
-            expiry_date: new Date(2024, 6, 27, 12, 0, 0).toISOString(),
+            expiry_date: moment(new Date(2024, 7, 23)).format("YYYY MM DD"),
             roommate: 4
         });
         await ad4.save();
@@ -126,7 +133,7 @@ describe('preference APIs', () => {
     });
 
     afterAll(async () => {
-        await Preference.deleteMany({ interested_user_id: interestedUserId });
+        await Preference.deleteMany({});
         await Advertisement.deleteMany({ $or: [{ title: 'Annuncio di testing #2' }, { title: 'Annuncio di testing #3' }, { title: 'Annuncio di testing #4' }, { title: 'Annuncio di testing #5' }] });
         await User.deleteMany({ $or: [{ username: 'Simone0' }, { username: 'Simone1' }, { username: 'Simone2' }, { username: 'Simone3' }, { username: 'Simone4' }] });
 
@@ -135,22 +142,23 @@ describe('preference APIs', () => {
     });
     
     describe('POST /', () => {
+        test('should return 400 if a preference between the inserted user and the inserted advertisement already exists', async () => {
+            const res = await request(server)
+                .post(`/preferences`)
+                .set('x-auth-token', userToken)
+                .send({ advertisement_id: advertisement2Id, interested_user_id: interestedUserId });
+
+            expect(res.body).toHaveProperty('message', 'The user has already signed the preference for this advertisement');
+            expect(res.status).toBe(400);
+        });
+
         test('should return 200 and create a preference between the inserted user and the inserted advertisement', async () => {
             const res = await request(server)
                 .post(`/preferences`)
                 .set('x-auth-token', userToken)
                 .send({ advertisement_id: advertisement3Id, interested_user_id: interestedUserId });
-
+            
             expect(res.status).toBe(200);
-        });
-
-        test('should return 400 if a preference between the inserted user and the inserted advertisement already exists', async () => {
-            const res = await request(server)
-                .post(`/preferences`)
-                .set('x-auth-token', userToken)
-                .send({ advertisement_id: advertisement3Id, interested_user_id: interestedUserId });
-
-            expect(res.status).toBe(400);
         });
 
         test('should return 400 if the inserted user already has three preferences', async () => {
@@ -159,7 +167,28 @@ describe('preference APIs', () => {
                 .set('x-auth-token', userToken)
                 .send({ advertisement_id: advertisement4Id, interested_user_id: interestedUserId });
 
+            expect(res.body).toHaveProperty('message', 'The user has already 3 preferences');
             expect(res.status).toBe(400);
+        });
+    });
+
+    describe('GET /my-prefs', () => {
+        test('should return 200 and get all preferences of the user', async () => {
+            const res = await request(app)
+                .get('/preferences/my-prefs')
+                .set('x-auth-token', userToken);
+
+            expect(res.status).toBe(200);
+        });
+    });
+    
+    describe('GET /my-adv', () => {
+        test('should return 200 and get all the people interested in the advertisement published by the user', async () => {
+            const res = await request(app)
+                .get('/preferences/my-adv')
+                .set('x-auth-token', user1Token);
+
+            expect(res.status).toBe(200);
         });
     });
 });

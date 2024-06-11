@@ -27,7 +27,7 @@ router.get("/:id", async (req, res) => {
     return res.send(user);
 });
 
-// GET the user gove a specific username
+// GET the user given a specific username
 router.get("/username/:username", async (req, res) => {
 
     // given the username of the user 
@@ -56,15 +56,6 @@ router.post("/", async (req, res) => {
         const token = user.generateAuthToken();
         res.send({ "token": token });
     });
-});
-// GET the user given a specific id
-router.get("/:id", async (req, res) => {
-
-    // given the id of the user 
-    const user = await User.findById(req.params.id);
-
-    // send the result
-    return res.send(user);
 });
 
 // POST to logout

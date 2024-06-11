@@ -10,6 +10,7 @@ const advertisements = require("./advertisements");
 const users = require("./users");
 const chats = require("./chats");
 const preferences = require("./preferences");
+const notifications = require("./notifications");
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/users", users);
 app.use("/advertisements", advertisements);
 app.use("/preferences", preferences);
 app.use("/chats", chats);
+app.use("/notifications", notifications)
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "index.html"));

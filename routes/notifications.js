@@ -30,7 +30,7 @@ router.post("/", auth, async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    // verify whether the reciver exists
+    // verify whether the receiver exists
     const user = await User.findOne({ _id: req.body.reciver_id });
     if (!user) return res.status(400).send("The reciver doesn't exist");
 
