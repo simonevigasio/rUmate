@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.21% </span>
+                <span class="strong">74.54% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>41/56</span>
+                <span class='fraction'>41/55</span>
             </div>
         
             
@@ -189,31 +189,7 @@
 <a name='L124'></a><a href='#L124'>124</a>
 <a name='L125'></a><a href='#L125'>125</a>
 <a name='L126'></a><a href='#L126'>126</a>
-<a name='L127'></a><a href='#L127'>127</a>
-<a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a>
-<a name='L130'></a><a href='#L130'>130</a>
-<a name='L131'></a><a href='#L131'>131</a>
-<a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a>
-<a name='L136'></a><a href='#L136'>136</a>
-<a name='L137'></a><a href='#L137'>137</a>
-<a name='L138'></a><a href='#L138'>138</a>
-<a name='L139'></a><a href='#L139'>139</a>
-<a name='L140'></a><a href='#L140'>140</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<a name='L127'></a><a href='#L127'>127</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -337,22 +313,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*  
-    tools imported for the declaration of RESTful requests 
-    auth -&gt; import a function used to check if the user is authenticated
-    Chat -&gt; import a model and a function from the chat module
-    User  -&gt; import a model from the user module
-    Message, validateMessage  -&gt; import a model and a function from the message module
-    mongoose -&gt; connection with MongoDB 
-    express -&gt; is a framework for Node.js
-    router -&gt; import the RESTful requests 
-&nbsp;
-*/
-const _ = require("lodash");
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const _ = require("lodash");
 const auth = require("../middleware/auth");
 const { Chat, validateChat } = require("../models/chat");
 const { User } = require("../models/user");
@@ -444,9 +407,9 @@ router.post("/:senderId/addMessage/:receiverId", auth, async (req, res) =&gt; {
 &nbsp;
     const receiver = await User.findOne({ username: req.body.receiverId });
     <span class="missing-if-branch" title="if path not taken" >I</span>if (!receiver) <span class="cstat-no" title="statement not covered" >return res.status(400).send("This receiver does not exist");</span>
-&nbsp;
+    
     // check if the sender and the receiver are the same user; if so, error
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (req.body.senderId === req.body.receiverId) <span class="cstat-no" title="statement not covered" >return res.status(400).send("The sender and the receiver can't be the same users");</span>
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (req.body.senderId == req.body.receiverId) <span class="cstat-no" title="statement not covered" >return res.status(400).send("The sender and the receiver can't be the same users");</span>
 &nbsp;
     // check if a chat between the two users already exists, otherwise create it and store it
     let chat = await Chat.findOne({
@@ -470,13 +433,11 @@ router.post("/:senderId/addMessage/:receiverId", auth, async (req, res) =&gt; {
 });
 &nbsp;
 // DELETE request to delete a specific chat from the database knowing its users' IDs
-router.delete("/delete/:senderId/:receiverId", <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
+router.delete("/:senderId/:receiverId", <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
     // find the chat by its users' IDs and delete it
     const chat = <span class="cstat-no" title="statement not covered" >await Chat.findOneAndDelete({senderId: req.params.senderId, receiverId: req.params.receiverId});</span>
-<span class="cstat-no" title="statement not covered" >    if (!chat) {</span>
-<span class="cstat-no" title="statement not covered" >        return res.status(404).send("Chat not found");</span>
-    }
-<span class="cstat-no" title="statement not covered" >    return res.send("Chat deleted successfully");</span>
+<span class="cstat-no" title="statement not covered" >    if (!chat) <span class="cstat-no" title="statement not covered" >return res.status(404).send("Chat not found");</span></span>
+<span class="cstat-no" title="statement not covered" >    return res.send(chat);</span>
 });
 &nbsp;
 module.exports = router;
@@ -487,7 +448,7 @@ module.exports = router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-06-10T22:16:53.755Z
+                at 2024-06-11T09:01:48.567Z
             </div>
         <script src="../prettify.js"></script>
         <script>

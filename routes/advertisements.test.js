@@ -42,23 +42,23 @@ describe('advertisement APIs', () => {
         await mongoose.connection.close();
     });
 
-    describe('GET /getById/:id', () => {
+    describe('GET /:id', () => {
         test('should respond with 200 and the advertisement whose id corresponds to the inserted one', async () => {
-            const res = await request(app).get(`/advertisements/getById/${advertisementId}`);
+            const res = await request(app).get(`/advertisements/${advertisementId}`);
             expect(res.status).toBe(200);
             expect(res.body._id).toEqual(advertisementId.toString());
 
-            console.log("Advertisement GET /getById/:id :", res.body.title);
+            console.log("Advertisement GET /:id :", res.body.title);
         });
     });
 
-    describe('GET /getByUser/:userId', () => {
+    describe('GET /username/:username', () => {
         test('should respond with 200 and the advertisement publicated by the inserted user', async () => {
-            const res = await request(app).get(`/advertisements/getByUser/${userId}`);
+            const res = await request(app).get(`/advertisements/username/${userId}`);
             expect(res.status).toBe(200);
-            expect(res.body.user_id).toEqual(userId.toString());
+            expect(res.body.user_id).toEqual(username.toString());
 
-            console.log("Advertisement GET /getByUser/:userId :", res.body.title);
+            console.log("Advertisement GET /username/:username :", res.body.title);
         });
     });
 

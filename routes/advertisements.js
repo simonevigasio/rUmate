@@ -55,7 +55,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST request to add an advertisement in the database
-router.post("/publish", auth, async (req, res) => {
+router.post("/", auth, async (req, res) => {
     // validate if the advertisement is correct, using the validate function
     req.body.user_id = req.user._id;
     const { error } = validate(req.body);

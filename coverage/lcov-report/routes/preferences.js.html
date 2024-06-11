@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60.86% </span>
+                <span class="strong">41.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/46</span>
+                <span class='fraction'>19/46</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.88% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/18</span>
+                <span class='fraction'>3/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">40% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/5</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.27% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/37</span>
+                <span class='fraction'>18/36</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -149,7 +149,9 @@
 <a name='L84'></a><a href='#L84'>84</a>
 <a name='L85'></a><a href='#L85'>85</a>
 <a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -187,7 +189,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -206,30 +207,33 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -272,7 +276,6 @@ router.get("/my-prefs", auth, <span class="fstat-no" title="function not covered
 <span class="cstat-no" title="statement not covered" >    return res.send(prefs)</span>
 });
 &nbsp;
-&nbsp;
 // this api (POST) creates a new preference between an interested user and one advertisement
 router.post("/", auth, async (req, res) =&gt; {
 &nbsp;
@@ -289,35 +292,38 @@ router.post("/", auth, async (req, res) =&gt; {
     
     // verify that the advertisement exists
     const ad = await Advertisement.findOne({_id: req.body.advertisement_id});
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!ad) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "Advertisement does not exist"});</span>
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!ad) return res.status(400).send({message: "Advertisement does not exist"});
 &nbsp;
     // verify whether the user is the owner of the advertisement
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (ad.user_id === user._id) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "The user is the onwer of the advertisement"});</span>
+<span class="cstat-no" title="statement not covered" >    if (ad.user_id == user._id) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "The user is the onwer of the advertisement"});</span></span>
 &nbsp;
     // verify whether the user exceeds the number of preferences
-    const prefs = await Preference.find({interested_user_id: req.body.interested_user_id});
-    if (prefs.length == 3) return res.status(400).send({message: "The user has already 3 preferences"})
+    const prefs = <span class="cstat-no" title="statement not covered" >await Preference.find({interested_user_id: req.body.interested_user_id});</span>
+<span class="cstat-no" title="statement not covered" >    if (prefs.length == 3) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "The user has already 3 preferences"})</span></span>
     
     // verify whether the user has already signed the preference on that advertisement
-    let pref = prefs.filter((p) =&gt; p.advertisement_id == req.body.advertisement_id);
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (pref.length != 0) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "The user has already signed the preference of this advertisement"});</span>
+    let pref = <span class="cstat-no" title="statement not covered" >prefs.filter(<span class="fstat-no" title="function not covered" >(p</span>) =&gt; <span class="cstat-no" title="statement not covered" >p.advertisement_id == req.body.advertisement_id)</span>;</span>
+<span class="cstat-no" title="statement not covered" >    if (pref.length != 0) <span class="cstat-no" title="statement not covered" >return res.status(400).send({message: "The user has already signed the preference of this advertisement"});</span></span>
 &nbsp;
     // create and save a new preference in the database
-    pref = new Preference(req.body);
-    await pref.save();
+<span class="cstat-no" title="statement not covered" >    pref = new Preference(req.body);</span>
+<span class="cstat-no" title="statement not covered" >    await pref.save();</span>
 &nbsp;
     // send back the new preference saved in the database
-    return res.send(pref);
+<span class="cstat-no" title="statement not covered" >    return res.send(pref);</span>
 });
 &nbsp;
 // DELETE request to delete a specific preference from the database
-router.delete("/delete/:advertisementId", <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
+router.delete("/:id", <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
+&nbsp;
     // find the preference and delete it
-    const pref = <span class="cstat-no" title="statement not covered" >await Preference.findOneAndDelete({interested_user_id: req.user._id, advertisement_id: req.params.advertisementId});</span>
-<span class="cstat-no" title="statement not covered" >    if (!pref) {</span>
-<span class="cstat-no" title="statement not covered" >        return res.status(404).send("Preference not found");</span>
-    }
-<span class="cstat-no" title="statement not covered" >    return res.send("Preference deleted successfully");</span>
+    const pref = <span class="cstat-no" title="statement not covered" >await Preference.findOneAndDelete({ _id: req.params.id });</span>
+&nbsp;
+    // verify whether the preference exists
+<span class="cstat-no" title="statement not covered" >    if (!pref) <span class="cstat-no" title="statement not covered" >return res.status(404).send("Preference not found");</span></span>
+    
+    // send back the preference deleted
+<span class="cstat-no" title="statement not covered" >    return res.send(pref);</span>
 });
 &nbsp;
 // export the apis
@@ -328,7 +334,7 @@ module.exports = router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-06-10T22:16:53.755Z
+                at 2024-06-11T09:01:48.567Z
             </div>
         <script src="../prettify.js"></script>
         <script>
