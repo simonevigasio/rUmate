@@ -13,8 +13,8 @@ const mongoose = require('mongoose');
 
 const app = express();
 const server = require('http').createServer(app);
-const port = process.env.PORT || 3000;
-//const port = 3000;
+const port = process.env.PORT || 3001;
+
 const io = require("socket.io")(server, {
     cors: {
         origin: "*",
@@ -48,8 +48,7 @@ app.use("/chats", chats);
 app.use("/notifications", notifications);
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "./frontend", "index.html"));
-    //res.sendFile(path.join(__dirname, "./public", "home.html"));
+    res.sendFile("index.html");
 });
 
 io.on("connection", (socket) => {
